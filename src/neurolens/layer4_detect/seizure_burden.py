@@ -13,7 +13,8 @@ from .status_criteria import status_epilepticus
 
 def compute_seizure_burden(detection: DetectionResult, duration_s: float, neonate: bool = False) -> SeizureBurden:
     """``status_epilepticus_suspected`` follows ACNS criteria (status_criteria.py)."""
-    ictal = detection.by_group("ictal")
+    # review candidates (increment 20: learned events on routine EEG) are not seizures
+    ictal = [e for e in detection.by_group("ictal") if not e.metadata.get("review_candidate")]
     total = sum(e.duration_s for e in ictal)
     longest = max((e.duration_s for e in ictal), default=0.0)
     frac = (total / duration_s) if duration_s > 0 else 0.0

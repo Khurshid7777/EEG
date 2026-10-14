@@ -96,6 +96,7 @@ def compute_features(
     *,
     epoch_s: float = 2.0,
     overlap: float = 0.5,
+    pdr_method: str = "whole",
 ) -> FeatureSet:
     fs = sig.sampling_rate_hz
     names = sig.channel_names
@@ -156,7 +157,7 @@ def compute_features(
     def _chan(name: str) -> np.ndarray:
         return data[names.index(name)] if name in names else np.zeros(sig.n_samples)
 
-    pdr = posterior_dominant_rhythm(_chan("O1"), _chan("O2"), fs)
+    pdr = posterior_dominant_rhythm(_chan("O1"), _chan("O2"), fs, method=pdr_method)
 
     # --- asymmetry over homologous pairs (delta-band power based) ---
     asym: dict[str, float] = {}

@@ -19,7 +19,9 @@ def _run(demo_edf, configs, mode=OperatingMode.A_DECISION_SUPPORT):
     return pipe, pipe.analyze_file(
         demo_edf, mode=mode, montage_name="double_banana",
         patient=PatientInfo(age_years=55),
-        context=ClinicalContext(sedatives=["propofol"], temperature_c=36.5),
+        # the synthetic demo is an ICU (long-term monitoring) scenario; routine-length EEG
+        # turns learned seizure events into review candidates (increment 20)
+        context=ClinicalContext(sedatives=["propofol"], temperature_c=36.5, recording_setting="long_term"),
     )
 
 

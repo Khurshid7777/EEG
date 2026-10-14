@@ -17,8 +17,27 @@ from ..layer4_detect.status_criteria import status_epilepticus
 
 def scan_critical_findings(detection: DetectionResult, neonate: bool = False) -> list[CriticalFinding]:
     findings: list[CriticalFinding] = []
-    ictal = detection.by_group("ictal")
+    # increment 20: learned seizure events on routine EEG are review candidates - still
+    # surfaced (must not miss), but not as "seizure activity registered"
+    candidates = [e for e in detection.by_group("ictal") if e.metadata.get("review_candidate")]
+    ictal = [e for e in detection.by_group("ictal") if not e.metadata.get("review_candidate")]
     ese = status_epilepticus([(e.t_start, e.t_end) for e in ictal], neonate)
+    if candidates:
+        longest = max(e.duration_s for e in candidates)
+        findings.append(
+            CriticalFinding(
+                code="seizure_candidate",
+                text=Bilingual(
+                    ru=(f"Кандидаты в судорожную активность ({len(candidates)}, самый длинный "
+                        f"~{longest:.0f} с): модель приступов проверена только на длительном "
+                        "мониторинге, на рутинной ЭЭГ не подтверждена — требуется просмотр врачом."),
+                    uz=(f"Tutqanoq faolligiga nomzodlar ({len(candidates)}, eng uzuni ~{longest:.0f} s): "
+                        "tutqanoq modeli faqat uzoq monitoringda tekshirilgan, rutin EEGda "
+                        "tasdiqlanmagan — shifokor ko‘rigi zarur."),
+                ),
+                grounding_refs=sorted({e.code for e in candidates}),
+            )
+        )
 
     # longest first, so a merged finding's text states the longest duration
     for ev in sorted(ictal, key=lambda e: -e.duration_s):
@@ -116,7 +135,7 @@ def scan_critical_findings(detection: DetectionResult, neonate: bool = False) ->
                     uz=(f"Yuqori tutqanoq yuki: {sb.n_seizures} epizod, "
                         f"yozuvning {sb.seizure_fraction*100:.0f}%, {sb.seizures_per_hour:.1f}/soat."),
                 ),
-                grounding_refs=sorted({e.code for e in detection.by_group("ictal")}) or ["ictal_rhythm"],
+                grounding_refs=sorted({e.code for e in ictal}) or ["ictal_rhythm"],
             )
         )
 

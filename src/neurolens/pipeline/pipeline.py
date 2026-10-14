@@ -47,6 +47,29 @@ from ..outputs.topomap import plot_band_topomaps
 from .config_loader import ConfigBundle, load_configs
 
 
+def mark_routine_ictal_candidates(detection, duration_s: float, patient, thr,
+                                  setting: str | None = None) -> int:
+    """Increment 20: the learned seizure detector was trained and validated on long-term
+    monitoring (CHB-MIT, Siena); on routine EEG (NMT) it fired in 92% of normal recordings
+    and rated them as often as abnormal ones >= 0.5. On routine-length recordings its events
+    are therefore candidates for review: they stay in the report and the critical list
+    (worded as candidates) but do not decide the impression or the seizure burden."""
+    routine = (setting == "routine" if setting is not None
+               else bool(duration_s) and duration_s < thr.routine_max_duration_s)
+    if not thr.ictal_ml_routine_uncertain or patient.postmenstrual_age_weeks is not None or not routine:
+        return 0
+    n = 0
+    for e in detection.events:
+        if e.code == "ictal_ml":
+            e.metadata["review_candidate"] = "routine_eeg_unvalidated"
+            n += 1
+    if n:
+        from ..layer4_detect.seizure_burden import compute_seizure_burden
+
+        detection.seizure_burden = compute_seizure_burden(detection, duration_s, neonate=False)
+    return n
+
+
 def _impression_with_validation(imp, icfg):
     """Append what is known about the normal/abnormal conclusion on routine EEG
     (configs/impression.yaml, increment 17)."""
@@ -231,7 +254,7 @@ class Pipeline:
         )
 
         # --- Layer 3: features ---
-        features = compute_features(analysis, cfg.filters)
+        features = compute_features(analysis, cfg.filters, pdr_method=cfg.thresholds.pdr_method)
 
         # --- Layer 4: detection ---
         detectors = default_detectors()
@@ -288,6 +311,8 @@ class Pipeline:
         #     causal graph, mode-B gate, and alarms so thresholds are reliable ---
         if calibrator is not None:
             calibrator.apply_to_detection(detection)
+        mark_routine_ictal_candidates(detection, features.duration_s, analysis.patient, cfg.thresholds,
+                                      setting=analysis.context.recording_setting)
 
         # --- Layer 5: causal reasoning ---
         graph = build_causal_graph(

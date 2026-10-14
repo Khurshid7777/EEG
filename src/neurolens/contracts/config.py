@@ -107,7 +107,23 @@ class Thresholds(BaseModel):
         default=(0.75, 2.0), description="Cardiac rate range (45-120 /min) for the ECG-mimic check.")
     pd_ecg_isi_cv_max: float = Field(
         default=0.05, ge=0, description="Below this inter-discharge CV at cardiac rate the pattern is "
-                                        "an ECG-artefact hypothesis (increment 18).")
+                                        "an ECG-artefact hypothesis (increment 18; 0.10 in increment 20: "
+                                        "physiologic sinus arrhythmia).")
+    pd_ecg_freq_hz_by_age: list[tuple[float, float, float]] = Field(
+        default_factory=list,
+        description="Increment 20: age-specific cardiac rate ranges [(age_below_years, lo_hz, hi_hz)], "
+                    "first matching row wins; older patients (or unknown age) use pd_ecg_freq_hz.")
+    pdr_method: str = Field(
+        default="whole", pattern="^(whole|alert)$",
+        description="Posterior dominant rhythm estimate: whole-record spectral peak, or 'alert' - "
+                    "upper quartile of 10-s epoch peaks (increment 20).")
+    ictal_ml_routine_uncertain: bool = Field(
+        default=False,
+        description="Increment 20: learned seizure events on routine-length EEG (shorter than "
+                    "routine_max_duration_s, not neonatal) are candidates for review - the model was "
+                    "validated on long-term monitoring only.")
+    routine_max_duration_s: float = Field(
+        default=2700.0, gt=0, description="Recordings shorter than this (45 min) are routine EEG.")
     pd_min_duration_s: float = Field(default=10.0, gt=0, description="ACNS: < 10 s = very brief.")
     focal_slowing_min_diff: float = Field(
         default=0.25, ge=0, le=1,

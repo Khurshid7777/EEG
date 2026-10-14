@@ -180,7 +180,7 @@ class PeriodicPatternDetector(Detector):
         mimic = None
         if not thr.pd_mimic_uncertain:
             pass
-        elif thr.pd_ecg_freq_hz[0] <= frequency <= thr.pd_ecg_freq_hz[1] and cv_mean < thr.pd_ecg_isi_cv_max:
+        elif _in_band(frequency, cardiac_band(thr, sig.patient.age_years)) and cv_mean < thr.pd_ecg_isi_cv_max:
             mimic = "ecg"
         elif dominant.upper() in _OCULAR:
             mimic = "ocular"
@@ -290,6 +290,20 @@ class PeriodicPatternDetector(Detector):
                 ],
             )]
         return []
+
+
+def cardiac_band(thr, age_years) -> tuple[float, float]:
+    """Cardiac rate range (Hz) for the ECG-mimic check: age-specific in children
+    (increment 20: an infant's 130 /min fell outside the adult 45-120 /min range)."""
+    if age_years is not None:
+        for below, lo, hi in thr.pd_ecg_freq_hz_by_age:
+            if age_years < below:
+                return float(lo), float(hi)
+    return float(thr.pd_ecg_freq_hz[0]), float(thr.pd_ecg_freq_hz[1])
+
+
+def _in_band(f: float, band: tuple[float, float]) -> bool:
+    return band[0] <= f <= band[1]
 
 
 def _discharge_times(x: np.ndarray, fs: float, z_thr: float = 6.0, min_dist_s: float = 0.25) -> np.ndarray:

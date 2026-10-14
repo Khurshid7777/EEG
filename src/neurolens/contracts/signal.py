@@ -11,7 +11,7 @@ on-disk/JSON form and the in-memory form stay aligned.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -52,6 +52,10 @@ class ClinicalContext(BaseModel):
     clinical_question: Optional[str] = None
     symptoms: list[str] = Field(default_factory=list)
     prior_eeg_id: Optional[str] = None
+    recording_setting: Optional[Literal["routine", "long_term"]] = Field(
+        default=None,
+        description="Routine EEG or long-term/ICU monitoring; None = inferred from duration "
+                    "(< thresholds.routine_max_duration_s is routine; increment 20).")
 
 
 class QualityInfo(BaseModel):

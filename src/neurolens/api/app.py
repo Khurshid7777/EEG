@@ -91,11 +91,12 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
         age_years: Optional[float] = Form(None),
         postmenstrual_age_weeks: Optional[float] = Form(None),
         clinical_question: Optional[str] = Form(None),
+        recording_setting: Optional[str] = Form(None),
     ) -> dict:
         params = AnalyzeParams(
             mode=mode, montage=montage, provider=provider,
             age_years=age_years, postmenstrual_age_weeks=postmenstrual_age_weeks,
-            clinical_question=clinical_question,
+            clinical_question=clinical_question, recording_setting=recording_setting,
         )
         suffix = Path(file.filename or "upload.edf").suffix or ".edf"
         tmp = Path(tempfile.mkdtemp()) / f"upload{suffix}"

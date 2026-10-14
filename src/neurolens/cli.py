@@ -37,6 +37,7 @@ def _analyze(args) -> int:
     context = ClinicalContext(
         sedatives=args.sedative or [],
         clinical_question=args.question,
+        recording_setting=getattr(args, "setting", None),
     )
     pipe = Pipeline(
         config=_load_cfg(getattr(args, "overrides", None)),
@@ -661,6 +662,8 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--pma", type=float, default=None, help="Postmenstrual age (weeks) — enables neonatal analysis.")
     a.add_argument("--sedative", action="append", default=None)
     a.add_argument("--question", default=None)
+    a.add_argument("--setting", default=None, choices=["routine", "long_term"],
+                   help="Routine EEG or long-term/ICU monitoring (default: inferred from duration).")
     a.add_argument("--calibration", default=None, help="Confidence calibration JSON file.")
     a.add_argument("--overrides", default=None, help="Threshold override YAML (e.g. configs/thresholds.physionet.yaml).")
     a.set_defaults(func=_analyze)

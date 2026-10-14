@@ -31,8 +31,23 @@ pd_min_duration_s: 10.0
 # increment 18: ECG mimic = cardiac rate with almost perfect regularity; ocular = Fp/F7/F8
 # dominant. Set by evaluation/prereg18.apply_decision.
 pd_mimic_uncertain: true
-pd_ecg_freq_hz: [0.75, 2.0]
-pd_ecg_isi_cv_max: 0.05            # increment 17: ACNS "very brief" (< 10 s) not reported           # beta+gamma power fraction during discharges -> +F
+pd_ecg_freq_hz: [0.75, 2.0]        # adults (and unknown age): 45-120 /min
+# increment 20: cardiac rate is age-dependent (children: Fleming et al., Lancet 2011, 1st-99th
+# centiles) and sinus rhythm is not perfectly regular (respiratory sinus arrhythmia).
+# Set by evaluation/prereg20.apply_decision.
+pd_ecg_freq_hz_by_age:             # [age below (years), lo Hz, hi Hz]
+  - [1, 1.55, 3.0]                 # infants: 93-181 /min
+  - [2, 1.35, 2.6]                 # 82-156 /min
+  - [4, 1.15, 2.4]                 # 70-142 /min
+  - [8, 1.0, 2.2]                  # 59-131 /min
+pd_ecg_isi_cv_max: 0.10
+# increment 20: the learned seizure detector was validated on long-term monitoring only; on
+# routine-length EEG its events are candidates for review. Set by prereg20.apply_decision.
+ictal_ml_routine_uncertain: true
+# increment 20: the PDR is measured when best developed (most alert; drowsiness slows it):
+# upper quartile of 10-s epoch peaks instead of the whole-record peak. Set by prereg20.
+pdr_method: alert
+routine_max_duration_s: 2700       # < 45 min = routine EEG
 
 # Rhythmic delta activity (GRDA/LRDA)
 rda_min_duration_s: 6.0

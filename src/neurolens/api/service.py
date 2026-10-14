@@ -24,6 +24,7 @@ def _context(p: AnalyzeParams) -> ClinicalContext:
     return ClinicalContext(
         sedatives=p.sedatives, antiseizure_meds=p.antiseizure_meds,
         temperature_c=p.temperature_c, clinical_question=p.clinical_question,
+        recording_setting=p.recording_setting,
     )
 
 

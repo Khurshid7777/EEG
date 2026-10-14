@@ -74,8 +74,9 @@ class PhysiologyEngine:
                 p = event.metadata.get("ied_probability_learned")
                 if p is None or p < LEARNED_IED_PATHOLOGIC:
                     return PhysiologyLabel.UNCERTAIN
-        if event.code == "ictal_ml" and event.confidence < ICTAL_ML_PATHOLOGIC:
-            return PhysiologyLabel.UNCERTAIN
+        if event.code == "ictal_ml" and (event.confidence < ICTAL_ML_PATHOLOGIC
+                                         or event.metadata.get("review_candidate")):
+            return PhysiologyLabel.UNCERTAIN  # increment 20: not validated on routine EEG
         # periodic pattern matching an ECG / ocular mimic (increment 18): kept, for review
         if event.metadata.get("artifact_hypothesis") in ("ecg", "ocular"):
             return PhysiologyLabel.UNCERTAIN

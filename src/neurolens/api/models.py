@@ -19,6 +19,7 @@ class AnalyzeParams(BaseModel):
     antiseizure_meds: list[str] = Field(default_factory=list)
     temperature_c: Optional[float] = None
     clinical_question: Optional[str] = None
+    recording_setting: Optional[str] = Field(default=None, pattern="^(routine|long_term)$")
 
 
 class AnalyzeRequest(AnalyzeParams):
