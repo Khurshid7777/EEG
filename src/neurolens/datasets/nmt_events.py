@@ -28,6 +28,7 @@ import re
 import time
 import urllib.request
 import zipfile
+import zlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
@@ -206,6 +207,7 @@ class NMTEventsClient:
         self.cache = Path(cache_dir)
         self.url, self.size = url, size
         self._zip: Optional[zipfile.ZipFile] = None
+        self._index: Optional[dict[str, list[int]]] = None
 
     def _open(self) -> zipfile.ZipFile:
         if self._zip is None:
@@ -214,13 +216,23 @@ class NMTEventsClient:
         return self._zip
 
     def index(self) -> dict[str, list[int]]:
-        """Member name -> [size, crc32]; cached as ``index.json``."""
+        """Member name -> [size, crc32, header offset, compressed size, method]; cached
+        as ``index.json``. Indexes written before the offsets were stored hold only
+        [size, crc32] and are upgraded the first time the zip directory is read."""
+        if getattr(self, "_index", None) is not None:
+            return self._index
         p = self.cache / "index.json"
         if p.exists():
-            return json.loads(p.read_text(encoding="utf-8"))
-        idx = {i.filename: [i.file_size, i.CRC] for i in self._open().infolist()}
+            self._index = json.loads(p.read_text(encoding="utf-8"))
+            return self._index
+        return self._write_index()
+
+    def _write_index(self) -> dict[str, list[int]]:
+        idx = {i.filename: [i.file_size, i.CRC, i.header_offset, i.compress_size, i.compress_type]
+               for i in self._open().infolist()}
         self.cache.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(idx, indent=0, sort_keys=True), encoding="utf-8")
+        (self.cache / "index.json").write_text(json.dumps(idx, indent=0, sort_keys=True), encoding="utf-8")
+        self._index = idx
         return idx
 
     def records(self) -> list[tuple[int, bool, str]]:
@@ -243,14 +255,53 @@ class NMTEventsClient:
             return dest
         dest.parent.mkdir(parents=True, exist_ok=True)
         tmp = dest.with_suffix(dest.suffix + ".part")
-        with self._open().open(member) as src, open(tmp, "wb") as out:  # CRC checked at EOF
-            while True:
-                chunk = src.read(1 << 20)
-                if not chunk:
-                    break
-                out.write(chunk)
+        entry = self.index()[member]
+        if len(entry) >= 5:
+            # direct range reads of the member's data: no need to read the whole zip
+            # directory (minutes for the 13 GB NMT zip) in every process
+            self._fetch_direct(entry, tmp)
+        else:
+            with self._open().open(member) as src, open(tmp, "wb") as out:  # CRC checked at EOF
+                while True:
+                    chunk = src.read(1 << 20)
+                    if not chunk:
+                        break
+                    out.write(chunk)
+            self._write_index()  # the directory is open anyway: store member offsets
         os.replace(tmp, dest)
         return dest
+
+    def _fetch_direct(self, entry: list[int], tmp: Path, chunk: int = 4 << 20) -> None:
+        size, crc, offset, csize, method = entry[:5]
+        if method not in (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED):
+            raise IOError(f"unsupported zip compression method {method}")
+        raw = HttpRangeFile(self.url, self.size)
+        raw.seek(offset)
+        head = bytearray(30)
+        raw.readinto(head)
+        if head[:4] != b"PK\x03\x04":
+            raise IOError(f"no local file header at offset {offset}")
+        pos = offset + 30 + int.from_bytes(head[26:28], "little") + int.from_bytes(head[28:30], "little")
+        dec = zlib.decompressobj(-15) if method == zipfile.ZIP_DEFLATED else None
+        got, crc_acc, n_out = 0, 0, 0
+        with open(tmp, "wb") as out:
+            while got < csize:
+                buf = bytearray(min(chunk, csize - got))
+                raw.seek(pos + got)
+                raw.readinto(buf)
+                got += len(buf)
+                data = dec.decompress(bytes(buf)) if dec else bytes(buf)
+                crc_acc = zlib.crc32(data, crc_acc)
+                n_out += len(data)
+                out.write(data)
+            if dec:
+                tail = dec.flush()
+                crc_acc = zlib.crc32(tail, crc_acc)
+                n_out += len(tail)
+                out.write(tail)
+        if n_out != size or crc_acc != crc:
+            tmp.unlink(missing_ok=True)
+            raise IOError(f"member check failed: size {n_out}/{size}, crc {crc_acc:#x}/{crc:#x}")
 
     def annotations(self) -> dict[int, NMTAnnotation]:
         out = {}

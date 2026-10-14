@@ -253,3 +253,75 @@ def test_pipeline_uses_learned_ied_detector_when_enabled(demo_edf, tmp_path):
     spikes = [e for e in out.detection.events if e.code == "spike"]
     assert spikes and all(e.metadata.get("detector") == "ied" for e in spikes)
     assert len(spikes) <= 5
+
+
+def _local_zip(tmp_path, monkeypatch):
+    """A small zip served through a file-backed stand-in for ``HttpRangeFile``."""
+    import io
+    import zipfile
+
+    from neurolens.datasets import nmt_events as NE
+
+    payload = np.random.default_rng(0).integers(0, 255, 300_000, dtype=np.uint8).tobytes() * 3
+    zpath = tmp_path / "remote.zip"
+    with zipfile.ZipFile(zpath, "w") as z:
+        z.writestr("Root/Normal EDF/0000001.edf", payload, compress_type=zipfile.ZIP_DEFLATED)
+        z.writestr("Root/Normal EDF/0000002.edf", b"abc" * 10, compress_type=zipfile.ZIP_STORED)
+    blob = zpath.read_bytes()
+
+    class LocalRange(io.RawIOBase):
+        def __init__(self, url, size, **kw):
+            self.pos, self.size = 0, len(blob)
+
+        def seekable(self):
+            return True
+
+        def readable(self):
+            return True
+
+        def tell(self):
+            return self.pos
+
+        def seek(self, off, whence=0):
+            self.pos = off if whence == 0 else (self.pos + off if whence == 1 else self.size + off)
+            return self.pos
+
+        def readinto(self, b):
+            data = blob[self.pos:self.pos + len(b)]
+            b[:len(data)] = data
+            self.pos += len(data)
+            return len(data)
+
+    monkeypatch.setattr(NE, "HttpRangeFile", LocalRange)
+    return NE.NMTEventsClient(tmp_path / "cache", url="x", size=len(blob)), payload
+
+
+def test_fetch_direct_range_reads_match_zip_member(tmp_path, monkeypatch):
+    c, payload = _local_zip(tmp_path, monkeypatch)
+    idx = c.index()
+    assert len(idx["Root/Normal EDF/0000001.edf"]) == 5  # offsets stored
+    c._zip = None
+    c._open = lambda: (_ for _ in ()).throw(AssertionError("zip directory must not be read"))
+    assert c.fetch("Root/Normal EDF/0000001.edf").read_bytes() == payload
+    assert c.fetch("Root/Normal EDF/0000002.edf").read_bytes() == b"abc" * 10
+
+
+def test_fetch_direct_rejects_corrupt_member(tmp_path, monkeypatch):
+    c, _ = _local_zip(tmp_path, monkeypatch)
+    m = "Root/Normal EDF/0000001.edf"
+    c.index()[m][1] ^= 1  # wrong CRC
+    with pytest.raises(IOError):
+        c.fetch(m)
+    assert not c.local_path(m).exists()
+
+
+def test_old_index_without_offsets_is_upgraded(tmp_path, monkeypatch):
+    import json
+
+    c, payload = _local_zip(tmp_path, monkeypatch)
+    m = "Root/Normal EDF/0000001.edf"
+    old = {k: v[:2] for k, v in c.index().items()}
+    (tmp_path / "cache" / "index.json").write_text(json.dumps(old))
+    c._index = None
+    assert c.fetch(m).read_bytes() == payload  # zipfile path
+    assert len(json.loads((tmp_path / "cache" / "index.json").read_text())[m]) == 5
