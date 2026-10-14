@@ -117,6 +117,9 @@ class Thresholds(BaseModel):
         default="whole", pattern="^(whole|alert)$",
         description="Posterior dominant rhythm estimate: whole-record spectral peak, or 'alert' - "
                     "upper quartile of 10-s epoch peaks (increment 20).")
+    field_required: bool = Field(
+        default=False, description="Increment 20: lateralized PDs/RDA whose channels contain no two "
+                                   "neighbouring electrodes are 'no field' hypotheses (uncertain).")
     ictal_ml_routine_uncertain: bool = Field(
         default=False,
         description="Increment 20: learned seizure events on routine-length EEG (shorter than "

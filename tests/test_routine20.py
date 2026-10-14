@@ -120,5 +120,18 @@ def test_prereg20_rule_and_apply(tmp_path):
     assert not bad["decision"]["keep_increment20_rules"]
     prereg20.apply_decision(bad, str(imp), str(thr))
     t = Thresholds(**yaml.safe_load(thr.read_text()))
-    assert (t.pd_ecg_isi_cv_max, t.pd_ecg_freq_hz_by_age, t.ictal_ml_routine_uncertain, t.pdr_method) == (
-        0.05, [], False, "whole")
+    assert (t.pd_ecg_isi_cv_max, t.pd_ecg_freq_hz_by_age, t.ictal_ml_routine_uncertain, t.pdr_method,
+            t.field_required) == (0.05, [], False, "whole", False)
+
+
+def test_pattern_without_field_is_uncertain(configs):
+    from neurolens.layer4_detect.periodic import has_field
+
+    assert has_field(["F7", "T3"]) and has_field(["C4", "F4", "O2"])
+    assert not has_field(["F7", "P3"]) and not has_field(["A1", "T5"]) and not has_field(["O1"])
+    assert configs.thresholds.field_required
+    eng = PhysiologyEngine(NormsEngine(configs.norms))
+    ev = Event(code="lrda", label_ru="LRDA", label_uz="LRDA", group="periodic",
+               localization=Localization(channels=["F7", "P3"]), t_start=0, t_end=12, confidence=0.53,
+               metadata={"artifact_hypothesis": "no_field"})
+    assert eng.label_event(ev, PatientInfo(age_years=30)).value == "uncertain"

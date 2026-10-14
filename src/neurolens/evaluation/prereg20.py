@@ -86,5 +86,6 @@ def apply_decision(a: dict, impression_yaml: str = "configs/impression.yaml",
         text = re.sub(r"(?m)^pd_ecg_freq_hz_by_age:.*\n(?:\s+- .*\n)*", "pd_ecg_freq_hz_by_age: []\n", text)
         text = re.sub(r"(?m)^ictal_ml_routine_uncertain:.*$", "ictal_ml_routine_uncertain: false", text)
         text = re.sub(r"(?m)^pdr_method:.*$", "pdr_method: whole", text)
+        text = re.sub(r"(?m)^field_required:.*$", "field_required: false", text)
         p.write_text(text, encoding="utf-8")
     return {"keep_increment20_rules": keep}

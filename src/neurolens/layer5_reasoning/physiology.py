@@ -78,7 +78,7 @@ class PhysiologyEngine:
                                          or event.metadata.get("review_candidate")):
             return PhysiologyLabel.UNCERTAIN  # increment 20: not validated on routine EEG
         # periodic pattern matching an ECG / ocular mimic (increment 18): kept, for review
-        if event.metadata.get("artifact_hypothesis") in ("ecg", "ocular"):
+        if event.metadata.get("artifact_hypothesis") in ("ecg", "ocular", "no_field"):
             return PhysiologyLabel.UNCERTAIN
 
         # Neonatal background is physiologic iff appropriate for the PMA

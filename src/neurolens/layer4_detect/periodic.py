@@ -184,6 +184,8 @@ class PeriodicPatternDetector(Detector):
             mimic = "ecg"
         elif dominant.upper() in _OCULAR:
             mimic = "ocular"
+        elif thr.field_required and code != "gpds" and not has_field(chans):
+            mimic = "no_field"
 
         ru, uz = self.labels(code)
         return [
@@ -270,6 +272,7 @@ class PeriodicPatternDetector(Detector):
             t1 = float(t[b - 1] + WIN_S / 2)
             ch_frac = len(involved) / len(names)
             ru, uz = self.labels(code)
+            no_field = code == "lrda" and thr.field_required and not has_field(involved)
             return [Event(
                 code=code, label_ru=ru, label_uz=uz, group=self.group,
                 localization=Localization(channels=sorted(involved),
@@ -288,8 +291,30 @@ class PeriodicPatternDetector(Detector):
                     EventEvidence(feature="rda_duration_s", value=round(t1 - t0, 1), unit="s",
                                   reference=f">= {WIN_S + HOP_S * (min_w - 1):.0f} s"),
                 ],
+                metadata={"artifact_hypothesis": "no_field"} if no_field else {},
             )]
         return []
+
+
+# 10-20 neighbours (longitudinal and transverse chains of the double banana / coronal montages)
+_NEIGHBOURS = [
+    ("Fp1", "F7"), ("F7", "T3"), ("T3", "T5"), ("T5", "O1"), ("Fp1", "F3"), ("F3", "C3"), ("C3", "P3"),
+    ("P3", "O1"), ("Fp2", "F8"), ("F8", "T4"), ("T4", "T6"), ("T6", "O2"), ("Fp2", "F4"), ("F4", "C4"),
+    ("C4", "P4"), ("P4", "O2"), ("F7", "F3"), ("F3", "Fz"), ("Fz", "F4"), ("F4", "F8"), ("T3", "C3"),
+    ("C3", "Cz"), ("Cz", "C4"), ("C4", "T4"), ("T5", "P3"), ("P3", "Pz"), ("Pz", "P4"), ("P4", "T6"),
+    ("Fz", "Cz"), ("Cz", "Pz"), ("Fp1", "Fp2"), ("O1", "O2"), ("A1", "T3"), ("A2", "T4"),
+]
+_ADJ: dict[str, set[str]] = {}
+for _a, _b in _NEIGHBOURS:
+    _ADJ.setdefault(_a.upper(), set()).add(_b.upper())
+    _ADJ.setdefault(_b.upper(), set()).add(_a.upper())
+
+
+def has_field(channels) -> bool:
+    """A cerebral pattern has a field: >= 2 neighbouring electrodes (increment 20: LRDA on
+    F7+P3 or A1+T5 - electrodes with nothing in between - in normal routine EEGs)."""
+    up = {c.upper() for c in channels}
+    return any(_ADJ.get(c, set()) & up for c in up)
 
 
 def cardiac_band(thr, age_years) -> tuple[float, float]:

@@ -44,6 +44,8 @@ pd_ecg_isi_cv_max: 0.10
 # increment 20: the learned seizure detector was validated on long-term monitoring only; on
 # routine-length EEG its events are candidates for review. Set by prereg20.apply_decision.
 ictal_ml_routine_uncertain: true
+# increment 20: LPDs/BIPDs/LRDA need a field (>= 2 neighbouring electrodes). Set by prereg20.
+field_required: true
 # increment 20 (development, not pre-registered): the "alert" estimate (upper quartile of
 # 10-s epoch peaks) fixed as many normal as it lost abnormal recordings (any quantile) -> off.
 pdr_method: whole
