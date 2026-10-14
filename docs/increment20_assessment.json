@@ -1,0 +1,49 @@
+{
+ "new": {
+  "n_normal": 300,
+  "n_abnormal": 45,
+  "tn": 219,
+  "tp": 25,
+  "specificity": 0.73,
+  "specificity_ci95": [
+   0.6759812268278942,
+   0.7794117346713124
+  ],
+  "sensitivity": 0.5555555555555556,
+  "sensitivity_ci95": [
+   0.3999734964036788,
+   0.7035560761341417
+  ],
+  "balanced_accuracy": 0.6427777777777778
+ },
+ "old": {
+  "n_normal": 300,
+  "n_abnormal": 45,
+  "tn": 205,
+  "tp": 27,
+  "specificity": 0.6833333333333333,
+  "specificity_ci95": [
+   0.6274055061865507,
+   0.7355956388931847
+  ],
+  "sensitivity": 0.6,
+  "sensitivity_ci95": [
+   0.4433135124790022,
+   0.7430241048073687
+  ],
+  "balanced_accuracy": 0.6416666666666666
+ },
+ "hypotheses": {
+  "H1_specificity_gain_at_least_0.04": true,
+  "H2_sensitivity_not_lower_by_more_than_0.07": true,
+  "H3_specificity_at_least_0.65": true,
+  "H4_seizure_claims_in_normal_reports_at_most_0.02": true
+ },
+ "seizure_claims_normal": {
+  "new": 0.0,
+  "old_proxy": 0.87
+ },
+ "decision": {
+  "keep_increment20_rules": true
+ }
+}
