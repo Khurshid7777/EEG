@@ -160,6 +160,116 @@
       "title": "Rda Rhythmicity",
       "type": "number"
     },
+    "rda_autocorr_min": {
+      "default": 0.7,
+      "description": "Delta-band autocorrelation at one period (6 s windows) for a channel to count as rhythmic (increment 17; replaces the spectral-concentration test).",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Rda Autocorr Min",
+      "type": "number"
+    },
+    "pd_mimic_uncertain": {
+      "default": true,
+      "description": "Mark periodic patterns matching an ECG/ocular mimic as artifact hypotheses (increment 18; switched by its decision).",
+      "title": "Pd Mimic Uncertain",
+      "type": "boolean"
+    },
+    "pd_ecg_freq_hz": {
+      "default": [
+        0.75,
+        2.0
+      ],
+      "description": "Cardiac rate range (45-120 /min) for the ECG-mimic check.",
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Pd Ecg Freq Hz",
+      "type": "array"
+    },
+    "pd_ecg_isi_cv_max": {
+      "default": 0.05,
+      "description": "Below this inter-discharge CV at cardiac rate the pattern is an ECG-artefact hypothesis (increment 18; 0.10 in increment 20: physiologic sinus arrhythmia).",
+      "minimum": 0,
+      "title": "Pd Ecg Isi Cv Max",
+      "type": "number"
+    },
+    "pd_ecg_freq_hz_by_age": {
+      "description": "Increment 20: age-specific cardiac rate ranges [(age_below_years, lo_hz, hi_hz)], first matching row wins; older patients (or unknown age) use pd_ecg_freq_hz.",
+      "items": {
+        "maxItems": 3,
+        "minItems": 3,
+        "prefixItems": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "number"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Pd Ecg Freq Hz By Age",
+      "type": "array"
+    },
+    "pdr_method": {
+      "default": "whole",
+      "description": "Posterior dominant rhythm estimate: whole-record spectral peak, or 'alert' - upper quartile of 10-s epoch peaks (increment 20).",
+      "pattern": "^(whole|alert)$",
+      "title": "Pdr Method",
+      "type": "string"
+    },
+    "ictal_ml_routine_uncertain": {
+      "default": false,
+      "description": "Increment 20: learned seizure events on routine-length EEG (shorter than routine_max_duration_s, not neonatal) are candidates for review - the model was validated on long-term monitoring only.",
+      "title": "Ictal Ml Routine Uncertain",
+      "type": "boolean"
+    },
+    "routine_max_duration_s": {
+      "default": 2700.0,
+      "description": "Recordings shorter than this (45 min) are routine EEG.",
+      "exclusiveMinimum": 0,
+      "title": "Routine Max Duration S",
+      "type": "number"
+    },
+    "pd_min_duration_s": {
+      "default": 10.0,
+      "description": "ACNS: < 10 s = very brief.",
+      "exclusiveMinimum": 0,
+      "title": "Pd Min Duration S",
+      "type": "number"
+    },
+    "focal_slowing_min_diff": {
+      "default": 0.25,
+      "description": "Persistent difference of relative delta+theta power between homologous channels (median over epochs, same sign in >= 70% of epochs).",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Focal Slowing Min Diff",
+      "type": "number"
+    },
+    "grda_min_windows": {
+      "default": 2,
+      "description": "Consecutive 6 s windows (hop 2 s): 2 = 8 s.",
+      "minimum": 1,
+      "title": "Grda Min Windows",
+      "type": "integer"
+    },
+    "lrda_min_windows": {
+      "default": 3,
+      "description": "Consecutive 6 s windows (hop 2 s): 3 = 10 s.",
+      "minimum": 1,
+      "title": "Lrda Min Windows",
+      "type": "integer"
+    },
     "iic_freq_hz_min": {
       "default": 1.5,
       "exclusiveMinimum": 0,

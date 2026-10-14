@@ -62,6 +62,23 @@
           ],
           "default": null,
           "title": "Prior Eeg Id"
+        },
+        "recording_setting": {
+          "anyOf": [
+            {
+              "enum": [
+                "routine",
+                "long_term"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Routine EEG or long-term/ICU monitoring; None = inferred from duration (< thresholds.routine_max_duration_s is routine; increment 20).",
+          "title": "Recording Setting"
         }
       },
       "title": "ClinicalContext",
