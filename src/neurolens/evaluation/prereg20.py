@@ -1,7 +1,8 @@
 """Pre-registered analysis for increment 20 (docs/preregistration_increment20.md):
 age-specific cardiac rates and physiologic heart-rate variability for the ECG mimic of
 periodic discharges (F14), learned seizure events on routine EEG as review candidates
-(F15) and the PDR measured when best developed (F16). Fresh seeded NMT train-split
+(F15) and lateralized patterns that need a field (F17; F16, the "alert" PDR, was
+dropped during development). Fresh seeded NMT train-split
 subset (seed 20): 300 normal recordings never run before and the 45 remaining abnormal
 ones, against the increment-19 pipeline (commit 8251619) on the same recordings.
 
