@@ -227,3 +227,18 @@ def test_record_threshold_by_age(configs):
     assert icfg.threshold_for(None) == pytest.approx(icfg.record_threshold)
     assert icfg.model_copy(update={"record_threshold_by_age": []}).threshold_for(5.0) == pytest.approx(
         icfg.record_threshold)
+
+
+def test_record_model_only_on_routine_recordings(demo_edf, configs):
+    from neurolens.pipeline.pipeline import Pipeline, is_routine_recording
+
+    thr = configs.thresholds
+    assert is_routine_recording(900, thr) and not is_routine_recording(3600, thr)
+    assert not is_routine_recording(900, thr, "long_term") and is_routine_recording(7200, thr, "routine")
+    pipe = Pipeline(config=configs, provider_pref="deterministic")
+    ltm = pipe.analyze_file(demo_edf, patient=PatientInfo(age_years=55),
+                            context=ClinicalContext(recording_setting="long_term"))
+    assert ltm.result_json["record_score"] is None
+    routine = pipe.analyze_file(demo_edf, patient=PatientInfo(age_years=55),
+                                context=ClinicalContext(recording_setting="routine"))
+    assert routine.result_json["record_score"] is not None

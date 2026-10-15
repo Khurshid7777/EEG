@@ -47,6 +47,14 @@ from ..outputs.topomap import plot_band_topomaps
 from .config_loader import ConfigBundle, load_configs
 
 
+def is_routine_recording(duration_s: float, thr, setting: str | None = None) -> bool:
+    """Routine EEG: explicit ``recording_setting``, else shorter than
+    ``thresholds.routine_max_duration_s`` (45 min)."""
+    if setting is not None:
+        return setting == "routine"
+    return bool(duration_s) and duration_s < thr.routine_max_duration_s
+
+
 def mark_routine_ictal_candidates(detection, duration_s: float, patient, thr,
                                   setting: str | None = None) -> int:
     """Increment 20: the learned seizure detector was trained and validated on long-term
@@ -54,8 +62,7 @@ def mark_routine_ictal_candidates(detection, duration_s: float, patient, thr,
     and rated them as often as abnormal ones >= 0.5. On routine-length recordings its events
     are therefore candidates for review: they stay in the report and the critical list
     (worded as candidates) but do not decide the impression or the seizure burden."""
-    routine = (setting == "routine" if setting is not None
-               else bool(duration_s) and duration_s < thr.routine_max_duration_s)
+    routine = is_routine_recording(duration_s, thr, setting)
     if not thr.ictal_ml_routine_uncertain or patient.postmenstrual_age_weeks is not None or not routine:
         return 0
     n = 0
@@ -428,7 +435,11 @@ class Pipeline:
 
         summary = summarize(analysis, features, detection, graph)
         record_score = None
-        if analysis.patient.postmenstrual_age_weeks is None and self.record_model is not None:
+        # trained and validated on routine EEG only (NMT, 15-25 min): not applied to
+        # long-term monitoring or neonates, where the rule-based impression stays
+        if (analysis.patient.postmenstrual_age_weeks is None and self.record_model is not None
+                and is_routine_recording(features.duration_s, cfg.thresholds,
+                                         analysis.context.recording_setting)):
             record_score = apply_record_score(report, summary, self.record_model.probability(summary),
                                               cfg.impression)
 
