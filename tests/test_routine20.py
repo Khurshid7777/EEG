@@ -242,3 +242,16 @@ def test_record_model_only_on_routine_recordings(demo_edf, configs):
     routine = pipe.analyze_file(demo_edf, patient=PatientInfo(age_years=55),
                                 context=ClinicalContext(recording_setting="routine"))
     assert routine.result_json["record_score"] is not None
+
+
+def test_record_model_reasons(configs):
+    import json
+
+    from neurolens.layer5_reasoning.record_model import RecordModel
+
+    m = RecordModel.load(configs.ml_model_path(configs.impression.record_model))
+    row = next(r for r in json.load(open("docs/increment22_eval.json"))["records"]
+               if r["abnormal"] and r["record_probability"] > 0.8)
+    why = m.reasons(row)
+    assert 1 <= len(why) <= 3 and all(w["score_drop"] >= 0.02 for w in why)
+    assert all(w["label_ru"] and "_" not in w["label_ru"] for w in why)

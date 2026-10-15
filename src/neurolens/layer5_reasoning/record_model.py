@@ -46,6 +46,35 @@ def record_features(row: dict) -> list[float]:
     return f
 
 
+# what the report calls each feature (RU, UZ)
+LABELS = {
+    "age_years": ("возраст", "yosh"), "pdr_hz": ("частота ЗДР", "ZDR chastotasi"),
+    "rel_delta": ("доля дельта-активности", "delta faolligi ulushi"),
+    "rel_theta": ("доля тета-активности", "teta faolligi ulushi"),
+    "rel_alpha": ("доля альфа-активности", "alfa faolligi ulushi"),
+    "robust_amplitude_uv": ("амплитуда фона", "fon amplitudasi"),
+    "ied_p_max": ("максимальная оценка разряда обученной моделью", "o‘qitilgan model razryad bahosi (maks.)"),
+    "ied_p_mean": ("средняя оценка кандидатов-разрядов", "nomzod razryadlar o‘rtacha bahosi"),
+    "ied_n_ge_095": ("число кандидатов-разрядов с оценкой ≥ 0.95", "≥ 0.95 baholi nomzodlar soni"),
+    "ied_n_ge_080": ("число кандидатов-разрядов с оценкой ≥ 0.80", "≥ 0.80 baholi nomzodlar soni"),
+    "ictal_n": ("число кандидатов в приступ", "tutqanoq nomzodlari soni"),
+    "ictal_conf_max": ("оценка кандидата в приступ", "tutqanoq nomzodi bahosi"),
+    "ictal_fraction": ("доля записи с кандидатами в приступ", "tutqanoq nomzodli yozuv ulushi"),
+    "slowing_delta_theta_fraction": ("выраженность замедления", "sekinlashuv darajasi"),
+}
+
+
+def _label(name: str) -> tuple[str, str]:
+    if name in LABELS:
+        return LABELS[name]
+    from ..layer4_detect.base import LABELS as EVENT_LABELS
+
+    kind, code = name.split("_", 1)
+    ru, uz = EVENT_LABELS.get(code, (code, code))
+    return ((f"{ru} (патологическая находка)" if kind == "patho" else f"{ru} (кандидат)"),
+            (f"{uz} (patologik topilma)" if kind == "patho" else f"{uz} (nomzod)"))
+
+
 class RecordModel:
     def __init__(self, model):
         if list(model.feature_names) != FEATURE_NAMES:
@@ -60,6 +89,27 @@ class RecordModel:
 
     def probability(self, row: dict) -> float:
         return float(self.model.predict_proba(np.array([record_features(row)], float))[0])
+
+    def reasons(self, row: dict, k: int = 3, min_drop: float = 0.02) -> list[dict]:
+        """Features that raise the score most: the drop when one feature is set to the
+        median of neurologist-normal recordings (training data). Empty without medians."""
+        med = self.model.meta.get("normal_medians")
+        if not med:
+            return []
+        x = np.array(record_features(row), float)
+        base = float(self.model.predict_proba(x[None])[0])
+        Xs = np.repeat(x[None], len(x), axis=0)
+        Xs[np.arange(len(x)), np.arange(len(x))] = med
+        drop = base - self.model.predict_proba(Xs)
+        out = []
+        for i in np.argsort(-drop)[:k]:
+            if drop[i] < min_drop:
+                break
+            ru, uz = _label(FEATURE_NAMES[i])
+            out.append({"feature": FEATURE_NAMES[i], "value": round(float(x[i]), 3),
+                        "typical_normal": round(float(med[i]), 3), "score_drop": round(float(drop[i]), 3),
+                        "label_ru": ru, "label_uz": uz})
+        return out
 
 
 def load_optional(path: Optional[str | Path]) -> Optional[RecordModel]:

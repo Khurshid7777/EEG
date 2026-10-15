@@ -60,7 +60,9 @@ def main() -> int:
     clf = HistGradientBoostingClassifier(**PARAMS).fit(X, y)
     model = export_hist_gbm(clf, list(FEATURE_NAMES), meta={
         "name": "record_gbm_v1", "task": "routine EEG normal vs abnormal (NMT, neurologist labels)",
-        "threshold": thr, "cv": {k: cv_report[k] for k in ("auc_oof", "specificity_oof", "sensitivity_oof")}})
+        "threshold": thr, "cv": {k: cv_report[k] for k in ("auc_oof", "specificity_oof", "sensitivity_oof")},
+        # typical values of neurologist-normal recordings, for the report's "main reasons"
+        "normal_medians": [float(v) for v in np.median(X[y == 0], axis=0)]})
     model.save(out_model)
     # exported model must reproduce scikit-learn
     assert np.allclose(model.predict_proba(X), clf.predict_proba(X)[:, 1], atol=1e-6)

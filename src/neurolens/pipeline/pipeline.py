@@ -77,7 +77,7 @@ def mark_routine_ictal_candidates(detection, duration_s: float, patient, thr,
     return n
 
 
-def apply_record_score(report, summary: dict, p: float, icfg) -> dict:
+def apply_record_score(report, summary: dict, p: float, icfg, reasons: list | None = None) -> dict:
     """Attach the record-level score; when the pre-registered decision enabled it
     (``record_model_decides``) the score, not single findings, decides normal/abnormal and
     the rule findings are listed for review."""
@@ -86,14 +86,16 @@ def apply_record_score(report, summary: dict, p: float, icfg) -> dict:
     thr = icfg.threshold_for(summary.get("age_years"))
     abnormal = p >= thr
     score = {"probability": round(p, 3), "threshold": thr, "abnormal": abnormal,
-             "decides": bool(icfg.record_model_decides)}
+             "decides": bool(icfg.record_model_decides), "reasons": reasons or []}
     if icfg.record_model_decides and report.impression is not None and abnormal != summary["impression_abnormal"]:
         imp = report.impression
+        why_ru = ("; главные доводы оценки: " + ", ".join(r["label_ru"] for r in reasons)) if reasons else ""
+        why_uz = ("; bahoning asosiy dalillari: " + ", ".join(r["label_uz"] for r in reasons)) if reasons else ""
         if abnormal:
             report.impression = Bilingual(
-                ru=f"Заключение: признаки отклонений по совокупной оценке записи ({p:.2f} ≥ {thr:.2f}); "
+                ru=f"Заключение: признаки отклонений по совокупной оценке записи ({p:.2f} ≥ {thr:.2f}{why_ru}); "
                    f"отдельные находки не достигают критериев — требуется просмотр врачом. {imp.ru}",
-                uz=f"Xulosa: yozuvning umumiy bahosi bo‘yicha og‘ish belgilari ({p:.2f} ≥ {thr:.2f}); "
+                uz=f"Xulosa: yozuvning umumiy bahosi bo‘yicha og‘ish belgilari ({p:.2f} ≥ {thr:.2f}{why_uz}); "
                    f"alohida topilmalar mezonlarga yetmaydi — shifokor ko‘rigi zarur. {imp.uz}")
         else:
             report.impression = Bilingual(
@@ -441,7 +443,7 @@ class Pipeline:
                 and is_routine_recording(features.duration_s, cfg.thresholds,
                                          analysis.context.recording_setting)):
             record_score = apply_record_score(report, summary, self.record_model.probability(summary),
-                                              cfg.impression)
+                                              cfg.impression, reasons=self.record_model.reasons(summary))
 
         result_json = build_result_json(
             analysis, features, detection, graph, report, gate, montage_name
