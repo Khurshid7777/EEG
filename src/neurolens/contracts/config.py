@@ -319,6 +319,16 @@ class ImpressionConfig(BaseModel):
     record_model: Optional[str] = None
     record_threshold: Optional[float] = Field(default=None, ge=0, le=1)
     record_model_decides: bool = False
+    # increment 22b: per-age-band thresholds [(age_below_years, threshold)], first match wins;
+    # empty or unknown age -> record_threshold
+    record_threshold_by_age: list[tuple[float, float]] = Field(default_factory=list)
+
+    def threshold_for(self, age_years: Optional[float]) -> float:
+        if age_years is not None:
+            for below, thr in self.record_threshold_by_age:
+                if age_years < below:
+                    return float(thr)
+        return float(self.record_threshold if self.record_threshold is not None else 0.5)
 
 
 class NeonatalPolicy(BaseModel):

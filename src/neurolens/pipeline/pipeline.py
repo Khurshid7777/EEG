@@ -76,7 +76,7 @@ def apply_record_score(report, summary: dict, p: float, icfg) -> dict:
     the rule findings are listed for review."""
     from ..contracts.report import Bilingual
 
-    thr = icfg.record_threshold if icfg.record_threshold is not None else 0.5
+    thr = icfg.threshold_for(summary.get("age_years"))
     abnormal = p >= thr
     score = {"probability": round(p, 3), "threshold": thr, "abnormal": abnormal,
              "decides": bool(icfg.record_model_decides)}

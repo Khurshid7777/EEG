@@ -219,3 +219,11 @@ def test_prereg22_rule_and_apply(tmp_path):
     assert not bad["hypotheses"]["H2_specificity_at_least_0.65"]
     prereg22.apply_decision(bad, str(imp))
     assert ImpressionConfig(**yaml.safe_load(imp.read_text())).record_model_decides is False
+
+
+def test_record_threshold_by_age(configs):
+    icfg = configs.impression
+    assert icfg.threshold_for(5.0) > icfg.threshold_for(30.0)  # children need a higher threshold
+    assert icfg.threshold_for(None) == pytest.approx(icfg.record_threshold)
+    assert icfg.model_copy(update={"record_threshold_by_age": []}).threshold_for(5.0) == pytest.approx(
+        icfg.record_threshold)

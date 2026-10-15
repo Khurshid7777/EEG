@@ -2,12 +2,24 @@
 # Written by evaluation/prereg22.apply_decision (docs/preregistration_increment22.md).
 # NMT evaluation split (95 normal, 90 abnormal): record-level model decides; specificity 0.758, sensitivity 0.867 (docs/increment22_report.md).
 routine_validated: true
-specificity: 0.758
-sensitivity: 0.867
+specificity: 0.789  # age-band thresholds, evaluation split, post-hoc (single threshold, pre-registered: 0.758)
+sensitivity: 0.833  # (pre-registered single threshold: 0.867)
 provenance:
   preregistration: docs/preregistration_increment22.md
   report: docs/increment22_report.md
   previous: docs/increment20_report.md
+  age_band_thresholds: post-hoc correction, docs/increment22_report.md section 5
 record_model: configs/models/record_gbm_v1.json
 record_threshold: 0.229
 record_model_decides: true
+# increment 22b (post-hoc, not re-validated): the single threshold gave specificity 0.41 / 0.28
+# (development out of fold / evaluation split) in normal children of 2-11 years. The
+# pre-registered target - specificity 0.75 - is now met per age band (docs/increment22_cv.json).
+# Evaluation split with these thresholds (post-hoc): specificity 0.789, sensitivity 0.833.
+# Remove the list to return to the single validated threshold.
+record_threshold_by_age:
+- [2.0, 0.139]
+- [12.0, 0.5064]
+- [18.0, 0.2688]
+- [60.0, 0.1024]
+- [200.0, 0.2302]

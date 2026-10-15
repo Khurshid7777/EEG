@@ -8,6 +8,30 @@
  "sensitivity_oof": 0.8276923076923077,
  "rule_specificity": 0.7277777777777779,
  "rule_sensitivity": 0.7230769230769231,
+ "threshold_by_age": [
+  [
+   2.0,
+   0.139
+  ],
+  [
+   12.0,
+   0.5064
+  ],
+  [
+   18.0,
+   0.2688
+  ],
+  [
+   60.0,
+   0.1024
+  ],
+  [
+   200.0,
+   0.2302
+  ]
+ ],
+ "specificity_oof_by_age_thresholds": 0.7486111111111111,
+ "sensitivity_oof_by_age_thresholds": 0.796923076923077,
  "params": {
   "max_depth": 3,
   "learning_rate": 0.05,

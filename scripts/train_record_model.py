@@ -15,6 +15,9 @@ from pathlib import Path
 import numpy as np
 
 TARGET_SPECIFICITY = 0.75
+# increment 22b: the target specificity is met in each age band, not only overall (the single
+# threshold gave specificity 0.41 in normal children of 2-11 years, out of fold)
+AGE_BANDS_BELOW = (2.0, 12.0, 18.0, 60.0, 200.0)
 PARAMS = dict(max_depth=3, learning_rate=0.05, max_iter=300, l2_regularization=1.0, random_state=0)
 
 
@@ -34,6 +37,14 @@ def main() -> int:
     cv = StratifiedKFold(5, shuffle=True, random_state=0)
     p = cross_val_predict(HistGradientBoostingClassifier(**PARAMS), X, y, cv=cv, method="predict_proba")[:, 1]
     thr = float(np.quantile(p[y == 0], TARGET_SPECIFICITY))
+    ages = [r.get("age_years") for r in rows]
+    band_thr, lo = [], 0.0
+    for hi in AGE_BANDS_BELOW:
+        m = np.array([a is not None and lo <= a < hi for a in ages]) & (y == 0)
+        band_thr.append([hi, round(float(np.quantile(p[m], TARGET_SPECIFICITY)), 4)])
+        lo = hi
+    t_rec = np.array([next((t for hi, t in band_thr if a is not None and a < hi), thr) for a in ages])
+    pred_b = p >= t_rec
     pred = p >= thr
     cv_report = {
         "n_normal": int((y == 0).sum()), "n_abnormal": int((y == 1).sum()),
@@ -41,6 +52,9 @@ def main() -> int:
         "target_specificity": TARGET_SPECIFICITY,
         "specificity_oof": float((~pred[y == 0]).mean()), "sensitivity_oof": float(pred[y == 1].mean()),
         "rule_specificity": float(1 - rule[y == 0].mean()), "rule_sensitivity": float(rule[y == 1].mean()),
+        "threshold_by_age": band_thr,
+        "specificity_oof_by_age_thresholds": float((~pred_b[y == 0]).mean()),
+        "sensitivity_oof_by_age_thresholds": float(pred_b[y == 1].mean()),
         "params": PARAMS, "sources": sys.argv[3:],
     }
     clf = HistGradientBoostingClassifier(**PARAMS).fit(X, y)
