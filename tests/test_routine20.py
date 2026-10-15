@@ -157,3 +157,65 @@ def test_spike_candidates_ranked_by_sharpness_not_channel_order(configs):
     assert [e.localization.channels[0] for e in ev] == ["O1"] * 3
     old = SpikeDetector(max_events=3).detect(sig, None, thr.model_copy(update={"spike_candidate_rank": "confidence"}))
     assert [e.localization.channels[0] for e in old] == ["Fp1"] * 3
+
+
+def test_record_model_features_and_scoring(configs):
+    from neurolens.layer5_reasoning.record_model import FEATURE_NAMES, RecordModel, record_features
+
+    row = {"age_years": 30.0, "pdr_hz": 9.5, "global_rel_delta": 0.4, "global_rel_theta": 0.2,
+           "global_rel_alpha": 0.1, "robust_amplitude_uv": 20.0, "duration_s": 900.0,
+           "pathologic_nodes": ["spike"], "detectors_fired": ["spike", "ictal_ml"],
+           "events": [{"code": "spike", "t_start": 1, "t_end": 1.1, "confidence": 0.8,
+                       "evidence": {"ied_probability_learned": 0.97}},
+                      {"code": "ictal_ml", "t_start": 10, "t_end": 100, "confidence": 0.6, "evidence": {}}]}
+    f = record_features(row)
+    assert len(f) == len(FEATURE_NAMES) and f[FEATURE_NAMES.index("ied_n_ge_095")] == 1.0
+    assert f[FEATURE_NAMES.index("ictal_fraction")] == pytest.approx(0.1)
+    m = RecordModel.load(configs.ml_model_path(configs.impression.record_model))
+    assert 0.0 <= m.probability(row) <= 1.0
+
+
+def test_record_score_decides_only_when_enabled(configs):
+    from neurolens.contracts.report import Bilingual
+    from neurolens.pipeline.pipeline import apply_record_score
+
+    class Rep:
+        impression = Bilingual(ru="Заключение: явных патологических паттернов не выделено.", uz="Xulosa: x.")
+
+    off = configs.impression.model_copy(update={"record_model_decides": False, "record_threshold": 0.3})
+    r = Rep()
+    s = apply_record_score(r, {"impression_abnormal": False}, 0.8, off)
+    assert s["abnormal"] and not s["decides"] and "явных" in r.impression.ru[:40]
+    on = off.model_copy(update={"record_model_decides": True})
+    r = Rep()
+    s = apply_record_score(r, {"impression_abnormal": False}, 0.8, on)
+    assert s["decides"] and r.impression.ru.startswith("Заключение: признаки отклонений по совокупной")
+
+
+def test_prereg22_rule_and_apply(tmp_path):
+    import shutil
+
+    import yaml
+
+    from neurolens.contracts.config import ImpressionConfig
+    from neurolens.evaluation import prereg22
+
+    def run(p_n, p_a, rule_tn, rule_tp, n=95, a=90):
+        rows = [{"record_id": i, "abnormal": False, "record_probability": p_n(i),
+                 "rule_impression_abnormal": i >= rule_tn} for i in range(n)]
+        rows += [{"record_id": 1000 + i, "abnormal": True, "record_probability": p_a(i),
+                  "rule_impression_abnormal": i < rule_tp} for i in range(a)]
+        return {"records": rows}
+
+    imp = tmp_path / "impression.yaml"
+    shutil.copy("configs/impression.yaml", imp)
+    good = prereg22.assess(run(lambda i: 0.1 if i < 75 else 0.9, lambda i: 0.9 if i < 75 else 0.1, 66, 63), 0.229)
+    assert good["decision"]["record_model_decides"]
+    assert "подтверждена" in prereg22.markdown_report(good)
+    prereg22.apply_decision(good, str(imp))
+    cfg = ImpressionConfig(**yaml.safe_load(imp.read_text()))
+    assert cfg.record_model_decides and cfg.specificity == pytest.approx(75 / 95, abs=1e-3)
+    bad = prereg22.assess(run(lambda i: 0.1 if i < 60 else 0.9, lambda i: 0.9 if i < 75 else 0.1, 66, 63), 0.229)
+    assert not bad["hypotheses"]["H2_specificity_at_least_0.65"]
+    prereg22.apply_decision(bad, str(imp))
+    assert ImpressionConfig(**yaml.safe_load(imp.read_text())).record_model_decides is False

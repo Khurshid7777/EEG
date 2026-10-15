@@ -42,12 +42,8 @@ def fresh_subset(records: list[NMTRecord], n_normal: int, n_abnormal: int, seed:
     return diagnostic_subset(rest, n_normal, n_abnormal, seed=seed)
 
 
-_META_KEYS = ("artifact_hypothesis", "review_candidate")
-
-
 def run_record(path: Path, rec: NMTRecord, scale: float = AMPLITUDE_SCALE, cfg=None) -> dict:
     from ..layer1_ingest.registry import ingest
-    from ..layer2_preprocess.sqi import robust_amplitude_uv
     from ..pipeline.pipeline import Pipeline
 
     sig = ingest(path)
@@ -55,29 +51,15 @@ def run_record(path: Path, rec: NMTRecord, scale: float = AMPLITUDE_SCALE, cfg=N
     if rec.age_years is not None:
         sig = sig.model_copy(update={"patient": sig.patient.model_copy(update={"age_years": rec.age_years})})
     out = Pipeline(cfg, provider_pref="template", run_ica=False).analyze_signal(sig)
-    patho = sorted({n.event_code or n.id for n in out.graph.nodes
-                    if getattr(n.physiology, "value", n.physiology) == "pathologic"})
-    f = out.features
+    row = dict(out.result_json["record_summary"])
+    rs = out.result_json.get("record_score") or {}
     return {
-        "record_id": rec.record_id, "abnormal": rec.abnormal, "age_years": rec.age_years,
-        "detectors_fired": sorted({e.code for e in out.detection.events}),
-        "pathologic_nodes": patho,
-        "impression_abnormal": bool(patho),
-        "pdr_hz": float(f.pdr_hz),
-        "global_rel_delta": float(f.global_relpow["delta"]),
-        "global_rel_theta": float(f.global_relpow["theta"]),
-        "global_rel_alpha": float(f.global_relpow["alpha"]),
-        "robust_amplitude_uv": robust_amplitude_uv(out.signal),
-        "flags": list(out.signal.quality.flags),
+        "record_id": rec.record_id, "abnormal": rec.abnormal, **row,
+        # increment 22: impression decided by the record-level model when it is enabled
+        "impression_abnormal": bool(rs["abnormal"]) if rs.get("decides") else row["impression_abnormal"],
+        "rule_impression_abnormal": row["impression_abnormal"],
+        "record_probability": rs.get("probability"),
         "critical_codes": sorted({c.code for c in out.report.critical_findings}),
-        "duration_s": float(f.duration_s),
-        "events": [{"code": e.code, "t_start": e.t_start, "t_end": e.t_end,
-                    "confidence": round(float(e.confidence), 3),
-                    "channels": list(e.localization.channels)[:20],
-                    "evidence": {ev.feature: ev.value for ev in e.evidence},
-                    **({"metadata": {k: e.metadata[k] for k in _META_KEYS if k in e.metadata}}
-                       if any(k in e.metadata for k in _META_KEYS) else {})}
-                   for e in out.detection.events],
     }
 
 

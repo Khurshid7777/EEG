@@ -70,6 +70,33 @@ def mark_routine_ictal_candidates(detection, duration_s: float, patient, thr,
     return n
 
 
+def apply_record_score(report, summary: dict, p: float, icfg) -> dict:
+    """Attach the record-level score; when the pre-registered decision enabled it
+    (``record_model_decides``) the score, not single findings, decides normal/abnormal and
+    the rule findings are listed for review."""
+    from ..contracts.report import Bilingual
+
+    thr = icfg.record_threshold if icfg.record_threshold is not None else 0.5
+    abnormal = p >= thr
+    score = {"probability": round(p, 3), "threshold": thr, "abnormal": abnormal,
+             "decides": bool(icfg.record_model_decides)}
+    if icfg.record_model_decides and report.impression is not None and abnormal != summary["impression_abnormal"]:
+        imp = report.impression
+        if abnormal:
+            report.impression = Bilingual(
+                ru=f"Заключение: признаки отклонений по совокупной оценке записи ({p:.2f} ≥ {thr:.2f}); "
+                   f"отдельные находки не достигают критериев — требуется просмотр врачом. {imp.ru}",
+                uz=f"Xulosa: yozuvning umumiy bahosi bo‘yicha og‘ish belgilari ({p:.2f} ≥ {thr:.2f}); "
+                   f"alohida topilmalar mezonlarga yetmaydi — shifokor ko‘rigi zarur. {imp.uz}")
+        else:
+            report.impression = Bilingual(
+                ru=f"Заключение: по совокупной оценке записи ({p:.2f} < {thr:.2f}) вероятнее норма; "
+                   f"находки, требующие просмотра врачом: {imp.ru}",
+                uz=f"Xulosa: yozuvning umumiy bahosi bo‘yicha ({p:.2f} < {thr:.2f}) norma ehtimoli yuqori; "
+                   f"shifokor ko‘rib chiqishi kerak bo‘lgan topilmalar: {imp.uz}")
+    return score
+
+
 def _impression_with_validation(imp, icfg):
     """Append what is known about the normal/abnormal conclusion on routine EEG
     (configs/impression.yaml, increment 17)."""
@@ -136,6 +163,10 @@ class Pipeline:
         self.run_ica = run_ica
         self.norms = NormsEngine(self.cfg.norms)
         self.physiology = PhysiologyEngine(self.norms)
+        from ..layer5_reasoning.record_model import load_optional
+
+        rm = self.cfg.impression.record_model
+        self.record_model = load_optional(self.cfg.ml_model_path(rm) if rm else None)
         self.calibrator = None
         if calibration_file and Path(calibration_file).exists():
             from ..calibration.calibrator import ConfidenceCalibrator
@@ -392,9 +423,20 @@ class Pipeline:
             analysis.quality.flags.append(f"montage_fallback:{montage_name}->as_recorded")
             montage_name = "as_recorded"
 
+        # --- record-level abnormality score (increment 22) ---
+        from .record_summary import summarize
+
+        summary = summarize(analysis, features, detection, graph)
+        record_score = None
+        if analysis.patient.postmenstrual_age_weeks is None and self.record_model is not None:
+            record_score = apply_record_score(report, summary, self.record_model.probability(summary),
+                                              cfg.impression)
+
         result_json = build_result_json(
             analysis, features, detection, graph, report, gate, montage_name
         )
+        result_json["record_summary"] = summary
+        result_json["record_score"] = record_score
         result_json["calibration"] = {
             "applied": calibrator is not None,
             "default_temperature": calibrator.default if calibrator else 1.0,

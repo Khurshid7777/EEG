@@ -1,0 +1,22 @@
+{
+ "n_normal": 720,
+ "n_abnormal": 325,
+ "auc_oof": 0.8690641025641025,
+ "threshold": 0.22932159597133897,
+ "target_specificity": 0.75,
+ "specificity_oof": 0.75,
+ "sensitivity_oof": 0.8276923076923077,
+ "rule_specificity": 0.7277777777777779,
+ "rule_sensitivity": 0.7230769230769231,
+ "params": {
+  "max_depth": 3,
+  "learning_rate": 0.05,
+  "max_iter": 300,
+  "l2_regularization": 1.0,
+  "random_state": 0
+ },
+ "sources": [
+  "docs/increment20_dev.json",
+  "docs/increment20_metrics_new.json"
+ ]
+}

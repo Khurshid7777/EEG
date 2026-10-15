@@ -315,6 +315,10 @@ class ImpressionConfig(BaseModel):
     specificity: Optional[float] = None
     sensitivity: Optional[float] = None
     provenance: dict = Field(default_factory=dict)
+    # increment 22: record-level abnormality score (configs/models/record_gbm_*.json)
+    record_model: Optional[str] = None
+    record_threshold: Optional[float] = Field(default=None, ge=0, le=1)
+    record_model_decides: bool = False
 
 
 class NeonatalPolicy(BaseModel):

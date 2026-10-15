@@ -9,3 +9,9 @@ provenance:
   preregistration: docs/preregistration_increment20.md
   report: docs/increment20_report.md
   previous: docs/increment18_report.md
+# increment 22: record-level abnormality score (scripts/train_record_model.py, docs/increment22_cv.json);
+# threshold = out-of-fold specificity 0.75 on 1,045 NMT recordings. record_model_decides is set
+# by evaluation/prereg22.apply_decision.
+record_model: configs/models/record_gbm_v1.json
+record_threshold: 0.229
+record_model_decides: false
