@@ -113,6 +113,10 @@ class Thresholds(BaseModel):
         default_factory=list,
         description="Increment 20: age-specific cardiac rate ranges [(age_below_years, lo_hz, hi_hz)], "
                     "first matching row wins; older patients (or unknown age) use pd_ecg_freq_hz.")
+    spike_candidate_rank: str = Field(
+        default="confidence", pattern="^(confidence|sharpness)$",
+        description="Order of heuristic spike candidates before the cap: saturated confidence (channel "
+                    "order on ties) or raw sharpness z (increment 21).")
     pdr_method: str = Field(
         default="whole", pattern="^(whole|alert)$",
         description="Posterior dominant rhythm estimate: whole-record spectral peak, or 'alert' - "

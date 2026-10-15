@@ -72,6 +72,11 @@ class SpikeDetector(Detector):
                         metadata={"needs_artifact_check": True},
                     )
                 )
-        # cap the number reported in the skeleton to avoid flooding
-        events.sort(key=lambda e: e.confidence, reverse=True)
+        # cap the number reported in the skeleton to avoid flooding. Increment 21: rank by the
+        # raw sharpness - the confidence saturates at 0.8 (z >= 14) for 99.6% of candidates, and
+        # the stable sort then kept channel order: 78% of "spikes" were the first peaks on Fp1/Fp2
+        if getattr(thresholds, "spike_candidate_rank", "confidence") == "sharpness":
+            events.sort(key=lambda e: e.evidence[0].value, reverse=True)
+        else:
+            events.sort(key=lambda e: e.confidence, reverse=True)
         return events if self.max_events is None else events[: self.max_events]

@@ -135,3 +135,25 @@ def test_pattern_without_field_is_uncertain(configs):
                localization=Localization(channels=["F7", "P3"]), t_start=0, t_end=12, confidence=0.53,
                metadata={"artifact_hypothesis": "no_field"})
     assert eng.label_event(ev, PatientInfo(age_years=30)).value == "uncertain"
+
+
+def test_spike_candidates_ranked_by_sharpness_not_channel_order(configs):
+    import numpy as np
+
+    from neurolens.contracts.signal import UnifiedSignal
+    from neurolens.layer4_detect.ied import SpikeDetector
+
+    fs, n = 200.0, 200 * 60
+    rng = np.random.default_rng(0)
+    names = ["Fp1", "Fp2", "F3", "C3", "O1"]
+    x = rng.standard_normal((len(names), n)) * 5
+    for k, t in enumerate(range(5, 55, 5)):       # moderately sharp peaks on Fp1
+        x[0, int(t * fs)] += 120
+    for t in (7.3, 23.1, 41.7):                    # much sharper peaks on O1
+        x[4, int(t * fs)] += 600
+    sig = UnifiedSignal(signal=x.astype(np.float32), sampling_rate_hz=fs, channel_names=names)
+    thr = configs.thresholds
+    ev = SpikeDetector(max_events=3).detect(sig, None, thr)
+    assert [e.localization.channels[0] for e in ev] == ["O1"] * 3
+    old = SpikeDetector(max_events=3).detect(sig, None, thr.model_copy(update={"spike_candidate_rank": "confidence"}))
+    assert [e.localization.channels[0] for e in old] == ["Fp1"] * 3
