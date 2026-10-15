@@ -46,9 +46,10 @@ pd_ecg_isi_cv_max: 0.10
 ictal_ml_routine_uncertain: true
 # increment 20: LPDs/BIPDs/LRDA need a field (>= 2 neighbouring electrodes). Set by prereg20.
 field_required: true
-# increment 21: heuristic spike candidates ranked by raw sharpness (the saturated confidence
-# kept channel order: 78% on Fp1/Fp2). Set by prereg21.apply_decision.
-spike_candidate_rank: sharpness
+# increment 21 (development, not pre-registered): ranking candidates by raw sharpness instead of
+# the saturated confidence (channel order: 78% on Fp1/Fp2) moved them to A1/A2/T3/T4 and lost
+# 50 of 325 abnormal impressions for 42 of 720 normal ones (docs/increment21_dev.json) -> off.
+spike_candidate_rank: confidence
 # increment 20 (development, not pre-registered): the "alert" estimate (upper quartile of
 # 10-s epoch peaks) fixed as many normal as it lost abnormal recordings (any quantile) -> off.
 pdr_method: whole

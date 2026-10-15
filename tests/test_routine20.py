@@ -152,7 +152,7 @@ def test_spike_candidates_ranked_by_sharpness_not_channel_order(configs):
     for t in (7.3, 23.1, 41.7):                    # much sharper peaks on O1
         x[4, int(t * fs)] += 600
     sig = UnifiedSignal(signal=x.astype(np.float32), sampling_rate_hz=fs, channel_names=names)
-    thr = configs.thresholds
+    thr = configs.thresholds.model_copy(update={"spike_candidate_rank": "sharpness"})
     ev = SpikeDetector(max_events=3).detect(sig, None, thr)
     assert [e.localization.channels[0] for e in ev] == ["O1"] * 3
     old = SpikeDetector(max_events=3).detect(sig, None, thr.model_copy(update={"spike_candidate_rank": "confidence"}))
