@@ -1,17 +1,13 @@
 # What the report may claim about its own normal/abnormal conclusion on routine EEG.
-# Written by evaluation/prereg20.apply_decision (docs/preregistration_increment20.md).
-# Fresh NMT subset 20 (300 normal, 45 abnormal): specificity 0.730, sensitivity 0.556 (docs/increment20_report.md);
-# earlier: increment 18 0.640 / 0.780 (repeated in 19: 0.640 / 0.750), increment 17 0.589 / 0.844.
+# Written by evaluation/prereg22.apply_decision (docs/preregistration_increment22.md).
+# NMT evaluation split (95 normal, 90 abnormal): record-level model decides; specificity 0.758, sensitivity 0.867 (docs/increment22_report.md).
 routine_validated: true
-specificity: 0.730
-sensitivity: 0.556
+specificity: 0.758
+sensitivity: 0.867
 provenance:
-  preregistration: docs/preregistration_increment20.md
-  report: docs/increment20_report.md
-  previous: docs/increment18_report.md
-# increment 22: record-level abnormality score (scripts/train_record_model.py, docs/increment22_cv.json);
-# threshold = out-of-fold specificity 0.75 on 1,045 NMT recordings. record_model_decides is set
-# by evaluation/prereg22.apply_decision.
+  preregistration: docs/preregistration_increment22.md
+  report: docs/increment22_report.md
+  previous: docs/increment20_report.md
 record_model: configs/models/record_gbm_v1.json
 record_threshold: 0.229
-record_model_decides: false
+record_model_decides: true

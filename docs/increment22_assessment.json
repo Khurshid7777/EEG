@@ -1,0 +1,46 @@
+{
+ "model": {
+  "n_normal": 95,
+  "n_abnormal": 90,
+  "tn": 72,
+  "tp": 78,
+  "specificity": 0.7578947368421053,
+  "specificity_ci95": [
+   0.659193944310996,
+   0.8399187944769726
+  ],
+  "sensitivity": 0.8666666666666667,
+  "sensitivity_ci95": [
+   0.7786734994833497,
+   0.9291637949329533
+  ],
+  "balanced_accuracy": 0.812280701754386
+ },
+ "rules": {
+  "n_normal": 95,
+  "n_abnormal": 90,
+  "tn": 73,
+  "tp": 71,
+  "specificity": 0.7684210526315789,
+  "specificity_ci95": [
+   0.6706438783506414,
+   0.8488226344441304
+  ],
+  "sensitivity": 0.7888888888888889,
+  "sensitivity_ci95": [
+   0.690121370950314,
+   0.8678501203362321
+  ],
+  "balanced_accuracy": 0.7786549707602339
+ },
+ "threshold": 0.22932159597133897,
+ "hypotheses": {
+  "H1_balanced_accuracy_gain_at_least_0.03": true,
+  "H2_specificity_at_least_0.65": true,
+  "H3_sensitivity_not_lower_by_more_than_0.03": true
+ },
+ "decision": {
+  "record_model_decides": true
+ },
+ "auc": 0.9326315789473684
+}
