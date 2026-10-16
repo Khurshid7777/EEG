@@ -283,8 +283,16 @@ def test_age_free_record_model_for_unknown_age(configs, demo_edf):
 
     icfg = configs.impression
     m0 = RecordModel.load(configs.ml_model_path(icfg.record_model_noage))
-    assert "age_years" not in m0.model.feature_names and len(m0.idx) == len(FEATURE_NAMES) - 1
+    assert "age_years" not in m0.model.feature_names and len(m0.idx) < len(FEATURE_NAMES)
     assert icfg.threshold_for(None) == pytest.approx(icfg.record_threshold_noage)
     out = Pipeline(config=configs, provider_pref="deterministic").analyze_file(
         demo_edf, context=ClinicalContext(recording_setting="routine"))
-    assert out.result_json["record_score"]["model"] == "record_gbm_v1_noage"
+    assert out.result_json["record_score"]["model"].endswith("_noage")
+
+
+def test_record_model_v2_has_no_absolute_amplitude(configs):
+    from neurolens.layer5_reasoning.record_model import RecordModel
+
+    for path in (configs.impression.record_model, configs.impression.record_model_noage):
+        m = RecordModel.load(configs.ml_model_path(path))
+        assert "robust_amplitude_uv" not in m.model.feature_names

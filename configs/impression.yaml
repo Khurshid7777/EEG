@@ -2,15 +2,15 @@
 # Written by evaluation/prereg22.apply_decision (docs/preregistration_increment22.md).
 # NMT evaluation split (95 normal, 90 abnormal): record-level model decides; specificity 0.758, sensitivity 0.867 (docs/increment22_report.md).
 routine_validated: true
-specificity: 0.789  # age-band thresholds, evaluation split, post-hoc (single threshold, pre-registered: 0.758)
-sensitivity: 0.833  # (pre-registered single threshold: 0.867)
+specificity: 0.789  # record_gbm_v2, age-band thresholds, evaluation split, post-hoc (pre-registered v1 single threshold: 0.758)
+sensitivity: 0.800  # (pre-registered v1 single threshold: 0.867)
 provenance:
   preregistration: docs/preregistration_increment22.md
   report: docs/increment22_report.md
   previous: docs/increment20_report.md
   age_band_thresholds: post-hoc correction, docs/increment22_report.md section 5
-record_model: configs/models/record_gbm_v1.json
-record_threshold: 0.229
+record_model: configs/models/record_gbm_v2.json  # increment 25: no absolute amplitude (v1: record_gbm_v1.json)
+record_threshold: 0.2536
 record_model_decides: true
 # increment 22b (post-hoc, not re-validated): the single threshold gave specificity 0.41 / 0.28
 # (development out of fold / evaluation split) in normal children of 2-11 years. The
@@ -18,11 +18,11 @@ record_model_decides: true
 # Evaluation split with these thresholds (post-hoc): specificity 0.789, sensitivity 0.833.
 # Remove the list to return to the single validated threshold.
 record_threshold_by_age:
-- [2.0, 0.139]
-- [12.0, 0.5064]
-- [18.0, 0.2688]
-- [60.0, 0.1024]
-- [200.0, 0.2302]
+- [2.0, 0.1294]
+- [12.0, 0.4761]
+- [18.0, 0.3137]
+- [60.0, 0.1349]
+- [200.0, 0.205]
 # increment 23: borderline zone around the threshold (logit units). Chosen on halves of 1,043
 # development recordings so that verdicts outside it flip between halves of the same EEG in
 # <= 10% (9.7%); evaluation-split halves: 9.5%; 27% of full evaluation recordings are borderline.
@@ -30,5 +30,9 @@ record_borderline_logit: 0.85
 # increment 24: recordings without patient age are scored by the age-free variant (trained on
 # the same 1,045 recordings; out-of-fold AUC 0.863, threshold 0.248 at specificity 0.75,
 # docs/increment24_cv_noage.json).
-record_model_noage: configs/models/record_gbm_v1_noage.json
-record_threshold_noage: 0.248
+record_model_noage: configs/models/record_gbm_v2_noage.json
+record_threshold_noage: 0.2602
+# increment 25: record_gbm_v2 drops the absolute background amplitude - with it (v1) a gain of
+# x1.4 lowered specificity to 0.55 on the evaluation split; v2: 0.73 (verdict agreement 95%).
+# OOF AUC 0.861 (v1 0.869); evaluation split 0.897 (v1 0.933). docs/increment25_report.md.
+# The borderline zone (record_borderline_logit) was chosen for v1 and is kept, not re-tuned.
