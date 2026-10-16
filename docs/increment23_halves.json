@@ -1,0 +1,3149 @@
+{
+ "records": [
+  {
+   "record_id": 24,
+   "abnormal": false,
+   "age_years": 3.0,
+   "first": {
+    "duration_s": 336.0,
+    "rule_abnormal": false,
+    "probability": 0.087,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 336.0,
+    "rule_abnormal": false,
+    "probability": 0.13,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 36,
+   "abnormal": true,
+   "age_years": 70.0,
+   "first": {
+    "duration_s": 302.5,
+    "rule_abnormal": false,
+    "probability": 0.475,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 302.5,
+    "rule_abnormal": false,
+    "probability": 0.406,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 44,
+   "abnormal": false,
+   "age_years": 4.0,
+   "first": {
+    "duration_s": 327.0,
+    "rule_abnormal": true,
+    "probability": 0.496,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 327.0,
+    "rule_abnormal": false,
+    "probability": 0.687,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 46,
+   "abnormal": true,
+   "age_years": 75.0,
+   "first": {
+    "duration_s": 276.0,
+    "rule_abnormal": true,
+    "probability": 0.942,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 276.0,
+    "rule_abnormal": true,
+    "probability": 0.841,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 74,
+   "abnormal": false,
+   "age_years": 23.0,
+   "first": {
+    "duration_s": 449.5,
+    "rule_abnormal": false,
+    "probability": 0.007,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 449.5,
+    "rule_abnormal": false,
+    "probability": 0.022,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 76,
+   "abnormal": true,
+   "age_years": 70.0,
+   "first": {
+    "duration_s": 307.0,
+    "rule_abnormal": true,
+    "probability": 0.839,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 307.0,
+    "rule_abnormal": true,
+    "probability": 0.756,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 77,
+   "abnormal": false,
+   "age_years": 33.0,
+   "first": {
+    "duration_s": 455.5,
+    "rule_abnormal": false,
+    "probability": 0.011,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 455.5,
+    "rule_abnormal": false,
+    "probability": 0.038,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 80,
+   "abnormal": true,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 405.5,
+    "rule_abnormal": false,
+    "probability": 0.492,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 405.5,
+    "rule_abnormal": false,
+    "probability": 0.488,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 93,
+   "abnormal": true,
+   "age_years": 70.0,
+   "first": {
+    "duration_s": 152.5,
+    "rule_abnormal": true,
+    "probability": 0.932,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 152.5,
+    "rule_abnormal": true,
+    "probability": 0.947,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 116,
+   "abnormal": true,
+   "age_years": 59.0,
+   "first": {
+    "duration_s": 259.0,
+    "rule_abnormal": true,
+    "probability": 0.678,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 259.0,
+    "rule_abnormal": true,
+    "probability": 0.599,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 117,
+   "abnormal": false,
+   "age_years": 70.0,
+   "first": {
+    "duration_s": 323.5,
+    "rule_abnormal": false,
+    "probability": 0.006,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 323.5,
+    "rule_abnormal": false,
+    "probability": 0.002,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 123,
+   "abnormal": true,
+   "age_years": 28.0,
+   "first": {
+    "duration_s": 280.0,
+    "rule_abnormal": true,
+    "probability": 0.835,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 280.0,
+    "rule_abnormal": true,
+    "probability": 0.803,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 124,
+   "abnormal": false,
+   "age_years": 10.0,
+   "first": {
+    "duration_s": 294.0,
+    "rule_abnormal": false,
+    "probability": 0.104,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 294.0,
+    "rule_abnormal": false,
+    "probability": 0.12,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 156,
+   "abnormal": false,
+   "age_years": 32.0,
+   "first": {
+    "duration_s": 390.0,
+    "rule_abnormal": false,
+    "probability": 0.129,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 390.0,
+    "rule_abnormal": false,
+    "probability": 0.062,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 194,
+   "abnormal": false,
+   "age_years": 13.0,
+   "first": {
+    "duration_s": 385.0,
+    "rule_abnormal": false,
+    "probability": 0.072,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 385.0,
+    "rule_abnormal": false,
+    "probability": 0.029,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 203,
+   "abnormal": true,
+   "age_years": 38.0,
+   "first": {
+    "duration_s": 276.5,
+    "rule_abnormal": true,
+    "probability": 0.898,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 276.5,
+    "rule_abnormal": true,
+    "probability": 0.868,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 204,
+   "abnormal": false,
+   "age_years": 12.0,
+   "first": {
+    "duration_s": 353.0,
+    "rule_abnormal": false,
+    "probability": 0.411,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 353.0,
+    "rule_abnormal": false,
+    "probability": 0.281,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 206,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 371.0,
+    "rule_abnormal": true,
+    "probability": 0.99,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 371.0,
+    "rule_abnormal": true,
+    "probability": 0.996,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 207,
+   "abnormal": false,
+   "age_years": 13.0,
+   "first": {
+    "duration_s": 322.5,
+    "rule_abnormal": false,
+    "probability": 0.21,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 322.5,
+    "rule_abnormal": true,
+    "probability": 0.053,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 214,
+   "abnormal": false,
+   "age_years": 18.0,
+   "first": {
+    "duration_s": 390.0,
+    "rule_abnormal": false,
+    "probability": 0.416,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 390.0,
+    "rule_abnormal": false,
+    "probability": 0.078,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 246,
+   "abnormal": true,
+   "age_years": 21.0,
+   "first": {
+    "duration_s": 270.5,
+    "rule_abnormal": true,
+    "probability": 0.867,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 270.5,
+    "rule_abnormal": true,
+    "probability": 0.905,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 254,
+   "abnormal": false,
+   "age_years": 23.0,
+   "first": {
+    "duration_s": 296.5,
+    "rule_abnormal": false,
+    "probability": 0.02,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 296.5,
+    "rule_abnormal": false,
+    "probability": 0.026,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 256,
+   "abnormal": true,
+   "age_years": 7.0,
+   "first": {
+    "duration_s": 508.5,
+    "rule_abnormal": true,
+    "probability": 0.505,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 508.5,
+    "rule_abnormal": true,
+    "probability": 0.932,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 274,
+   "abnormal": false,
+   "age_years": 25.0,
+   "first": {
+    "duration_s": 585.0,
+    "rule_abnormal": false,
+    "probability": 0.101,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 585.0,
+    "rule_abnormal": false,
+    "probability": 0.151,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 276,
+   "abnormal": false,
+   "age_years": 31.0,
+   "first": {
+    "duration_s": 477.0,
+    "rule_abnormal": true,
+    "probability": 0.012,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 477.0,
+    "rule_abnormal": false,
+    "probability": 0.003,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 283,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 348.5,
+    "rule_abnormal": false,
+    "probability": 0.223,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 348.5,
+    "rule_abnormal": false,
+    "probability": 0.304,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 286,
+   "abnormal": true,
+   "age_years": 38.0,
+   "first": {
+    "duration_s": 257.0,
+    "rule_abnormal": true,
+    "probability": 0.926,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 257.0,
+    "rule_abnormal": true,
+    "probability": 0.967,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 316,
+   "abnormal": true,
+   "age_years": 67.0,
+   "first": {
+    "duration_s": 184.5,
+    "rule_abnormal": true,
+    "probability": 0.825,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 184.5,
+    "rule_abnormal": true,
+    "probability": 0.065,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 336,
+   "abnormal": false,
+   "age_years": 19.0,
+   "first": {
+    "duration_s": 300.5,
+    "rule_abnormal": true,
+    "probability": 0.562,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 300.5,
+    "rule_abnormal": true,
+    "probability": 0.473,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 346,
+   "abnormal": true,
+   "age_years": 35.0,
+   "first": {
+    "duration_s": 270.5,
+    "rule_abnormal": true,
+    "probability": 0.871,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 270.5,
+    "rule_abnormal": true,
+    "probability": 0.86,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 363,
+   "abnormal": true,
+   "age_years": 5.0,
+   "first": {
+    "duration_s": 406.5,
+    "rule_abnormal": true,
+    "probability": 0.523,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 406.5,
+    "rule_abnormal": true,
+    "probability": 0.467,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 396,
+   "abnormal": false,
+   "age_years": 1.0,
+   "first": {
+    "duration_s": 333.5,
+    "rule_abnormal": true,
+    "probability": 0.027,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 333.5,
+    "rule_abnormal": true,
+    "probability": 0.046,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 406,
+   "abnormal": true,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 414.5,
+    "rule_abnormal": true,
+    "probability": 0.673,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 414.5,
+    "rule_abnormal": true,
+    "probability": 0.814,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 426,
+   "abnormal": true,
+   "age_years": 4.0,
+   "first": {
+    "duration_s": 364.5,
+    "rule_abnormal": true,
+    "probability": 0.771,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 364.5,
+    "rule_abnormal": false,
+    "probability": 0.28,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 436,
+   "abnormal": false,
+   "age_years": 15.0,
+   "first": {
+    "duration_s": 313.0,
+    "rule_abnormal": false,
+    "probability": 0.076,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 313.0,
+    "rule_abnormal": true,
+    "probability": 0.138,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 454,
+   "abnormal": false,
+   "age_years": 10.0,
+   "first": {
+    "duration_s": 291.0,
+    "rule_abnormal": false,
+    "probability": 0.538,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 291.0,
+    "rule_abnormal": false,
+    "probability": 0.144,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 476,
+   "abnormal": true,
+   "age_years": 2.0,
+   "first": {
+    "duration_s": 338.0,
+    "rule_abnormal": true,
+    "probability": 0.292,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 338.0,
+    "rule_abnormal": false,
+    "probability": 0.192,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 496,
+   "abnormal": true,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 438.0,
+    "rule_abnormal": true,
+    "probability": 0.555,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 438.0,
+    "rule_abnormal": true,
+    "probability": 0.264,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 504,
+   "abnormal": false,
+   "age_years": 45.0,
+   "first": {
+    "duration_s": 377.0,
+    "rule_abnormal": false,
+    "probability": 0.013,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 377.0,
+    "rule_abnormal": false,
+    "probability": 0.018,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 506,
+   "abnormal": true,
+   "age_years": 27.0,
+   "first": {
+    "duration_s": 526.0,
+    "rule_abnormal": false,
+    "probability": 0.163,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 526.0,
+    "rule_abnormal": false,
+    "probability": 0.243,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 513,
+   "abnormal": true,
+   "age_years": 13.0,
+   "first": {
+    "duration_s": 410.5,
+    "rule_abnormal": true,
+    "probability": 0.646,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 410.5,
+    "rule_abnormal": false,
+    "probability": 0.06,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 526,
+   "abnormal": false,
+   "age_years": 24.0,
+   "first": {
+    "duration_s": 162.0,
+    "rule_abnormal": false,
+    "probability": 0.29,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 162.0,
+    "rule_abnormal": false,
+    "probability": 0.045,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 537,
+   "abnormal": false,
+   "age_years": 10.0,
+   "first": {
+    "duration_s": 8.0,
+    "rule_abnormal": false,
+    "probability": 0.076,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 8.0,
+    "rule_abnormal": false,
+    "probability": 0.159,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 544,
+   "abnormal": false,
+   "age_years": 5.0,
+   "first": {
+    "duration_s": 377.5,
+    "rule_abnormal": false,
+    "probability": 0.625,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 377.5,
+    "rule_abnormal": true,
+    "probability": 0.606,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 546,
+   "abnormal": true,
+   "age_years": 2.0,
+   "first": {
+    "duration_s": 211.0,
+    "rule_abnormal": true,
+    "probability": 0.232,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 211.0,
+    "rule_abnormal": false,
+    "probability": 0.067,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 566,
+   "abnormal": false,
+   "age_years": 29.0,
+   "first": {
+    "duration_s": 344.5,
+    "rule_abnormal": false,
+    "probability": 0.007,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 344.5,
+    "rule_abnormal": false,
+    "probability": 0.005,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 573,
+   "abnormal": true,
+   "age_years": 75.0,
+   "first": {
+    "duration_s": 287.5,
+    "rule_abnormal": true,
+    "probability": 0.814,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 287.5,
+    "rule_abnormal": true,
+    "probability": 0.845,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 583,
+   "abnormal": true,
+   "age_years": 44.0,
+   "first": {
+    "duration_s": 266.0,
+    "rule_abnormal": true,
+    "probability": 0.638,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 266.0,
+    "rule_abnormal": true,
+    "probability": 0.496,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 584,
+   "abnormal": false,
+   "age_years": 15.0,
+   "first": {
+    "duration_s": 379.5,
+    "rule_abnormal": false,
+    "probability": 0.362,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 379.5,
+    "rule_abnormal": false,
+    "probability": 0.151,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 596,
+   "abnormal": false,
+   "age_years": 35.0,
+   "first": {
+    "duration_s": 286.5,
+    "rule_abnormal": false,
+    "probability": 0.059,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 286.5,
+    "rule_abnormal": false,
+    "probability": 0.072,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 614,
+   "abnormal": false,
+   "age_years": 2.0,
+   "first": {
+    "duration_s": 294.0,
+    "rule_abnormal": false,
+    "probability": 0.029,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 294.0,
+    "rule_abnormal": false,
+    "probability": 0.022,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 616,
+   "abnormal": false,
+   "age_years": 33.0,
+   "first": {
+    "duration_s": 184.5,
+    "rule_abnormal": false,
+    "probability": 0.067,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 184.5,
+    "rule_abnormal": true,
+    "probability": 0.029,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 617,
+   "abnormal": false,
+   "age_years": 33.0,
+   "first": {
+    "duration_s": 137.0,
+    "rule_abnormal": false,
+    "probability": 0.056,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 137.0,
+    "rule_abnormal": false,
+    "probability": 0.049,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 624,
+   "abnormal": false,
+   "age_years": 38.0,
+   "first": {
+    "duration_s": 330.0,
+    "rule_abnormal": false,
+    "probability": 0.009,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 330.0,
+    "rule_abnormal": false,
+    "probability": 0.004,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 643,
+   "abnormal": true,
+   "age_years": 5.0,
+   "first": {
+    "duration_s": 428.0,
+    "rule_abnormal": true,
+    "probability": 0.869,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 428.0,
+    "rule_abnormal": true,
+    "probability": 0.653,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 666,
+   "abnormal": false,
+   "age_years": 10.0,
+   "first": {
+    "duration_s": 334.0,
+    "rule_abnormal": true,
+    "probability": 0.575,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 334.0,
+    "rule_abnormal": true,
+    "probability": 0.347,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 676,
+   "abnormal": false,
+   "age_years": 30.0,
+   "first": {
+    "duration_s": 369.5,
+    "rule_abnormal": false,
+    "probability": 0.082,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 369.5,
+    "rule_abnormal": false,
+    "probability": 0.115,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 714,
+   "abnormal": false,
+   "age_years": 72.0,
+   "first": {
+    "duration_s": 317.5,
+    "rule_abnormal": true,
+    "probability": 0.031,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 317.5,
+    "rule_abnormal": false,
+    "probability": 0.009,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 744,
+   "abnormal": false,
+   "age_years": 20.0,
+   "first": {
+    "duration_s": 333.0,
+    "rule_abnormal": true,
+    "probability": 0.617,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 333.0,
+    "rule_abnormal": true,
+    "probability": 0.116,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 746,
+   "abnormal": true,
+   "age_years": 3.0,
+   "first": {
+    "duration_s": 232.5,
+    "rule_abnormal": true,
+    "probability": 0.624,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 232.5,
+    "rule_abnormal": false,
+    "probability": 0.747,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 783,
+   "abnormal": true,
+   "age_years": 38.0,
+   "first": {
+    "duration_s": 432.0,
+    "rule_abnormal": false,
+    "probability": 0.552,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 432.0,
+    "rule_abnormal": false,
+    "probability": 0.224,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 784,
+   "abnormal": false,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 325.5,
+    "rule_abnormal": false,
+    "probability": 0.457,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 325.5,
+    "rule_abnormal": false,
+    "probability": 0.25,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 786,
+   "abnormal": true,
+   "age_years": 19.0,
+   "first": {
+    "duration_s": 331.0,
+    "rule_abnormal": true,
+    "probability": 0.969,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 331.0,
+    "rule_abnormal": false,
+    "probability": 0.221,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 816,
+   "abnormal": true,
+   "age_years": 29.0,
+   "first": {
+    "duration_s": 540.0,
+    "rule_abnormal": true,
+    "probability": 0.932,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 540.0,
+    "rule_abnormal": true,
+    "probability": 0.87,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 823,
+   "abnormal": true,
+   "age_years": 15.0,
+   "first": {
+    "duration_s": 368.0,
+    "rule_abnormal": false,
+    "probability": 0.425,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 368.0,
+    "rule_abnormal": true,
+    "probability": 0.462,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 824,
+   "abnormal": false,
+   "age_years": 25.0,
+   "first": {
+    "duration_s": 459.0,
+    "rule_abnormal": false,
+    "probability": 0.02,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 459.0,
+    "rule_abnormal": false,
+    "probability": 0.019,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 826,
+   "abnormal": true,
+   "age_years": 1.0,
+   "first": {
+    "duration_s": 281.0,
+    "rule_abnormal": true,
+    "probability": 0.992,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 281.0,
+    "rule_abnormal": true,
+    "probability": 0.99,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 838,
+   "abnormal": true,
+   "age_years": 31.0,
+   "first": {
+    "duration_s": 276.0,
+    "rule_abnormal": true,
+    "probability": 0.773,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 276.0,
+    "rule_abnormal": true,
+    "probability": 0.722,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 844,
+   "abnormal": false,
+   "age_years": 33.0,
+   "first": {
+    "duration_s": 355.5,
+    "rule_abnormal": false,
+    "probability": 0.004,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 355.5,
+    "rule_abnormal": false,
+    "probability": 0.04,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 866,
+   "abnormal": true,
+   "age_years": 14.0,
+   "first": {
+    "duration_s": 810.0,
+    "rule_abnormal": true,
+    "probability": 0.906,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 810.0,
+    "rule_abnormal": true,
+    "probability": 0.305,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 868,
+   "abnormal": true,
+   "age_years": 17.0,
+   "first": {
+    "duration_s": 557.5,
+    "rule_abnormal": true,
+    "probability": 0.869,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 557.5,
+    "rule_abnormal": true,
+    "probability": 0.684,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 886,
+   "abnormal": true,
+   "age_years": 71.0,
+   "first": {
+    "duration_s": 348.0,
+    "rule_abnormal": true,
+    "probability": 0.958,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 348.0,
+    "rule_abnormal": false,
+    "probability": 0.899,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 894,
+   "abnormal": false,
+   "age_years": 41.0,
+   "first": {
+    "duration_s": 305.5,
+    "rule_abnormal": false,
+    "probability": 0.059,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 305.5,
+    "rule_abnormal": false,
+    "probability": 0.24,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 896,
+   "abnormal": true,
+   "age_years": 36.0,
+   "first": {
+    "duration_s": 270.5,
+    "rule_abnormal": false,
+    "probability": 0.285,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 270.5,
+    "rule_abnormal": false,
+    "probability": 0.23,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 906,
+   "abnormal": true,
+   "age_years": 46.0,
+   "first": {
+    "duration_s": 324.0,
+    "rule_abnormal": true,
+    "probability": 0.402,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 324.0,
+    "rule_abnormal": true,
+    "probability": 0.902,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 914,
+   "abnormal": false,
+   "age_years": 26.0,
+   "first": {
+    "duration_s": 312.0,
+    "rule_abnormal": false,
+    "probability": 0.009,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 312.0,
+    "rule_abnormal": false,
+    "probability": 0.02,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 916,
+   "abnormal": true,
+   "age_years": 55.0,
+   "first": {
+    "duration_s": 330.0,
+    "rule_abnormal": true,
+    "probability": 0.131,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 330.0,
+    "rule_abnormal": true,
+    "probability": 0.157,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 926,
+   "abnormal": true,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 320.5,
+    "rule_abnormal": true,
+    "probability": 0.961,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 320.5,
+    "rule_abnormal": true,
+    "probability": 0.879,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 934,
+   "abnormal": false,
+   "age_years": 20.0,
+   "first": {
+    "duration_s": 348.0,
+    "rule_abnormal": true,
+    "probability": 0.065,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 348.0,
+    "rule_abnormal": true,
+    "probability": 0.029,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 947,
+   "abnormal": false,
+   "age_years": 15.0,
+   "first": {
+    "duration_s": 273.5,
+    "rule_abnormal": false,
+    "probability": 0.012,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 273.5,
+    "rule_abnormal": true,
+    "probability": 0.011,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 986,
+   "abnormal": false,
+   "age_years": 20.0,
+   "first": {
+    "duration_s": 306.5,
+    "rule_abnormal": false,
+    "probability": 0.036,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 306.5,
+    "rule_abnormal": false,
+    "probability": 0.032,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 993,
+   "abnormal": true,
+   "age_years": 17.0,
+   "first": {
+    "duration_s": 330.5,
+    "rule_abnormal": true,
+    "probability": 0.965,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 330.5,
+    "rule_abnormal": false,
+    "probability": 0.23,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1016,
+   "abnormal": true,
+   "age_years": 4.0,
+   "first": {
+    "duration_s": 300.0,
+    "rule_abnormal": true,
+    "probability": 0.776,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 300.0,
+    "rule_abnormal": true,
+    "probability": 0.933,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1033,
+   "abnormal": true,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 240.0,
+    "rule_abnormal": false,
+    "probability": 0.107,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 240.0,
+    "rule_abnormal": false,
+    "probability": 0.286,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1056,
+   "abnormal": false,
+   "age_years": 35.0,
+   "first": {
+    "duration_s": 273.5,
+    "rule_abnormal": false,
+    "probability": 0.025,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 273.5,
+    "rule_abnormal": false,
+    "probability": 0.014,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1057,
+   "abnormal": false,
+   "age_years": 26.0,
+   "first": {
+    "duration_s": 275.5,
+    "rule_abnormal": false,
+    "probability": 0.011,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 275.5,
+    "rule_abnormal": false,
+    "probability": 0.008,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1096,
+   "abnormal": false,
+   "age_years": 55.0,
+   "first": {
+    "duration_s": 319.0,
+    "rule_abnormal": true,
+    "probability": 0.056,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 319.0,
+    "rule_abnormal": true,
+    "probability": 0.096,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1114,
+   "abnormal": false,
+   "age_years": 45.0,
+   "first": {
+    "duration_s": 300.0,
+    "rule_abnormal": false,
+    "probability": 0.029,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 300.0,
+    "rule_abnormal": false,
+    "probability": 0.058,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1146,
+   "abnormal": false,
+   "age_years": 0.0,
+   "first": {
+    "duration_s": 41.0,
+    "rule_abnormal": false,
+    "probability": 0.022,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 41.0,
+    "rule_abnormal": false,
+    "probability": 0.012,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1153,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 404.5,
+    "rule_abnormal": false,
+    "probability": 0.294,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 404.5,
+    "rule_abnormal": true,
+    "probability": 0.724,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1156,
+   "abnormal": true,
+   "age_years": 7.0,
+   "first": {
+    "duration_s": 270.0,
+    "rule_abnormal": true,
+    "probability": 0.982,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 270.0,
+    "rule_abnormal": true,
+    "probability": 0.912,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1161,
+   "abnormal": true,
+   "age_years": 31.0,
+   "first": {
+    "duration_s": 522.0,
+    "rule_abnormal": true,
+    "probability": 0.804,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 522.0,
+    "rule_abnormal": true,
+    "probability": 0.797,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1164,
+   "abnormal": false,
+   "age_years": 1.0,
+   "first": {
+    "duration_s": 150.0,
+    "rule_abnormal": true,
+    "probability": 0.03,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 150.0,
+    "rule_abnormal": true,
+    "probability": 0.086,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1173,
+   "abnormal": true,
+   "age_years": 29.0,
+   "first": {
+    "duration_s": 601.0,
+    "rule_abnormal": true,
+    "probability": 0.728,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 601.0,
+    "rule_abnormal": true,
+    "probability": 0.605,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1183,
+   "abnormal": true,
+   "age_years": 25.0,
+   "first": {
+    "duration_s": 301.0,
+    "rule_abnormal": true,
+    "probability": 0.832,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 301.0,
+    "rule_abnormal": true,
+    "probability": 0.614,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1196,
+   "abnormal": false,
+   "age_years": 33.0,
+   "first": {
+    "duration_s": 450.0,
+    "rule_abnormal": true,
+    "probability": 0.114,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 450.0,
+    "rule_abnormal": true,
+    "probability": 0.234,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1204,
+   "abnormal": false,
+   "age_years": 19.0,
+   "first": {
+    "duration_s": 368.0,
+    "rule_abnormal": false,
+    "probability": 0.013,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 368.0,
+    "rule_abnormal": false,
+    "probability": 0.009,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1216,
+   "abnormal": true,
+   "age_years": 7.0,
+   "first": {
+    "duration_s": 307.5,
+    "rule_abnormal": false,
+    "probability": 0.643,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 307.5,
+    "rule_abnormal": true,
+    "probability": 0.89,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1234,
+   "abnormal": false,
+   "age_years": 29.0,
+   "first": {
+    "duration_s": 402.0,
+    "rule_abnormal": false,
+    "probability": 0.257,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 402.0,
+    "rule_abnormal": false,
+    "probability": 0.23,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1264,
+   "abnormal": false,
+   "age_years": 10.0,
+   "first": {
+    "duration_s": 459.0,
+    "rule_abnormal": false,
+    "probability": 0.695,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 459.0,
+    "rule_abnormal": false,
+    "probability": 0.067,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1266,
+   "abnormal": true,
+   "age_years": 2.0,
+   "first": {
+    "duration_s": 355.5,
+    "rule_abnormal": true,
+    "probability": 0.102,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 355.5,
+    "rule_abnormal": true,
+    "probability": 0.093,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1267,
+   "abnormal": false,
+   "age_years": 21.0,
+   "first": {
+    "duration_s": 300.0,
+    "rule_abnormal": false,
+    "probability": 0.012,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 300.0,
+    "rule_abnormal": false,
+    "probability": 0.006,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1293,
+   "abnormal": true,
+   "age_years": 2.0,
+   "first": {
+    "duration_s": 393.5,
+    "rule_abnormal": true,
+    "probability": 0.709,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 393.5,
+    "rule_abnormal": true,
+    "probability": 0.525,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1302,
+   "abnormal": true,
+   "age_years": 1.0,
+   "first": {
+    "duration_s": 319.0,
+    "rule_abnormal": true,
+    "probability": 0.987,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 319.0,
+    "rule_abnormal": false,
+    "probability": 0.082,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1306,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 463.5,
+    "rule_abnormal": true,
+    "probability": 0.523,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 463.5,
+    "rule_abnormal": true,
+    "probability": 0.624,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1331,
+   "abnormal": true,
+   "age_years": 4.0,
+   "first": {
+    "duration_s": 308.0,
+    "rule_abnormal": true,
+    "probability": 0.853,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 308.0,
+    "rule_abnormal": true,
+    "probability": 0.987,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1333,
+   "abnormal": true,
+   "age_years": 10.0,
+   "first": {
+    "duration_s": 451.5,
+    "rule_abnormal": true,
+    "probability": 0.999,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 451.5,
+    "rule_abnormal": true,
+    "probability": 0.998,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1347,
+   "abnormal": false,
+   "age_years": 8.0,
+   "first": {
+    "duration_s": 160.5,
+    "rule_abnormal": true,
+    "probability": 0.21,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 160.5,
+    "rule_abnormal": false,
+    "probability": 0.407,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1353,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 152.0,
+    "rule_abnormal": true,
+    "probability": 0.531,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 152.0,
+    "rule_abnormal": true,
+    "probability": 0.483,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1356,
+   "abnormal": false,
+   "age_years": 0.0,
+   "first": {
+    "duration_s": 203.0,
+    "rule_abnormal": true,
+    "probability": 0.043,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 203.0,
+    "rule_abnormal": false,
+    "probability": 0.053,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1376,
+   "abnormal": false,
+   "age_years": 29.0,
+   "first": {
+    "duration_s": 146.5,
+    "rule_abnormal": false,
+    "probability": 0.007,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 146.5,
+    "rule_abnormal": false,
+    "probability": 0.006,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1383,
+   "abnormal": true,
+   "age_years": 21.0,
+   "first": {
+    "duration_s": 416.0,
+    "rule_abnormal": false,
+    "probability": 0.616,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 416.0,
+    "rule_abnormal": false,
+    "probability": 0.224,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1406,
+   "abnormal": true,
+   "age_years": 7.0,
+   "first": {
+    "duration_s": 375.0,
+    "rule_abnormal": true,
+    "probability": 0.469,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 375.0,
+    "rule_abnormal": true,
+    "probability": 0.816,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1416,
+   "abnormal": false,
+   "age_years": 28.0,
+   "first": {
+    "duration_s": 468.0,
+    "rule_abnormal": false,
+    "probability": 0.205,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 468.0,
+    "rule_abnormal": false,
+    "probability": 0.04,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1433,
+   "abnormal": true,
+   "age_years": 26.0,
+   "first": {
+    "duration_s": 286.5,
+    "rule_abnormal": true,
+    "probability": 0.473,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 286.5,
+    "rule_abnormal": true,
+    "probability": 0.661,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1436,
+   "abnormal": true,
+   "age_years": 30.0,
+   "first": {
+    "duration_s": 377.5,
+    "rule_abnormal": false,
+    "probability": 0.355,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 377.5,
+    "rule_abnormal": false,
+    "probability": 0.024,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1447,
+   "abnormal": false,
+   "age_years": 36.0,
+   "first": {
+    "duration_s": 384.0,
+    "rule_abnormal": false,
+    "probability": 0.003,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 384.0,
+    "rule_abnormal": false,
+    "probability": 0.022,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1454,
+   "abnormal": false,
+   "age_years": 25.0,
+   "first": {
+    "duration_s": 349.0,
+    "rule_abnormal": false,
+    "probability": 0.064,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 349.0,
+    "rule_abnormal": false,
+    "probability": 0.028,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1456,
+   "abnormal": false,
+   "age_years": 1.0,
+   "first": {
+    "duration_s": 301.0,
+    "rule_abnormal": true,
+    "probability": 0.107,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 301.0,
+    "rule_abnormal": false,
+    "probability": 0.067,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1466,
+   "abnormal": true,
+   "age_years": 63.0,
+   "first": {
+    "duration_s": 418.0,
+    "rule_abnormal": true,
+    "probability": 0.758,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 418.0,
+    "rule_abnormal": true,
+    "probability": 0.839,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1486,
+   "abnormal": true,
+   "age_years": 23.0,
+   "first": {
+    "duration_s": 285.0,
+    "rule_abnormal": true,
+    "probability": 0.763,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 285.0,
+    "rule_abnormal": true,
+    "probability": 0.803,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1496,
+   "abnormal": false,
+   "age_years": 18.0,
+   "first": {
+    "duration_s": 432.5,
+    "rule_abnormal": false,
+    "probability": 0.099,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 432.5,
+    "rule_abnormal": false,
+    "probability": 0.095,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1513,
+   "abnormal": true,
+   "age_years": 1.0,
+   "first": {
+    "duration_s": 420.0,
+    "rule_abnormal": true,
+    "probability": 0.846,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 420.0,
+    "rule_abnormal": true,
+    "probability": 0.919,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1534,
+   "abnormal": false,
+   "age_years": 25.0,
+   "first": {
+    "duration_s": 330.0,
+    "rule_abnormal": true,
+    "probability": 0.006,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 330.0,
+    "rule_abnormal": true,
+    "probability": 0.257,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1536,
+   "abnormal": false,
+   "age_years": 37.0,
+   "first": {
+    "duration_s": 298.0,
+    "rule_abnormal": false,
+    "probability": 0.3,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 298.0,
+    "rule_abnormal": false,
+    "probability": 0.757,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1566,
+   "abnormal": false,
+   "age_years": 48.0,
+   "first": {
+    "duration_s": 380.0,
+    "rule_abnormal": true,
+    "probability": 0.28,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 380.0,
+    "rule_abnormal": true,
+    "probability": 0.044,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1573,
+   "abnormal": true,
+   "age_years": 7.0,
+   "first": {
+    "duration_s": 301.5,
+    "rule_abnormal": true,
+    "probability": 0.91,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 301.5,
+    "rule_abnormal": false,
+    "probability": 0.529,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1574,
+   "abnormal": false,
+   "age_years": 45.0,
+   "first": {
+    "duration_s": 422.0,
+    "rule_abnormal": false,
+    "probability": 0.065,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 422.0,
+    "rule_abnormal": false,
+    "probability": 0.007,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1583,
+   "abnormal": true,
+   "age_years": 0.0,
+   "first": {
+    "duration_s": 370.5,
+    "rule_abnormal": false,
+    "probability": 0.022,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 370.5,
+    "rule_abnormal": false,
+    "probability": 0.019,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1586,
+   "abnormal": true,
+   "age_years": 69.0,
+   "first": {
+    "duration_s": 329.0,
+    "rule_abnormal": true,
+    "probability": 0.637,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 329.0,
+    "rule_abnormal": true,
+    "probability": 0.8,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1593,
+   "abnormal": true,
+   "age_years": 22.0,
+   "first": {
+    "duration_s": 452.0,
+    "rule_abnormal": true,
+    "probability": 0.992,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 452.0,
+    "rule_abnormal": false,
+    "probability": 0.022,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1594,
+   "abnormal": false,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 364.0,
+    "rule_abnormal": false,
+    "probability": 0.099,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 364.0,
+    "rule_abnormal": false,
+    "probability": 0.092,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1616,
+   "abnormal": true,
+   "age_years": 13.0,
+   "first": {
+    "duration_s": 396.0,
+    "rule_abnormal": true,
+    "probability": 0.594,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 396.0,
+    "rule_abnormal": true,
+    "probability": 0.988,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1653,
+   "abnormal": true,
+   "age_years": 36.0,
+   "first": {
+    "duration_s": 363.5,
+    "rule_abnormal": false,
+    "probability": 0.601,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 363.5,
+    "rule_abnormal": false,
+    "probability": 0.414,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1683,
+   "abnormal": true,
+   "age_years": 65.0,
+   "first": {
+    "duration_s": 245.0,
+    "rule_abnormal": true,
+    "probability": 0.716,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 245.0,
+    "rule_abnormal": true,
+    "probability": 0.589,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1684,
+   "abnormal": false,
+   "age_years": 65.0,
+   "first": {
+    "duration_s": 113.5,
+    "rule_abnormal": true,
+    "probability": 0.542,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 113.5,
+    "rule_abnormal": true,
+    "probability": 0.121,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1703,
+   "abnormal": true,
+   "age_years": 26.0,
+   "first": {
+    "duration_s": 429.5,
+    "rule_abnormal": true,
+    "probability": 0.826,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 429.5,
+    "rule_abnormal": true,
+    "probability": 0.727,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1706,
+   "abnormal": false,
+   "age_years": 25.0,
+   "first": {
+    "duration_s": 827.0,
+    "rule_abnormal": true,
+    "probability": 0.068,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 827.0,
+    "rule_abnormal": false,
+    "probability": 0.013,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1713,
+   "abnormal": true,
+   "age_years": 12.0,
+   "first": {
+    "duration_s": 367.0,
+    "rule_abnormal": true,
+    "probability": 0.969,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 367.0,
+    "rule_abnormal": true,
+    "probability": 0.941,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1724,
+   "abnormal": false,
+   "age_years": 16.0,
+   "first": {
+    "duration_s": 305.5,
+    "rule_abnormal": false,
+    "probability": 0.165,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 305.5,
+    "rule_abnormal": false,
+    "probability": 0.082,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1776,
+   "abnormal": false,
+   "age_years": 9.0,
+   "first": {
+    "duration_s": 288.0,
+    "rule_abnormal": false,
+    "probability": 0.168,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 288.0,
+    "rule_abnormal": false,
+    "probability": 0.302,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1794,
+   "abnormal": false,
+   "age_years": 26.0,
+   "first": {
+    "duration_s": 337.5,
+    "rule_abnormal": false,
+    "probability": 0.064,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 337.5,
+    "rule_abnormal": false,
+    "probability": 0.132,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1826,
+   "abnormal": false,
+   "age_years": 17.0,
+   "first": {
+    "duration_s": 302.5,
+    "rule_abnormal": false,
+    "probability": 0.05,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 302.5,
+    "rule_abnormal": false,
+    "probability": 0.016,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1833,
+   "abnormal": true,
+   "age_years": 2.0,
+   "first": {
+    "duration_s": 289.5,
+    "rule_abnormal": true,
+    "probability": 0.063,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 289.5,
+    "rule_abnormal": false,
+    "probability": 0.114,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1843,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 192.0,
+    "rule_abnormal": true,
+    "probability": 0.9,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 192.0,
+    "rule_abnormal": true,
+    "probability": 0.88,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1854,
+   "abnormal": false,
+   "age_years": 65.0,
+   "first": {
+    "duration_s": 270.0,
+    "rule_abnormal": true,
+    "probability": 0.074,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 270.0,
+    "rule_abnormal": true,
+    "probability": 0.015,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1856,
+   "abnormal": false,
+   "age_years": 8.0,
+   "first": {
+    "duration_s": 651.0,
+    "rule_abnormal": false,
+    "probability": 0.277,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 651.0,
+    "rule_abnormal": true,
+    "probability": 0.652,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1887,
+   "abnormal": true,
+   "age_years": 30.0,
+   "first": {
+    "duration_s": 473.5,
+    "rule_abnormal": true,
+    "probability": 0.623,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 473.5,
+    "rule_abnormal": true,
+    "probability": 0.338,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1893,
+   "abnormal": true,
+   "age_years": 15.0,
+   "first": {
+    "duration_s": 306.5,
+    "rule_abnormal": false,
+    "probability": 0.245,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 306.5,
+    "rule_abnormal": false,
+    "probability": 0.492,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1894,
+   "abnormal": false,
+   "age_years": 55.0,
+   "first": {
+    "duration_s": 276.0,
+    "rule_abnormal": false,
+    "probability": 0.042,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 276.0,
+    "rule_abnormal": false,
+    "probability": 0.017,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1896,
+   "abnormal": false,
+   "age_years": 29.0,
+   "first": {
+    "duration_s": 555.5,
+    "rule_abnormal": false,
+    "probability": 0.006,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 555.5,
+    "rule_abnormal": true,
+    "probability": 0.005,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1953,
+   "abnormal": true,
+   "age_years": 3.0,
+   "first": {
+    "duration_s": 562.0,
+    "rule_abnormal": true,
+    "probability": 0.415,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 562.0,
+    "rule_abnormal": true,
+    "probability": 0.528,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 1966,
+   "abnormal": false,
+   "age_years": 28.0,
+   "first": {
+    "duration_s": 348.0,
+    "rule_abnormal": false,
+    "probability": 0.031,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 348.0,
+    "rule_abnormal": false,
+    "probability": 0.029,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 1967,
+   "abnormal": false,
+   "age_years": 34.0,
+   "first": {
+    "duration_s": 300.0,
+    "rule_abnormal": false,
+    "probability": 0.007,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 300.0,
+    "rule_abnormal": false,
+    "probability": 0.101,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2016,
+   "abnormal": false,
+   "age_years": 17.0,
+   "first": {
+    "duration_s": 450.5,
+    "rule_abnormal": false,
+    "probability": 0.035,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 450.5,
+    "rule_abnormal": false,
+    "probability": 0.02,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2047,
+   "abnormal": false,
+   "age_years": 20.0,
+   "first": {
+    "duration_s": 519.5,
+    "rule_abnormal": false,
+    "probability": 0.028,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 519.5,
+    "rule_abnormal": false,
+    "probability": 0.005,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2053,
+   "abnormal": true,
+   "age_years": 58.0,
+   "first": {
+    "duration_s": 432.0,
+    "rule_abnormal": true,
+    "probability": 0.556,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 432.0,
+    "rule_abnormal": true,
+    "probability": 0.511,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2063,
+   "abnormal": true,
+   "age_years": 64.0,
+   "first": {
+    "duration_s": 156.0,
+    "rule_abnormal": true,
+    "probability": 0.767,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 156.0,
+    "rule_abnormal": true,
+    "probability": 0.891,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2064,
+   "abnormal": false,
+   "age_years": 18.0,
+   "first": {
+    "duration_s": 367.5,
+    "rule_abnormal": true,
+    "probability": 0.242,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 367.5,
+    "rule_abnormal": true,
+    "probability": 0.04,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2091,
+   "abnormal": true,
+   "age_years": 7.0,
+   "first": {
+    "duration_s": 480.0,
+    "rule_abnormal": false,
+    "probability": 0.658,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 480.0,
+    "rule_abnormal": true,
+    "probability": 0.459,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2106,
+   "abnormal": false,
+   "age_years": 4.0,
+   "first": {
+    "duration_s": 480.5,
+    "rule_abnormal": false,
+    "probability": 0.244,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 480.5,
+    "rule_abnormal": false,
+    "probability": 0.423,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2114,
+   "abnormal": false,
+   "age_years": 21.0,
+   "first": {
+    "duration_s": 452.0,
+    "rule_abnormal": false,
+    "probability": 0.019,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 452.0,
+    "rule_abnormal": false,
+    "probability": 0.013,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2143,
+   "abnormal": true,
+   "age_years": 4.0,
+   "first": {
+    "duration_s": 457.5,
+    "rule_abnormal": false,
+    "probability": 0.76,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 457.5,
+    "rule_abnormal": true,
+    "probability": 0.914,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2153,
+   "abnormal": true,
+   "age_years": 21.0,
+   "first": {
+    "duration_s": 420.5,
+    "rule_abnormal": true,
+    "probability": 0.99,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 420.5,
+    "rule_abnormal": true,
+    "probability": 0.898,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2164,
+   "abnormal": false,
+   "age_years": 58.0,
+   "first": {
+    "duration_s": 301.5,
+    "rule_abnormal": false,
+    "probability": 0.015,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 301.5,
+    "rule_abnormal": false,
+    "probability": 0.008,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2166,
+   "abnormal": false,
+   "age_years": 0.0,
+   "first": {
+    "duration_s": 223.5,
+    "rule_abnormal": false,
+    "probability": 0.063,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 223.5,
+    "rule_abnormal": false,
+    "probability": 0.033,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2181,
+   "abnormal": true,
+   "age_years": 54.0,
+   "first": {
+    "duration_s": 301.0,
+    "rule_abnormal": true,
+    "probability": 0.835,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 301.0,
+    "rule_abnormal": false,
+    "probability": 0.329,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2196,
+   "abnormal": false,
+   "age_years": 0.0,
+   "first": {
+    "duration_s": 540.5,
+    "rule_abnormal": true,
+    "probability": 0.258,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 540.5,
+    "rule_abnormal": false,
+    "probability": 0.019,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2203,
+   "abnormal": true,
+   "age_years": 40.0,
+   "first": {
+    "duration_s": 420.0,
+    "rule_abnormal": true,
+    "probability": 0.31,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 420.0,
+    "rule_abnormal": true,
+    "probability": 0.121,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2244,
+   "abnormal": false,
+   "age_years": 55.0,
+   "first": {
+    "duration_s": 421.0,
+    "rule_abnormal": true,
+    "probability": 0.263,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 421.0,
+    "rule_abnormal": false,
+    "probability": 0.027,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2249,
+   "abnormal": true,
+   "age_years": 17.0,
+   "first": {
+    "duration_s": 451.0,
+    "rule_abnormal": true,
+    "probability": 0.788,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 451.0,
+    "rule_abnormal": true,
+    "probability": 0.761,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2266,
+   "abnormal": true,
+   "age_years": 57.0,
+   "first": {
+    "duration_s": 386.5,
+    "rule_abnormal": false,
+    "probability": 0.618,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 386.5,
+    "rule_abnormal": true,
+    "probability": 0.821,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2276,
+   "abnormal": false,
+   "age_years": 15.0,
+   "first": {
+    "duration_s": 617.0,
+    "rule_abnormal": false,
+    "probability": 0.429,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 617.0,
+    "rule_abnormal": true,
+    "probability": 0.258,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2303,
+   "abnormal": true,
+   "age_years": 8.0,
+   "first": {
+    "duration_s": 344.5,
+    "rule_abnormal": true,
+    "probability": 0.937,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 344.5,
+    "rule_abnormal": true,
+    "probability": 0.87,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2304,
+   "abnormal": false,
+   "age_years": 34.0,
+   "first": {
+    "duration_s": 484.5,
+    "rule_abnormal": false,
+    "probability": 0.541,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 484.5,
+    "rule_abnormal": false,
+    "probability": 0.049,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2316,
+   "abnormal": false,
+   "age_years": 8.0,
+   "first": {
+    "duration_s": 423.5,
+    "rule_abnormal": false,
+    "probability": 0.566,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 423.5,
+    "rule_abnormal": false,
+    "probability": 0.284,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2339,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 230.0,
+    "rule_abnormal": true,
+    "probability": 0.376,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 230.0,
+    "rule_abnormal": true,
+    "probability": 0.305,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2344,
+   "abnormal": false,
+   "age_years": 2.0,
+   "first": {
+    "duration_s": 275.0,
+    "rule_abnormal": true,
+    "probability": 0.134,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 275.0,
+    "rule_abnormal": true,
+    "probability": 0.332,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2366,
+   "abnormal": false,
+   "age_years": 22.0,
+   "first": {
+    "duration_s": 480.0,
+    "rule_abnormal": false,
+    "probability": 0.197,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 480.0,
+    "rule_abnormal": false,
+    "probability": 0.085,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2373,
+   "abnormal": true,
+   "age_years": 4.0,
+   "first": {
+    "duration_s": 420.0,
+    "rule_abnormal": true,
+    "probability": 0.969,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 420.0,
+    "rule_abnormal": true,
+    "probability": 0.986,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2375,
+   "abnormal": false,
+   "age_years": 28.0,
+   "first": {
+    "duration_s": 477.5,
+    "rule_abnormal": false,
+    "probability": 0.019,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 477.5,
+    "rule_abnormal": false,
+    "probability": 0.009,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2380,
+   "abnormal": true,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 542.0,
+    "rule_abnormal": false,
+    "probability": 0.753,
+    "model_abnormal": true
+   },
+   "second": {
+    "duration_s": 542.0,
+    "rule_abnormal": false,
+    "probability": 0.551,
+    "model_abnormal": true
+   }
+  },
+  {
+   "record_id": 2384,
+   "abnormal": false,
+   "age_years": 60.0,
+   "first": {
+    "duration_s": 540.5,
+    "rule_abnormal": false,
+    "probability": 0.02,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 540.5,
+    "rule_abnormal": false,
+    "probability": 0.018,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2406,
+   "abnormal": false,
+   "age_years": 1.0,
+   "first": {
+    "duration_s": 391.5,
+    "rule_abnormal": false,
+    "probability": 0.037,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 391.5,
+    "rule_abnormal": false,
+    "probability": 0.061,
+    "model_abnormal": false
+   }
+  },
+  {
+   "record_id": 2407,
+   "abnormal": false,
+   "age_years": 6.0,
+   "first": {
+    "duration_s": 405.5,
+    "rule_abnormal": false,
+    "probability": 0.089,
+    "model_abnormal": false
+   },
+   "second": {
+    "duration_s": 405.5,
+    "rule_abnormal": false,
+    "probability": 0.087,
+    "model_abnormal": false
+   }
+  }
+ ]
+}
