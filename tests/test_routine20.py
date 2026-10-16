@@ -224,7 +224,8 @@ def test_prereg22_rule_and_apply(tmp_path):
 def test_record_threshold_by_age(configs):
     icfg = configs.impression
     assert icfg.threshold_for(5.0) > icfg.threshold_for(30.0)  # children need a higher threshold
-    assert icfg.threshold_for(None) == pytest.approx(icfg.record_threshold)
+    assert icfg.model_copy(update={"record_model_noage": None}).threshold_for(None) == pytest.approx(
+        icfg.record_threshold)
     assert icfg.model_copy(update={"record_threshold_by_age": []}).threshold_for(5.0) == pytest.approx(
         icfg.record_threshold)
 
@@ -274,3 +275,16 @@ def test_borderline_record_score(configs):
     assert not s["borderline"] and s["abnormal"]
     off = icfg.model_copy(update={"record_borderline_logit": 0.0})
     assert not apply_record_score(Rep(), {"impression_abnormal": False, "age_years": 30}, 0.31, off)["borderline"]
+
+
+def test_age_free_record_model_for_unknown_age(configs, demo_edf):
+    from neurolens.layer5_reasoning.record_model import FEATURE_NAMES, RecordModel
+    from neurolens.pipeline.pipeline import Pipeline
+
+    icfg = configs.impression
+    m0 = RecordModel.load(configs.ml_model_path(icfg.record_model_noage))
+    assert "age_years" not in m0.model.feature_names and len(m0.idx) == len(FEATURE_NAMES) - 1
+    assert icfg.threshold_for(None) == pytest.approx(icfg.record_threshold_noage)
+    out = Pipeline(config=configs, provider_pref="deterministic").analyze_file(
+        demo_edf, context=ClinicalContext(recording_setting="routine"))
+    assert out.result_json["record_score"]["model"] == "record_gbm_v1_noage"

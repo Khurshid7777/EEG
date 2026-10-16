@@ -325,8 +325,14 @@ class ImpressionConfig(BaseModel):
     # increment 23: |logit(p) - logit(threshold)| below this = borderline score (the verdict
     # flipped between halves of the same recording); 0 = off
     record_borderline_logit: float = Field(default=0.0, ge=0)
+    # increment 24: age-free variant for recordings without patient age (the main model never
+    # saw a missing age: specificity 0.97 / sensitivity 0.61 with age removed)
+    record_model_noage: Optional[str] = None
+    record_threshold_noage: Optional[float] = Field(default=None, ge=0, le=1)
 
     def threshold_for(self, age_years: Optional[float]) -> float:
+        if age_years is None and self.record_model_noage and self.record_threshold_noage is not None:
+            return float(self.record_threshold_noage)
         if age_years is not None:
             for below, thr in self.record_threshold_by_age:
                 if age_years < below:

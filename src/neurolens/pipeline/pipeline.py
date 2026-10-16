@@ -188,6 +188,8 @@ class Pipeline:
 
         rm = self.cfg.impression.record_model
         self.record_model = load_optional(self.cfg.ml_model_path(rm) if rm else None)
+        rn = self.cfg.impression.record_model_noage
+        self.record_model_noage = load_optional(self.cfg.ml_model_path(rn) if rn else None)
         self.calibrator = None
         if calibration_file and Path(calibration_file).exists():
             from ..calibration.calibrator import ConfidenceCalibrator
@@ -454,8 +456,11 @@ class Pipeline:
         if (analysis.patient.postmenstrual_age_weeks is None and self.record_model is not None
                 and is_routine_recording(features.duration_s, cfg.thresholds,
                                          analysis.context.recording_setting)):
-            record_score = apply_record_score(report, summary, self.record_model.probability(summary),
-                                              cfg.impression, reasons=self.record_model.reasons(summary))
+            rm = (self.record_model_noage if summary.get("age_years") is None and self.record_model_noage
+                  else self.record_model)
+            record_score = apply_record_score(report, summary, rm.probability(summary),
+                                              cfg.impression, reasons=rm.reasons(summary))
+            record_score["model"] = rm.model.meta.get("name")
 
         result_json = build_result_json(
             analysis, features, detection, graph, report, gate, montage_name

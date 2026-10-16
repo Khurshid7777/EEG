@@ -76,10 +76,18 @@ def _label(name: str) -> tuple[str, str]:
 
 
 class RecordModel:
+    """A frozen tree model over FEATURE_NAMES or an ordered subset of them (the age-free
+    variant, increment 24, for recordings whose patient age is unknown)."""
+
     def __init__(self, model):
-        if list(model.feature_names) != FEATURE_NAMES:
+        names = list(model.feature_names)
+        if any(n not in FEATURE_NAMES for n in names):
             raise ValueError("record model was trained on a different feature set")
         self.model = model
+        self.idx = [FEATURE_NAMES.index(n) for n in names]
+
+    def _x(self, row: dict) -> np.ndarray:
+        return np.array(record_features(row), float)[self.idx]
 
     @classmethod
     def load(cls, path: str | Path) -> "RecordModel":
@@ -88,7 +96,7 @@ class RecordModel:
         return cls(load_model(path))
 
     def probability(self, row: dict) -> float:
-        return float(self.model.predict_proba(np.array([record_features(row)], float))[0])
+        return float(self.model.predict_proba(self._x(row)[None])[0])
 
     def reasons(self, row: dict, k: int = 3, min_drop: float = 0.02) -> list[dict]:
         """Features that raise the score most: the drop when one feature is set to the
@@ -96,7 +104,7 @@ class RecordModel:
         med = self.model.meta.get("normal_medians")
         if not med:
             return []
-        x = np.array(record_features(row), float)
+        x = self._x(row)
         base = float(self.model.predict_proba(x[None])[0])
         Xs = np.repeat(x[None], len(x), axis=0)
         Xs[np.arange(len(x)), np.arange(len(x))] = med
@@ -105,8 +113,9 @@ class RecordModel:
         for i in np.argsort(-drop)[:k]:
             if drop[i] < min_drop:
                 break
-            ru, uz = _label(FEATURE_NAMES[i])
-            out.append({"feature": FEATURE_NAMES[i], "value": round(float(x[i]), 3),
+            name = self.model.feature_names[i]
+            ru, uz = _label(name)
+            out.append({"feature": name, "value": round(float(x[i]), 3),
                         "typical_normal": round(float(med[i]), 3), "score_drop": round(float(drop[i]), 3),
                         "label_ru": ru, "label_uz": uz})
         return out

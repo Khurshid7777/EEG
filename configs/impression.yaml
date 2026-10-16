@@ -27,3 +27,8 @@ record_threshold_by_age:
 # development recordings so that verdicts outside it flip between halves of the same EEG in
 # <= 10% (9.7%); evaluation-split halves: 9.5%; 27% of full evaluation recordings are borderline.
 record_borderline_logit: 0.85
+# increment 24: recordings without patient age are scored by the age-free variant (trained on
+# the same 1,045 recordings; out-of-fold AUC 0.863, threshold 0.248 at specificity 0.75,
+# docs/increment24_cv_noage.json).
+record_model_noage: configs/models/record_gbm_v1_noage.json
+record_threshold_noage: 0.248
