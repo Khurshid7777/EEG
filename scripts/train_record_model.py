@@ -29,11 +29,16 @@ def main() -> int:
     from neurolens.layer4_detect.ml_ictal import export_hist_gbm
     from neurolens.layer5_reasoning.record_model import FEATURE_NAMES, record_features
 
-    args = [a for a in sys.argv[1:] if a != "--no-age"]
-    no_age = "--no-age" in sys.argv  # increment 24: variant for recordings without patient age
+    argv = sys.argv[1:]
+    no_age = "--no-age" in argv  # increment 24: variant for recordings without patient age
+    # increment 25: features to leave out, e.g. --drop robust_amplitude_uv (gain-dependent)
+    drop = set(argv[argv.index("--drop") + 1].split(",")) if "--drop" in argv else set()
+    name = argv[argv.index("--name") + 1] if "--name" in argv else "record_gbm_v1"
+    skip = {i + 1 for i, a in enumerate(argv) if a in ("--drop", "--name")}
+    args = [a for i, a in enumerate(argv) if a not in ("--no-age", "--drop", "--name") and i not in skip]
     out_model, out_cv = Path(args[0]), Path(args[1])
     rows = [r for f in args[2:] for r in json.loads(Path(f).read_text())["records"]]
-    names = [n for n in FEATURE_NAMES if not (no_age and n == "age_years")]
+    names = [n for n in FEATURE_NAMES if not (no_age and n == "age_years") and n not in drop]
     keep = [FEATURE_NAMES.index(n) for n in names]
     X = np.array([record_features(r) for r in rows], float)[:, keep]
     y = np.array([bool(r["abnormal"]) for r in rows], int)
@@ -59,11 +64,11 @@ def main() -> int:
         "threshold_by_age": band_thr,
         "specificity_oof_by_age_thresholds": float((~pred_b[y == 0]).mean()),
         "sensitivity_oof_by_age_thresholds": float(pred_b[y == 1].mean()),
-        "params": PARAMS, "sources": args[2:], "no_age": no_age,
+        "params": PARAMS, "sources": args[2:], "no_age": no_age, "dropped": sorted(drop),
     }
     clf = HistGradientBoostingClassifier(**PARAMS).fit(X, y)
     model = export_hist_gbm(clf, names, meta={
-        "name": "record_gbm_v1_noage" if no_age else "record_gbm_v1", "task": "routine EEG normal vs abnormal (NMT, neurologist labels)",
+        "name": name + ("_noage" if no_age else ""), "task": "routine EEG normal vs abnormal (NMT, neurologist labels)",
         "threshold": thr, "cv": {k: cv_report[k] for k in ("auc_oof", "specificity_oof", "sensitivity_oof")},
         # typical values of neurologist-normal recordings, for the report's "main reasons"
         "normal_medians": [float(v) for v in np.median(X[y == 0], axis=0)]})
