@@ -322,6 +322,9 @@ class ImpressionConfig(BaseModel):
     # increment 22b: per-age-band thresholds [(age_below_years, threshold)], first match wins;
     # empty or unknown age -> record_threshold
     record_threshold_by_age: list[tuple[float, float]] = Field(default_factory=list)
+    # increment 23: |logit(p) - logit(threshold)| below this = borderline score (the verdict
+    # flipped between halves of the same recording); 0 = off
+    record_borderline_logit: float = Field(default=0.0, ge=0)
 
     def threshold_for(self, age_years: Optional[float]) -> float:
         if age_years is not None:

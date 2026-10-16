@@ -59,6 +59,7 @@ def run_record(path: Path, rec: NMTRecord, scale: float = AMPLITUDE_SCALE, cfg=N
         "impression_abnormal": bool(rs["abnormal"]) if rs.get("decides") else row["impression_abnormal"],
         "rule_impression_abnormal": row["impression_abnormal"],
         "record_probability": rs.get("probability"),
+        "record_borderline": rs.get("borderline"),
         "critical_codes": sorted({c.code for c in out.report.critical_findings}),
     }
 

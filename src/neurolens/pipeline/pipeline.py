@@ -83,10 +83,22 @@ def apply_record_score(report, summary: dict, p: float, icfg, reasons: list | No
     the rule findings are listed for review."""
     from ..contracts.report import Bilingual
 
+    import math
+
     thr = icfg.threshold_for(summary.get("age_years"))
     abnormal = p >= thr
-    score = {"probability": round(p, 3), "threshold": thr, "abnormal": abnormal,
+    lg = lambda v: math.log(min(max(v, 1e-6), 1 - 1e-6) / (1 - min(max(v, 1e-6), 1 - 1e-6)))  # noqa: E731
+    borderline = icfg.record_borderline_logit > 0 and abs(lg(p) - lg(thr)) < icfg.record_borderline_logit
+    score = {"probability": round(p, 3), "threshold": thr, "abnormal": abnormal, "borderline": borderline,
              "decides": bool(icfg.record_model_decides), "reasons": reasons or []}
+    if icfg.record_model_decides and borderline and report.impression is not None:
+        imp = report.impression
+        report.impression = Bilingual(
+            ru=f"Заключение: пограничная совокупная оценка записи ({p:.2f} при пороге {thr:.2f}) — "
+               f"вывод «норма/отклонения» неустойчив и требует решения врача. {imp.ru}",
+            uz=f"Xulosa: yozuvning chegaraviy umumiy bahosi ({p:.2f}, chegara {thr:.2f}) — "
+               f"«norma/og‘ish» xulosasi beqaror, shifokor qarori zarur. {imp.uz}")
+        return score
     if icfg.record_model_decides and report.impression is not None and abnormal != summary["impression_abnormal"]:
         imp = report.impression
         why_ru = ("; главные доводы оценки: " + ", ".join(r["label_ru"] for r in reasons)) if reasons else ""

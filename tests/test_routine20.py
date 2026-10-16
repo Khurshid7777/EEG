@@ -255,3 +255,22 @@ def test_record_model_reasons(configs):
     why = m.reasons(row)
     assert 1 <= len(why) <= 3 and all(w["score_drop"] >= 0.02 for w in why)
     assert all(w["label_ru"] and "_" not in w["label_ru"] for w in why)
+
+
+def test_borderline_record_score(configs):
+    from neurolens.contracts.report import Bilingual
+    from neurolens.pipeline.pipeline import apply_record_score
+
+    class Rep:
+        impression = Bilingual(ru="Заключение: x.", uz="Xulosa: x.")
+
+    icfg = configs.impression.model_copy(update={"record_model_decides": True, "record_threshold_by_age": [],
+                                                 "record_threshold": 0.3, "record_borderline_logit": 0.85})
+    r = Rep()
+    s = apply_record_score(r, {"impression_abnormal": False, "age_years": 30}, 0.35, icfg)
+    assert s["borderline"] and r.impression.ru.startswith("Заключение: пограничная")
+    r = Rep()
+    s = apply_record_score(r, {"impression_abnormal": False, "age_years": 30}, 0.9, icfg)
+    assert not s["borderline"] and s["abnormal"]
+    off = icfg.model_copy(update={"record_borderline_logit": 0.0})
+    assert not apply_record_score(Rep(), {"impression_abnormal": False, "age_years": 30}, 0.31, off)["borderline"]

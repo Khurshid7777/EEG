@@ -33,7 +33,8 @@ def _one(item):
             o = Pipeline(None, provider_pref="template", run_ica=False).analyze_signal(part)
             rs = o.result_json.get("record_score") or {}
             out[name] = {"duration_s": part.duration_s, "rule_abnormal": o.result_json["record_summary"]["impression_abnormal"],
-                         "probability": rs.get("probability"), "model_abnormal": rs.get("abnormal")}
+                         "probability": rs.get("probability"), "model_abnormal": rs.get("abnormal"),
+                         "borderline": rs.get("borderline")}
         except Exception as exc:  # noqa: BLE001
             out[name] = {"error": repr(exc)}
     return out

@@ -23,3 +23,7 @@ record_threshold_by_age:
 - [18.0, 0.2688]
 - [60.0, 0.1024]
 - [200.0, 0.2302]
+# increment 23: borderline zone around the threshold (logit units). Chosen on halves of 1,043
+# development recordings so that verdicts outside it flip between halves of the same EEG in
+# <= 10% (9.7%); evaluation-split halves: 9.5%; 27% of full evaluation recordings are borderline.
+record_borderline_logit: 0.85
