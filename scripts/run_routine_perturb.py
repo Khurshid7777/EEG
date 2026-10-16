@@ -48,7 +48,9 @@ def _one(item):
             o = Pipeline(None, provider_pref="template", run_ica=False).analyze_signal(_perturb(sig, name))
             rs = o.result_json.get("record_score") or {}
             out[name] = {"probability": rs.get("probability"), "model_abnormal": rs.get("abnormal"),
-                         "rule_abnormal": o.result_json["record_summary"]["impression_abnormal"]}
+                         "rule_abnormal": o.result_json["record_summary"]["impression_abnormal"],
+                         # full summary: lets other record-model variants be scored offline
+                         "summary": o.result_json["record_summary"]}
         except Exception as exc:  # noqa: BLE001
             out[name] = {"error": repr(exc)}
     return out
