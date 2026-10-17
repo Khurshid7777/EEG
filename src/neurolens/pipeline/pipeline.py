@@ -77,7 +77,8 @@ def mark_routine_ictal_candidates(detection, duration_s: float, patient, thr,
     return n
 
 
-def apply_record_score(report, summary: dict, p: float, icfg, reasons: list | None = None) -> dict:
+def apply_record_score(report, summary: dict, p: float, icfg, reasons: list | None = None,
+                       noage_model: bool | None = None) -> dict:
     """Attach the record-level score; when the pre-registered decision enabled it
     (``record_model_decides``) the score, not single findings, decides normal/abnormal and
     the rule findings are listed for review."""
@@ -85,7 +86,7 @@ def apply_record_score(report, summary: dict, p: float, icfg, reasons: list | No
 
     import math
 
-    thr = icfg.threshold_for(summary.get("age_years"))
+    thr = icfg.threshold_for(summary.get("age_years"), noage_model=noage_model)
     abnormal = p >= thr
     lg = lambda v: math.log(min(max(v, 1e-6), 1 - 1e-6) / (1 - min(max(v, 1e-6), 1 - 1e-6)))  # noqa: E731
     borderline = icfg.record_borderline_logit > 0 and abs(lg(p) - lg(thr)) < icfg.record_borderline_logit
@@ -118,11 +119,24 @@ def apply_record_score(report, summary: dict, p: float, icfg, reasons: list | No
     return score
 
 
-def _impression_with_validation(imp, icfg):
+def _impression_with_validation(imp, icfg, decided_by_record_model: bool | None = None):
     """Append what is known about the normal/abnormal conclusion on routine EEG
-    (configs/impression.yaml, increment 17)."""
+    (configs/impression.yaml, increment 17). The numbers belong to whoever decided: the
+    record-level model (increment 22) or the rules (``rule_specificity``/``rule_sensitivity``)."""
     from ..contracts.report import Bilingual
 
+    if decided_by_record_model is False and icfg.record_model_decides:
+        if icfg.rule_specificity is None or icfg.rule_sensitivity is None:
+            return Bilingual(
+                ru=imp.ru + " (Заключение сформировано правилами; для этой записи (длительный мониторинг "
+                            "или модель недоступна) проверенных показателей нет — решает врач.)",
+                uz=imp.uz + " (Xulosa qoidalar asosida; bu yozuv uchun tekshirilgan ko‘rsatkichlar yo‘q — "
+                            "shifokor hal qiladi.)")
+        ru = (f" (Заключение сформировано правилами; на рутинной ЭЭГ их проверенные показатели: "
+              f"специфичность {icfg.rule_specificity:.2f}, чувствительность {icfg.rule_sensitivity:.2f}.)")
+        uz = (f" (Xulosa qoidalar asosida; rutin EEGda ularning ko‘rsatkichlari: "
+              f"o‘ziga xoslik {icfg.rule_specificity:.2f}, sezgirlik {icfg.rule_sensitivity:.2f}.)")
+        return Bilingual(ru=imp.ru + ru, uz=imp.uz + uz)
     if icfg.routine_validated and icfg.specificity is not None and icfg.sensitivity is not None:
         ru = (f" (Разделение «норма/отклонения» на рутинной ЭЭГ проверено на внешних данных: "
               f"специфичность {icfg.specificity:.2f}, чувствительность {icfg.sensitivity:.2f}.)")
@@ -411,8 +425,6 @@ class Pipeline:
         report = provider.generate(llm_input)
         validate_grounding(report, set(llm_input.allowed_grounding_keys))
         report.critical_findings = critical  # always attached
-        if analysis.patient.postmenstrual_age_weeks is None and report.impression is not None:
-            report.impression = _impression_with_validation(report.impression, cfg.impression)
         if limited:
             from ..contracts.report import Bilingual
 
@@ -456,11 +468,15 @@ class Pipeline:
         if (analysis.patient.postmenstrual_age_weeks is None and self.record_model is not None
                 and is_routine_recording(features.duration_s, cfg.thresholds,
                                          analysis.context.recording_setting)):
-            rm = (self.record_model_noage if summary.get("age_years") is None and self.record_model_noage
-                  else self.record_model)
+            noage = summary.get("age_years") is None and self.record_model_noage is not None
+            rm = self.record_model_noage if noage else self.record_model
             record_score = apply_record_score(report, summary, rm.probability(summary),
-                                              cfg.impression, reasons=rm.reasons(summary))
+                                              cfg.impression, reasons=rm.reasons(summary), noage_model=noage)
             record_score["model"] = rm.model.meta.get("name")
+        if analysis.patient.postmenstrual_age_weeks is None and report.impression is not None:
+            report.impression = _impression_with_validation(
+                report.impression, cfg.impression,
+                decided_by_record_model=bool(record_score and record_score.get("decides")))
 
         result_json = build_result_json(
             analysis, features, detection, graph, report, gate, montage_name

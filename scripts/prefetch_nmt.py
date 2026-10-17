@@ -33,6 +33,8 @@ def main() -> int:
     from neurolens.datasets.nmt import NMTClient
 
     c = NMTClient(a.cache)
+    if any(len(v) < 5 for v in c.index().values()):
+        c._write_index()  # member offsets first: the zipfile fallback is not thread-safe
     recs = {r.record_id: r for r in c.labels()}
     ids = sorted({i for f in a.files for i in _ids(f)})
     members = [c.member_of(recs[i]) for i in ids]

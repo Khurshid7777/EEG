@@ -296,3 +296,30 @@ def test_record_model_v2_has_no_absolute_amplitude(configs):
     for path in (configs.impression.record_model, configs.impression.record_model_noage):
         m = RecordModel.load(configs.ml_model_path(path))
         assert "robust_amplitude_uv" not in m.model.feature_names
+
+
+def test_rule_numbers_when_rules_decide(configs):
+    from neurolens.contracts.report import Bilingual
+    from neurolens.pipeline.pipeline import _impression_with_validation
+
+    imp = Bilingual(ru="Заключение: x.", uz="Xulosa: x.")
+    icfg = configs.impression
+    by_model = _impression_with_validation(imp, icfg, decided_by_record_model=True)
+    by_rules = _impression_with_validation(imp, icfg, decided_by_record_model=False)
+    assert f"{icfg.specificity:.2f}" in by_model.ru
+    assert "правилами" in by_rules.ru and f"{icfg.rule_specificity:.2f}" in by_rules.ru
+
+
+def test_bipds_need_a_field_on_each_side():
+    from neurolens.layer4_detect.periodic import _side, has_field
+
+    chans = ["F3", "C3", "T6", "Fp2"]
+    left = [c for c in chans if _side(c) != "right"]
+    right = [c for c in chans if _side(c) != "left"]
+    assert has_field(chans) and has_field(left) and not has_field(right)
+
+
+def test_noage_threshold_only_when_noage_model_used(configs):
+    icfg = configs.impression
+    assert icfg.threshold_for(None, noage_model=False) == pytest.approx(icfg.record_threshold)
+    assert icfg.threshold_for(None, noage_model=True) == pytest.approx(icfg.record_threshold_noage)

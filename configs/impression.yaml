@@ -1,9 +1,17 @@
 # What the report may claim about its own normal/abnormal conclusion on routine EEG.
-# Written by evaluation/prereg22.apply_decision (docs/preregistration_increment22.md).
-# NMT evaluation split (95 normal, 90 abnormal): record-level model decides; specificity 0.758, sensitivity 0.867 (docs/increment22_report.md).
+# Pre-registered decision: evaluation/prereg22.apply_decision (docs/preregistration_increment22.md) -
+# the record-level model decides (v1, single threshold: 0.758 / 0.867 on the NMT evaluation split).
+# Since then (post-hoc, documented in docs/increment22-26 reports): age-band thresholds (22b),
+# age-free variant (24), model without absolute amplitude record_gbm_v2 (25), borderline zone (26).
+# specificity/sensitivity below are the CURRENT operating rule's numbers (v2, age bands, evaluation
+# split, post-hoc). Do not re-run prereg22.apply_decision: it would drop these settings' comments.
 routine_validated: true
 specificity: 0.789  # record_gbm_v2, age-band thresholds, evaluation split, post-hoc (pre-registered v1 single threshold: 0.758)
 sensitivity: 0.800  # (pre-registered v1 single threshold: 0.867)
+# the rules' numbers on the same split (reported when the rules decide: long-term monitoring,
+# neonates excluded, or the record model unavailable) - increment 22, same run
+rule_specificity: 0.768
+rule_sensitivity: 0.789
 provenance:
   preregistration: docs/preregistration_increment22.md
   report: docs/increment22_report.md
@@ -15,7 +23,7 @@ record_model_decides: true
 # increment 22b (post-hoc, not re-validated): the single threshold gave specificity 0.41 / 0.28
 # (development out of fold / evaluation split) in normal children of 2-11 years. The
 # pre-registered target - specificity 0.75 - is now met per age band (docs/increment22_cv.json).
-# Evaluation split with these thresholds (post-hoc): specificity 0.789, sensitivity 0.833.
+# (v1 with these thresholds on the evaluation split, post-hoc: 0.789 / 0.833; values below: v2.)
 # Remove the list to return to the single validated threshold.
 record_threshold_by_age:
 - [2.0, 0.1294]

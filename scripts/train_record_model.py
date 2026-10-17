@@ -42,7 +42,8 @@ def main() -> int:
     keep = [FEATURE_NAMES.index(n) for n in names]
     X = np.array([record_features(r) for r in rows], float)[:, keep]
     y = np.array([bool(r["abnormal"]) for r in rows], int)
-    rule = np.array([bool(r["impression_abnormal"]) for r in rows], int)
+    # the rules' verdict (harness rows written while the record model decides carry it separately)
+    rule = np.array([bool(r.get("rule_impression_abnormal", r["impression_abnormal"])) for r in rows], int)
     cv = StratifiedKFold(5, shuffle=True, random_state=0)
     p = cross_val_predict(HistGradientBoostingClassifier(**PARAMS), X, y, cv=cv, method="predict_proba")[:, 1]
     thr = float(np.quantile(p[y == 0], TARGET_SPECIFICITY))
@@ -50,7 +51,8 @@ def main() -> int:
     band_thr, lo = [], 0.0
     for hi in AGE_BANDS_BELOW:
         m = np.array([a is not None and lo <= a < hi for a in ages]) & (y == 0)
-        band_thr.append([hi, round(float(np.quantile(p[m], TARGET_SPECIFICITY)), 4)])
+        # too few normals in a band -> the overall threshold applies there
+        band_thr.append([hi, round(float(np.quantile(p[m], TARGET_SPECIFICITY)) if m.sum() >= 10 else thr, 4)])
         lo = hi
     t_rec = np.array([next((t for hi, t in band_thr if a is not None and a < hi), thr) for a in ages])
     pred_b = p >= t_rec
@@ -62,6 +64,7 @@ def main() -> int:
         "specificity_oof": float((~pred[y == 0]).mean()), "sensitivity_oof": float(pred[y == 1].mean()),
         "rule_specificity": float(1 - rule[y == 0].mean()), "rule_sensitivity": float(rule[y == 1].mean()),
         "threshold_by_age": band_thr,
+        # note: band thresholds are fitted on these same out-of-fold scores (optimistic)
         "specificity_oof_by_age_thresholds": float((~pred_b[y == 0]).mean()),
         "sensitivity_oof_by_age_thresholds": float(pred_b[y == 1].mean()),
         "params": PARAMS, "sources": args[2:], "no_age": no_age, "dropped": sorted(drop),

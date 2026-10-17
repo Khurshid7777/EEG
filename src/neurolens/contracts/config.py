@@ -315,6 +315,9 @@ class ImpressionConfig(BaseModel):
     specificity: Optional[float] = None
     sensitivity: Optional[float] = None
     provenance: dict = Field(default_factory=dict)
+    # rules' own numbers on routine EEG, reported when the rules (not the record model) decided
+    rule_specificity: Optional[float] = None
+    rule_sensitivity: Optional[float] = None
     # increment 22: record-level abnormality score (configs/models/record_gbm_*.json)
     record_model: Optional[str] = None
     record_threshold: Optional[float] = Field(default=None, ge=0, le=1)
@@ -330,8 +333,11 @@ class ImpressionConfig(BaseModel):
     record_model_noage: Optional[str] = None
     record_threshold_noage: Optional[float] = Field(default=None, ge=0, le=1)
 
-    def threshold_for(self, age_years: Optional[float]) -> float:
-        if age_years is None and self.record_model_noage and self.record_threshold_noage is not None:
+    def threshold_for(self, age_years: Optional[float], noage_model: Optional[bool] = None) -> float:
+        """Threshold for the model actually used: ``noage_model`` says whether the age-free
+        variant scored the record (None = it is configured, i.e. assumed loaded)."""
+        use_noage = bool(self.record_model_noage) if noage_model is None else noage_model
+        if age_years is None and use_noage and self.record_threshold_noage is not None:
             return float(self.record_threshold_noage)
         if age_years is not None:
             for below, thr in self.record_threshold_by_age:

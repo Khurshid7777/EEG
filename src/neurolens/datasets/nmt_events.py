@@ -231,7 +231,9 @@ class NMTEventsClient:
         idx = {i.filename: [i.file_size, i.CRC, i.header_offset, i.compress_size, i.compress_type]
                for i in self._open().infolist()}
         self.cache.mkdir(parents=True, exist_ok=True)
-        (self.cache / "index.json").write_text(json.dumps(idx, indent=0, sort_keys=True), encoding="utf-8")
+        tmp = self.cache / "index.json.part"  # atomic: readers never see a half-written index
+        tmp.write_text(json.dumps(idx, indent=0, sort_keys=True), encoding="utf-8")
+        os.replace(tmp, self.cache / "index.json")
         self._index = idx
         return idx
 

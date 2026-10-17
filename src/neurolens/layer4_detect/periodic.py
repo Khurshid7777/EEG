@@ -184,7 +184,11 @@ class PeriodicPatternDetector(Detector):
             mimic = "ecg"
         elif dominant.upper() in _OCULAR:
             mimic = "ocular"
-        elif thr.field_required and code != "gpds" and not has_field(chans):
+        elif thr.field_required and code != "gpds" and not (
+                has_field(chans) if code != "bipds"
+                # bilateral independent: each focus needs its own field
+                else has_field([c for c in chans if _side(c) != "right"])
+                and has_field([c for c in chans if _side(c) != "left"])):
             mimic = "no_field"
 
         ru, uz = self.labels(code)

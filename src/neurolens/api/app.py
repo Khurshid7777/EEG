@@ -93,11 +93,14 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
         clinical_question: Optional[str] = Form(None),
         recording_setting: Optional[str] = Form(None),
     ) -> dict:
-        params = AnalyzeParams(
-            mode=mode, montage=montage, provider=provider,
-            age_years=age_years, postmenstrual_age_weeks=postmenstrual_age_weeks,
-            clinical_question=clinical_question, recording_setting=recording_setting,
-        )
+        try:
+            params = AnalyzeParams(
+                mode=mode, montage=montage, provider=provider,
+                age_years=age_years, postmenstrual_age_weeks=postmenstrual_age_weeks,
+                clinical_question=clinical_question, recording_setting=recording_setting,
+            )
+        except ValueError as exc:  # pydantic ValidationError: invalid form value -> 422, not 500
+            raise HTTPException(status_code=422, detail=str(exc))
         suffix = Path(file.filename or "upload.edf").suffix or ".edf"
         tmp = Path(tempfile.mkdtemp()) / f"upload{suffix}"
         tmp.write_bytes(await file.read())

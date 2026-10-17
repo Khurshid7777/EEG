@@ -165,12 +165,16 @@ class DeterministicProvider(LLMProvider):
                 mods.append("ИИК")
             mod_ru = f"; модификаторы: {', '.join(mods)}" if mods else ""
             mod_uz = f"; modifikatorlar: {', '.join(mods)}" if mods else ""
+            # increment 20: learned seizure events on routine EEG are review candidates, not findings
+            cand = bool((e.get("metadata") or {}).get("review_candidate"))
+            pre_ru = "Кандидат (не подтверждён, модель не проверена на рутинной ЭЭГ): " if cand else ""
+            pre_uz = "Nomzod (tasdiqlanmagan, model rutin EEGda tekshirilmagan): " if cand else ""
             sections.append(
                 ReportSection(
                     key="ictal_acns",
                     text=Bilingual(
-                        ru=f"{e['label_ru']} ~{dur:.0f} с, латерализация: {lat}{mod_ru}.",
-                        uz=f"{e['label_uz']} ~{dur:.0f} s, lateralizatsiya: {lat}{mod_uz}.",
+                        ru=f"{pre_ru}{e['label_ru']} ~{dur:.0f} с, латерализация: {lat}{mod_ru}.",
+                        uz=f"{pre_uz}{e['label_uz']} ~{dur:.0f} s, lateralizatsiya: {lat}{mod_uz}.",
                     ),
                     grounding_refs=[e["code"]],
                     confidence=_confidence(e["confidence"]),
