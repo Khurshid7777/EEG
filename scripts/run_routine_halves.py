@@ -34,7 +34,7 @@ def _one(item):
             rs = o.result_json.get("record_score") or {}
             out[name] = {"duration_s": part.duration_s, "rule_abnormal": o.result_json["record_summary"]["impression_abnormal"],
                          "probability": rs.get("probability"), "model_abnormal": rs.get("abnormal"),
-                         "borderline": rs.get("borderline")}
+                         "borderline": rs.get("borderline"), "summary": o.result_json["record_summary"]}
         except Exception as exc:  # noqa: BLE001
             out[name] = {"error": repr(exc)}
     return out
