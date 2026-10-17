@@ -24,6 +24,13 @@ BACKGROUND_ALARMS = ("burst_suppression", "suppression")
 
 
 def _one(item):
+    try:
+        return _run(item)
+    except Exception as exc:  # noqa: BLE001 - unreadable files are listed and excluded (pre-registration §3)
+        return {"file_id": item[0], "error": repr(exc)}
+
+
+def _run(item):
     file_id, path = item
     from neurolens.contracts.signal import PatientInfo
     from neurolens.layer1_ingest.registry import ingest
@@ -59,10 +66,12 @@ def main() -> int:
     missing = sorted(set(meta) - set(paths))
     with ProcessPoolExecutor(workers) as ex:
         rows = list(ex.map(_one, items))
+    failed = [r for r in rows if "error" in r]
+    rows = [r for r in rows if "error" not in r]
     for r in rows:
         m = meta[r["file_id"]]
         r.update(baby_id=m["baby_ID"], grade=int(m["grade"]), seizures_yn=m["seizures_YN"])
-    out.write_text(json.dumps({"missing": missing, "records": rows}, indent=1) + "\n")
+    out.write_text(json.dumps({"missing": missing, "failed": failed, "records": rows}, indent=1) + "\n")
     from neurolens.evaluation.prereg28 import evaluate
 
     print(json.dumps(evaluate(rows), indent=1))
