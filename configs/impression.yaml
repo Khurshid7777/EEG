@@ -26,7 +26,7 @@ record_threshold_by_age:
 # increment 23: borderline zone around the threshold (logit units). Chosen on halves of 1,043
 # development recordings so that verdicts outside it flip between halves of the same EEG in
 # <= 10% (9.7%); evaluation-split halves: 9.5%; 27% of full evaluation recordings are borderline.
-record_borderline_logit: 0.85
+record_borderline_logit: 1.0  # increment 26: re-tuned for record_gbm_v2 (v1: 0.85)
 # increment 24: recordings without patient age are scored by the age-free variant (trained on
 # the same 1,045 recordings; out-of-fold AUC 0.863, threshold 0.248 at specificity 0.75,
 # docs/increment24_cv_noage.json).
@@ -35,4 +35,5 @@ record_threshold_noage: 0.2602
 # increment 25: record_gbm_v2 drops the absolute background amplitude - with it (v1) a gain of
 # x1.4 lowered specificity to 0.55 on the evaluation split; v2: 0.73 (verdict agreement 95%).
 # OOF AUC 0.861 (v1 0.869); evaluation split 0.897 (v1 0.933). docs/increment25_report.md.
-# The borderline zone (record_borderline_logit) was chosen for v1 and is kept, not re-tuned.
+# Borderline zone re-tuned for v2 (increment 26): dev half-pairs flip 9.8% outside it, eval 8.4%;
+# 29% of full evaluation recordings are borderline.
