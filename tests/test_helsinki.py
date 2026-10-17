@@ -196,7 +196,7 @@ def test_default_config_neonatal_decision(configs):
     ml = configs.ml
     assert ml.select("offline", neonate=True) is None
     rt = ml.select("realtime", neonate=True)
-    assert rt is not None and rt.model.endswith("ictal_gbm_realtime_neo1.json")
+    assert rt is not None and rt.model.endswith("ictal_gbm_realtime_neo2.json")  # increment 27
     assert ml.select("offline").model.endswith("offline_v2.json")
 
 

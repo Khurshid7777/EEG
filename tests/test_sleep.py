@@ -475,4 +475,4 @@ def test_monitor_reports_detector_and_warns_on_few_eeg_channels(tmp_path, demo_e
     ok = RealtimeMonitor(config=configs).run(EdfReplaySource(demo_edf, chunk_s=configs.realtime.step_s))
     assert not ok.warnings and ok.seizure_detector.endswith("realtime_v2.json")
     neo = RealtimeMonitor(config=configs, patient=PatientInfo(postmenstrual_age_weeks=40))
-    assert neo._ml_name.endswith("realtime_neo1.json")
+    assert neo._ml_name.endswith("realtime_neo2.json")  # increment 27
