@@ -40,4 +40,4 @@ alarms:
 
 # Neonatal burst-suppression / inactive alarms: critical or "review" (warning).
 # Decided by the pre-registered increment 28 (docs/preregistration_increment28.md).
-neonatal_background_alarms: critical
+neonatal_background_alarms: critical  # increment 28 (docs/preregistration_increment28.md)

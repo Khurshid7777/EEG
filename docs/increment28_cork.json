@@ -1,0 +1,2842 @@
+{
+ "missing": [],
+ "failed": [],
+ "records": [
+  {
+   "file_id": "ID01_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 15,
+    "burst_suppression": 2
+   },
+   "background_alarms": 2,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression"
+   ],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 18,
+   "baby_id": "ID01",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID01_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID01",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID02_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 1
+   },
+   "background_alarms": 1,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID02",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID02_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID02",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID02_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID02",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID02_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID02",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID03_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID03",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID03_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID03",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID03_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID03",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID04_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1,
+    "burst_suppression": 4
+   },
+   "background_alarms": 4,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID04",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID04_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 3
+   },
+   "background_alarms": 3,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID04",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID04_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 25
+   },
+   "background_alarms": 25,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID04",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID04_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 24,
+    "seizure": 1
+   },
+   "background_alarms": 24,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID04",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID05_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID05",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID06_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 4
+   },
+   "background_alarms": 4,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID06",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID06_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 2,
+    "seizure": 8
+   },
+   "background_alarms": 2,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression"
+   ],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 25,
+   "baby_id": "ID06",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID06_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 9,
+    "seizure": 21
+   },
+   "background_alarms": 9,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID06",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID06_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID06",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID07_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 4
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID07",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID07_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 8
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID07",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID07_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 17
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID07",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID07_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID07",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID08_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 18
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID08",
+   "grade": 1,
+   "seizures_yn": "Y"
+  },
+  {
+   "file_id": "ID08_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 7
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID08",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID09_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID09",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID09_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 6
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID09",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID09_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 9
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID09",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID09_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 5,
+   "baby_id": "ID09",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID09_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 51,
+    "status_epilepticus": 4
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID09",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID10_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 9
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID10",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID10_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID10",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID10_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 26
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID10",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID10_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID10",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID11_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID11",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID11_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID11",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID12_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 59,
+    "burst_suppression": 12,
+    "status_epilepticus": 6
+   },
+   "background_alarms": 12,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 8,
+   "baby_id": "ID12",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID13_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID13",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID13_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID13",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID14_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID14",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID14_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID14",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID15_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID15",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID15_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID15",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID16_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 32
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID16",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID16_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 19
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "DNV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID16",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID16_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 1,
+    "seizure": 31
+   },
+   "background_alarms": 1,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression"
+   ],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID16",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID17_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID17",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID17_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID17",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID17_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID17",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID18_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID18",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID18_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID18",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID18_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID18",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID18_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID18",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID19_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 43,
+    "status_epilepticus": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID19",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID19_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 29,
+    "burst_suppression": 1
+   },
+   "background_alarms": 1,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression"
+   ],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID19",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID19_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 41,
+    "status_epilepticus": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID19",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID20_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID20",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID20_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID20",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID20_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID20",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID20_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID20",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID20_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID20",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID21_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 17,
+    "seizure": 2
+   },
+   "background_alarms": 17,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID21",
+   "grade": 4,
+   "seizures_yn": "Y"
+  },
+  {
+   "file_id": "ID21_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 9,
+    "seizure": 2
+   },
+   "background_alarms": 9,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID21",
+   "grade": 4,
+   "seizures_yn": "Y"
+  },
+  {
+   "file_id": "ID21_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 53,
+    "burst_suppression": 1,
+    "status_epilepticus": 5
+   },
+   "background_alarms": 1,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID21",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID22_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 9
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID22",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID23_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID23",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID23_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID23",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID23_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 4
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID23",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID23_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 24
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID23",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID24_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 34,
+    "burst_suppression": 2
+   },
+   "background_alarms": 2,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID24",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID24_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID24",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID24_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID24",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID24_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 44,
+    "status_epilepticus": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID24",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID24_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 42,
+    "status_epilepticus": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID24",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID25_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 43,
+    "burst_suppression": 7,
+    "status_epilepticus": 1
+   },
+   "background_alarms": 7,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID25",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID25_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 19
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID25",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID25_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 4,
+    "seizure": 14
+   },
+   "background_alarms": 4,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID25",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID26_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID26",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID26_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID26",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID26_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID26",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID26_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID26",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID27_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID27",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID27_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID27",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID27_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID27",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID28_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID28",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID28_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID28",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID29_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID29",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID29_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID29",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID29_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID29",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID30_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID30",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID30_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID30",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID31_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 13
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID31",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID31_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 6
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID31",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID31_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID31",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID31_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 9
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID31",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID32_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 20,
+    "seizure": 5
+   },
+   "background_alarms": 20,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID32",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID32_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 5,
+    "burst_suppression": 21
+   },
+   "background_alarms": 21,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID32",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID32_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 25,
+    "seizure": 2
+   },
+   "background_alarms": 25,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID32",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID32_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 21
+   },
+   "background_alarms": 21,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID32",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID32_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 18,
+    "seizure": 24
+   },
+   "background_alarms": 18,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID32",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID33_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 31
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID33",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID33_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 38
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID33",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID33_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 36,
+    "status_epilepticus": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 5,
+   "baby_id": "ID33",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID34_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 5
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID34",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID34_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 6
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID34",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID34_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 4
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID34",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID34_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID34",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID35_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID35",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID35_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 1
+   },
+   "background_alarms": 1,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID35",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID36_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 7,
+   "baby_id": "ID36",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID36_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID36",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID36_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID36",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID37_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 31
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID37",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID37_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 34
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID37",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID37_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 16
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID37",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID37_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID37",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID38_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID38",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID38_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID38",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID38_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID38",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID39_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 8,
+    "burst_suppression": 10
+   },
+   "background_alarms": 10,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID39",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID39_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 9,
+   "baby_id": "ID39",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID39_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 28
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 9,
+   "baby_id": "ID39",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID39_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 17,
+    "seizure": 23
+   },
+   "background_alarms": 17,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 24,
+   "baby_id": "ID39",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID39_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 7
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID39",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID40_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID40",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID41_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID41",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID41_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID41",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID42_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 12,
+    "seizure": 31
+   },
+   "background_alarms": 12,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID42",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID42_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 12
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 7,
+   "baby_id": "ID42",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID42_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 4
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID42",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID42_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 15
+   },
+   "background_alarms": 15,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 8,
+   "baby_id": "ID42",
+   "grade": 4,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID42_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 24
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID42",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID43_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 40
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID43",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID43_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 37
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID43",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID43_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "burst_suppression": 11
+   },
+   "background_alarms": 11,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 10,
+   "baby_id": "ID43",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID44_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 3
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID44",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID44_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 8
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID44",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID44_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID44",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID45_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID45",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID45_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID45",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID45_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 24
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID45",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID45_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 16
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID45",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID46_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 11
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID46",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID46_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID46",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID46_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID46",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID46_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID46",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID46_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 3,
+   "baby_id": "ID46",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID47_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 3
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID47",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID47_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 3
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID47",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID48_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 12
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID48",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID48_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 12
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 8,
+   "baby_id": "ID48",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID48_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID48",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID48_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID48",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID48_epoch5",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 11
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID48",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID49_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 42,
+    "burst_suppression": 1
+   },
+   "background_alarms": 1,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID49",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID49_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 41
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID49",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID49_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 50,
+    "status_epilepticus": 4
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID49",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID49_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 33,
+    "burst_suppression": 19
+   },
+   "background_alarms": 19,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "burst_suppression",
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 6,
+   "baby_id": "ID49",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID50_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 48,
+    "status_epilepticus": 4
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID50",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID50_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID50",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID50_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 47,
+    "burst_suppression": 7,
+    "status_epilepticus": 3
+   },
+   "background_alarms": 7,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [],
+   "offline_aeeg_category": "CLV",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 4,
+   "baby_id": "ID50",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID51_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 49,
+    "burst_suppression": 2,
+    "status_epilepticus": 4
+   },
+   "background_alarms": 2,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID51",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID51_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 52,
+    "burst_suppression": 1,
+    "status_epilepticus": 5
+   },
+   "background_alarms": 1,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID51",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID51_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 44,
+    "status_epilepticus": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID51",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID51_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 41,
+    "status_epilepticus": 1
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID51",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID52_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID52",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID52_epoch2",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 0,
+   "baby_id": "ID52",
+   "grade": 3,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID52_epoch3",
+   "hours": 1.0,
+   "alarms_by_type": {},
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 1,
+   "baby_id": "ID52",
+   "grade": 1,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID52_epoch4",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 2
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 2,
+   "baby_id": "ID52",
+   "grade": 2,
+   "seizures_yn": "N"
+  },
+  {
+   "file_id": "ID53_epoch1",
+   "hours": 1.0,
+   "alarms_by_type": {
+    "seizure": 3
+   },
+   "background_alarms": 0,
+   "detector": "configs/models/ictal_gbm_realtime_neo2.json",
+   "offline_suppression_codes": [
+    "neonatal_inactive"
+   ],
+   "offline_aeeg_category": "FT",
+   "offline_abnormal_for_age": true,
+   "offline_ictal_events": 7,
+   "baby_id": "ID53",
+   "grade": 1,
+   "seizures_yn": "N"
+  }
+ ]
+}

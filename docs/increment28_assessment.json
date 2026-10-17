@@ -1,0 +1,91 @@
+{
+ "n_hours": 169,
+ "n_babies": 53,
+ "sensitivity": 0.6470588235294118,
+ "sensitivity_ci95_exact": [
+  0.4648863708910421,
+  0.8025413520876576
+ ],
+ "sensitivity_ci95_baby_bootstrap": [
+  0.42857142857142855,
+  0.825
+ ],
+ "specificity": 0.9615384615384616,
+ "specificity_ci95_exact": [
+  0.9044449246083279,
+  0.9894227334689208
+ ],
+ "specificity_ci95_baby_bootstrap": [
+  0.9166666666666666,
+  0.991304347826087
+ ],
+ "spearman": 0.6005915276327571,
+ "spearman_ci95_baby_bootstrap": [
+  0.42350891645793043,
+  0.72815619476427
+ ],
+ "by_grade": {
+  "1": {
+   "n": 104,
+   "with_background_alarm": 4,
+   "background_alarms_per_hour": 0.038461538461538464
+  },
+  "2": {
+   "n": 31,
+   "with_background_alarm": 8,
+   "background_alarms_per_hour": 1.935483870967742
+  },
+  "3": {
+   "n": 22,
+   "with_background_alarm": 12,
+   "background_alarms_per_hour": 6.7272727272727275
+  },
+  "4": {
+   "n": 12,
+   "with_background_alarm": 10,
+   "background_alarms_per_hour": 9.75
+  }
+ },
+ "secondary": {
+  "offline_aeeg_category_by_grade": {
+   "1": {
+    "FT": 38,
+    "CLV": 65,
+    "DNV": 1
+   },
+   "2": {
+    "FT": 22,
+    "CLV": 9
+   },
+   "3": {
+    "CLV": 5,
+    "FT": 17
+   },
+   "4": {
+    "FT": 12
+   }
+  },
+  "offline_abnormal_for_age_by_grade": {
+   "1": 104,
+   "2": 31,
+   "3": 22,
+   "4": 12
+  },
+  "seizure_alarm_hours_when_seizures_Y": [
+   3,
+   3
+  ],
+  "seizure_alarm_hours_when_seizures_N": [
+   100,
+   166
+  ]
+ },
+ "hypotheses": {
+  "H1_sensitivity_grade3_4_at_least_0.70": false,
+  "H2_specificity_grade1_at_least_0.80": true,
+  "H3_spearman_grade_vs_alarm_rate_at_least_0.40": true
+ },
+ "decision": {
+  "neonatal_background_alarms": "critical"
+ }
+}
