@@ -1,0 +1,73 @@
+{
+ "n_records": 79,
+ "n_seizures": 330,
+ "rhythm_features": [
+  "rhy_max",
+  "rhy_top3",
+  "rhy_frac_ge_0.6",
+  "rhy_top3_vs_base",
+  "rhy_period_s"
+ ],
+ "variants": {
+  "v1": {
+   "epoch_auc_oof": 0.7981474711159124,
+   "fa_target_1.0": {
+    "params": {
+     "threshold": 0.85,
+     "min_epochs": 12
+    },
+    "sensitivity": 0.3303030303030303,
+    "fa_per_hour": 0.82219326010054,
+    "latency_median_s": 48.0
+   },
+   "fa_target_2.0": {
+    "params": {
+     "threshold": 0.85,
+     "min_epochs": 5
+    },
+    "sensitivity": 0.4575757575757576,
+    "fa_per_hour": 1.7158815862967791,
+    "latency_median_s": 35.0
+   },
+   "fa_target_4.0": {
+    "params": {
+     "threshold": 0.5,
+     "min_epochs": 20
+    },
+    "sensitivity": 0.593939393939394,
+    "fa_per_hour": 3.467510705641408,
+    "latency_median_s": 23.0
+   }
+  },
+  "v1+rhythm": {
+   "epoch_auc_oof": 0.8179458217518205,
+   "fa_target_1.0": {
+    "params": {
+     "threshold": 0.85,
+     "min_epochs": 12
+    },
+    "sensitivity": 0.42424242424242425,
+    "fa_per_hour": 0.7685719605287656,
+    "latency_median_s": 38.0
+   },
+   "fa_target_2.0": {
+    "params": {
+     "threshold": 0.6,
+     "min_epochs": 20
+    },
+    "sensitivity": 0.5818181818181818,
+    "fa_per_hour": 1.894619251536027,
+    "latency_median_s": 31.5
+   },
+   "fa_target_4.0": {
+    "params": {
+     "threshold": 0.6,
+     "min_epochs": 12
+    },
+    "sensitivity": 0.696969696969697,
+    "fa_per_hour": 3.610500837832806,
+    "latency_median_s": 21.0
+   }
+  }
+ }
+}
