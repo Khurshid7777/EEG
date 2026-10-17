@@ -21,6 +21,7 @@ from pathlib import Path
 
 PMA_WEEKS = 40.0  # all neonates term; per-baby age not in the dataset
 BACKGROUND_ALARMS = ("burst_suppression", "suppression")
+OFFLINE_ONLY = "--offline-only" in sys.argv  # increment 29 (development): offline report only
 
 
 def _one(item):
@@ -39,27 +40,37 @@ def _run(item):
     from neurolens.realtime.stream import EdfReplaySource
 
     patient = PatientInfo(postmenstrual_age_weeks=PMA_WEEKS)
+    if OFFLINE_ONLY:
+        out = Pipeline(provider_pref="template", run_ica=False).analyze_signal(ingest(Path(path), patient=patient))
+        return {"file_id": file_id, **_offline(out)}
     s = RealtimeMonitor(patient=patient).run(EdfReplaySource(Path(path)))
     by_type = {}
     for a in s.alarms:
         by_type[a.type.value] = by_type.get(a.type.value, 0) + 1
     out = Pipeline(provider_pref="template", run_ica=False).analyze_signal(ingest(Path(path), patient=patient))
-    ev = out.detection.events
-    bg = next((e for e in ev if e.code == "neonatal_background"), None)
     return {
         "file_id": file_id, "hours": s.duration_s / 3600, "alarms_by_type": by_type,
         "background_alarms": sum(by_type.get(k, 0) for k in BACKGROUND_ALARMS),
-        "detector": s.seizure_detector,
+        "detector": s.seizure_detector, **_offline(out),
+    }
+
+
+def _offline(out) -> dict:
+    ev = out.detection.events
+    bg = next((e for e in ev if e.code == "neonatal_background"), None)
+    return {
         "offline_suppression_codes": sorted({e.code for e in ev if e.group == "suppression"}),
         "offline_aeeg_category": next((x.note for x in bg.evidence if x.feature == "aeeg_category"), None) if bg else None,
         "offline_abnormal_for_age": bool(bg.metadata.get("abnormal_for_age")) if bg else None,
+        "offline_background": dict(bg.metadata) if bg else None,
         "offline_ictal_events": sum(1 for e in ev if e.group == "ictal"),
     }
 
 
 def main() -> int:
-    root, out = Path(sys.argv[1]), Path(sys.argv[2])
-    workers = int(sys.argv[3]) if len(sys.argv) > 3 else 4
+    args = [a for a in sys.argv[1:] if a != "--offline-only"]
+    root, out = Path(args[0]), Path(args[1])
+    workers = int(args[2]) if len(args) > 2 else 4
     meta = {r["file_ID"]: r for r in csv.DictReader(open(root / "metadata.csv"))}
     paths = {p.stem: p for p in root.glob("edf/**/*.edf")}
     items = [(f, str(paths[f])) for f in sorted(meta) if f in paths]
@@ -71,7 +82,9 @@ def main() -> int:
     for r in rows:
         m = meta[r["file_id"]]
         r.update(baby_id=m["baby_ID"], grade=int(m["grade"]), seizures_yn=m["seizures_YN"])
-    out.write_text(json.dumps({"missing": missing, "failed": failed, "records": rows}, indent=1) + "\n")
+    out.write_text(json.dumps({"missing": missing, "failed": failed, "records": rows}, indent=1, default=float) + "\n")
+    if OFFLINE_ONLY:
+        return 0
     from neurolens.evaluation.prereg28 import evaluate
 
     print(json.dumps(evaluate(rows), indent=1))

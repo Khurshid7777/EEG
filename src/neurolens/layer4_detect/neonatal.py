@@ -13,9 +13,14 @@ from __future__ import annotations
 import numpy as np
 
 from ..contracts.events import Event, EventEvidence, Localization
+from ..layer1_ingest.electrodes import is_eeg_channel
 from ..layer3_features.aeeg_classify import AeegCategory, classify_aeeg
+from ..layer3_features.suppression import burst_suppression_acns
 from ..layer3_features.norms import NormsEngine
 from .base import Detector
+
+
+SWC_MIN_RECORDING_S = 3 * 3600.0
 
 
 class NeonatalBackgroundDetector(Detector):
@@ -31,9 +36,18 @@ class NeonatalBackgroundDetector(Detector):
         if pma is None or features.aeeg is None:
             return []
 
-        assess = classify_aeeg(features.aeeg, burst_suppression_ratio=features.burst.suppression_ratio)
-        continuity = float(1.0 - features.burst.suppression_ratio)
-        ibi = float(features.burst.mean_ibi_s)
+        # increment 29: continuity / IBI from the ACNS suppression mask over all scalp channels
+        # (< 10 µV peak-to-trough on the median channel), not the rectified envelope of one
+        # average-referenced channel (that method accepted ~30 µV activity as suppression)
+        eeg_idx = [i for i, n in enumerate(sig.channel_names) if is_eeg_channel(n)]
+        burst = (burst_suppression_acns(sig.signal[eeg_idx].astype(np.float64), sig.sampling_rate_hz,
+                                        amp_thresh_uv=thresholds.suppression_amplitude_uv)
+                 if eeg_idx else features.burst)
+        assess = classify_aeeg(features.aeeg, burst_suppression_ratio=burst.suppression_ratio)
+        continuity = float(1.0 - burst.suppression_ratio)
+        ibi = float(burst.mean_ibi_s)
+        # sleep-wake cycles last ~1 h: their absence is judged only in recordings >= 3 h
+        swc_assessable = (sig.duration_s or 0.0) >= SWC_MIN_RECORDING_S
 
         exp = self.norms.neonatal_expectations(patient) or {}
         expected_cat = exp.get("expected_aeeg")
@@ -44,7 +58,7 @@ class NeonatalBackgroundDetector(Detector):
         abnormal_for_age = (
             (continuity_ok is False)
             or assess.category in (AeegCategory.BS, AeegCategory.FT, AeegCategory.CLV)
-            or (swc_expected and not assess.swc_present)
+            or (swc_expected and swc_assessable and not assess.swc_present)
             or (ibi > max_ibi)
         )
 
@@ -53,6 +67,7 @@ class NeonatalBackgroundDetector(Detector):
             "aeeg_upper_uv": assess.upper_uv,
             "aeeg_lower_uv": assess.lower_uv,
             "swc_present": assess.swc_present,
+            "swc_assessable": swc_assessable,
             "swc_cycles": assess.swc_cycles,
             "ibi_s": round(ibi, 1),
             "continuity": round(continuity, 3),
@@ -65,7 +80,7 @@ class NeonatalBackgroundDetector(Detector):
         events.append(Event(
             code=self.code,
             label_ru=f"Неонатальный фон: {assess.label_ru}"
-                     + (", SWC+" if assess.swc_present else ", SWC−")
+                     + (", SWC+" if assess.swc_present else (", SWC−" if swc_assessable else ", SWC не оценивается (< 3 ч)"))
                      + (f" (не по возрасту ПМВ {pma:.0f} нед)" if abnormal_for_age else f" (по возрасту ПМВ {pma:.0f} нед)"),
             label_uz=f"Neonatal fon: {assess.label_uz}",
             group=self.group,

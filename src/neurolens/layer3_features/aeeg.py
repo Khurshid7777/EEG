@@ -41,19 +41,28 @@ def _semilog_compress(uv: np.ndarray) -> np.ndarray:
 
 
 def aeeg_envelope(
-    x: np.ndarray, fs: float, channel: str = "", epoch_s: float = 15.0
+    x: np.ndarray, fs: float, channel: str = "", epoch_s: float = 15.0, segment_s: float = 1.0
 ) -> AEEG:
+    """Margins from the peak-to-peak amplitude of the 2-15 Hz signal in ``segment_s``
+    segments (10th / 90th percentile per epoch), the scale of the Hellström-Westas
+    margins. Increment 29: percentiles of the rectified samples put the lower margin at
+    zero crossings (~0.5 µV in every recording), so a continuous background was never
+    classified as continuous."""
     nyq = fs / 2.0
     b, a = butter(2, [2.0 / nyq, min(15.0, nyq * 0.99) / nyq], btype="bandpass")
     filt = filtfilt(b, a, x)
-    rect = np.abs(filt)
+    seg_n = max(1, int(round(segment_s * fs)))
 
     centers, uppers, lowers = [], [], []
-    for s0, s1 in epoch_indices(len(rect), fs, epoch_s):
-        seg = rect[s0:s1]
+    for s0, s1 in epoch_indices(len(filt), fs, epoch_s):
+        n = (s1 - s0) // seg_n * seg_n
+        if n == 0:
+            continue
+        seg = filt[s0:s0 + n].reshape(-1, seg_n)
+        pp = seg.max(axis=1) - seg.min(axis=1)
         centers.append((s0 + s1) / 2.0 / fs)
-        uppers.append(np.percentile(seg, 90))
-        lowers.append(np.percentile(seg, 10))
+        uppers.append(np.percentile(pp, 90))
+        lowers.append(np.percentile(pp, 10))
     uppers = np.asarray(uppers)
     lowers = np.asarray(lowers)
     return AEEG(

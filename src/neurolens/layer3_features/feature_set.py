@@ -176,7 +176,14 @@ def compute_features(
     rep = next((c for c in ("C3", "C4", "Cz", "P3") if c in eeg_names), eeg_names[0] if eeg_names else "")
     rep_sig = _chan(rep) if rep else np.zeros(sig.n_samples)
 
-    aeeg = aeeg_envelope(rep_sig, fs, channel=rep) if rep else None
+    # aEEG on a cross-cerebral bipolar derivation, as the aEEG standard (increment 29);
+    # a bipolar difference does not depend on the reference
+    pair = next(((a, b) for a, b in (("C3", "C4"), ("P3", "P4"), ("T3", "T4"), ("F3", "F4"))
+                 if a in eeg_names and b in eeg_names), None)
+    if pair:
+        aeeg = aeeg_envelope(_chan(pair[0]) - _chan(pair[1]), fs, channel=f"{pair[0]}-{pair[1]}")
+    else:
+        aeeg = aeeg_envelope(rep_sig, fs, channel=rep) if rep else None
     dsa = density_spectral_array(rep_sig, fs, channel=rep) if rep else None
     burst = burst_suppression(rep_sig, fs)
 
