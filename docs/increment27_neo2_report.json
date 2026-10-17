@@ -1,0 +1,486 @@
+{
+ "n_records": 79,
+ "n_seizures": 330,
+ "variants": {
+  "v1": {
+   "grid": {
+    "0.5/3": {
+     "sensitivity": 0.8393939393939394,
+     "fa_per_hour": 20.01688685805106,
+     "latency_median_s": -13.0
+    },
+    "0.5/5": {
+     "sensitivity": 0.8090909090909091,
+     "fa_per_hour": 15.89550014900169,
+     "latency_median_s": -7.0
+    },
+    "0.5/8": {
+     "sensitivity": 0.7666666666666667,
+     "fa_per_hour": 10.951624118406675,
+     "latency_median_s": 6.0
+    },
+    "0.5/12": {
+     "sensitivity": 0.7363636363636363,
+     "fa_per_hour": 7.116320651634052,
+     "latency_median_s": 12.0
+    },
+    "0.5/20": {
+     "sensitivity": 0.6060606060606061,
+     "fa_per_hour": 3.531340021853581,
+     "latency_median_s": 23.0
+    },
+    "0.6/3": {
+     "sensitivity": 0.7757575757575758,
+     "fa_per_hour": 13.812456541174134,
+     "latency_median_s": 3.0
+    },
+    "0.6/5": {
+     "sensitivity": 0.7424242424242424,
+     "fa_per_hour": 10.674480977451077,
+     "latency_median_s": 7.0
+    },
+    "0.6/8": {
+     "sensitivity": 0.6636363636363637,
+     "fa_per_hour": 6.633555180292043,
+     "latency_median_s": 13.0
+    },
+    "0.6/12": {
+     "sensitivity": 0.6181818181818182,
+     "fa_per_hour": 4.031985695837887,
+     "latency_median_s": 19.0
+    },
+    "0.6/20": {
+     "sensitivity": 0.5272727272727272,
+     "fa_per_hour": 2.038343101221814,
+     "latency_median_s": 32.5
+    },
+    "0.7/3": {
+     "sensitivity": 0.6696969696969697,
+     "fa_per_hour": 7.7689480480778785,
+     "latency_median_s": 10.0
+    },
+    "0.7/5": {
+     "sensitivity": 0.6272727272727273,
+     "fa_per_hour": 5.3908810966524285,
+     "latency_median_s": 15.0
+    },
+    "0.7/8": {
+     "sensitivity": 0.5787878787878787,
+     "fa_per_hour": 3.3435978941094664,
+     "latency_median_s": 22.0
+    },
+    "0.7/12": {
+     "sensitivity": 0.5121212121212121,
+     "fa_per_hour": 2.333366444819708,
+     "latency_median_s": 28.0
+    },
+    "0.7/20": {
+     "sensitivity": 0.4303030303030303,
+     "fa_per_hour": 1.2784344889242079,
+     "latency_median_s": 41.5
+    },
+    "0.8/3": {
+     "sensitivity": 0.5515151515151515,
+     "fa_per_hour": 3.6654415416708055,
+     "latency_median_s": 21.5
+    },
+    "0.8/5": {
+     "sensitivity": 0.5333333333333333,
+     "fa_per_hour": 2.771431409555975,
+     "latency_median_s": 27.0
+    },
+    "0.8/8": {
+     "sensitivity": 0.4636363636363636,
+     "fa_per_hour": 1.9400019866891824,
+     "latency_median_s": 32.0
+    },
+    "0.8/12": {
+     "sensitivity": 0.4212121212121212,
+     "fa_per_hour": 1.3052547928876528,
+     "latency_median_s": 41.0
+    },
+    "0.8/20": {
+     "sensitivity": 0.30303030303030304,
+     "fa_per_hour": 0.6973279030495679,
+     "latency_median_s": 55.5
+    },
+    "0.85/3": {
+     "sensitivity": 0.4909090909090909,
+     "fa_per_hour": 2.682030396344492,
+     "latency_median_s": 27.0
+    },
+    "0.85/5": {
+     "sensitivity": 0.4666666666666667,
+     "fa_per_hour": 1.9489420880103308,
+     "latency_median_s": 35.5
+    },
+    "0.85/8": {
+     "sensitivity": 0.396969696969697,
+     "fa_per_hour": 1.314194894208801,
+     "latency_median_s": 45.0
+    },
+    "0.85/12": {
+     "sensitivity": 0.3242424242424242,
+     "fa_per_hour": 0.9029502334359789,
+     "latency_median_s": 49.0
+    },
+    "0.85/20": {
+     "sensitivity": 0.22727272727272727,
+     "fa_per_hour": 0.49170557266315684,
+     "latency_median_s": 63.0
+    },
+    "0.9/3": {
+     "sensitivity": 0.4090909090909091,
+     "fa_per_hour": 1.5108771232740639,
+     "latency_median_s": 36.0
+    },
+    "0.9/5": {
+     "sensitivity": 0.3696969696969697,
+     "fa_per_hour": 1.1175126651435383,
+     "latency_median_s": 44.5
+    },
+    "0.9/8": {
+     "sensitivity": 0.30606060606060603,
+     "fa_per_hour": 0.8224893215456442,
+     "latency_median_s": 58.0
+    },
+    "0.9/12": {
+     "sensitivity": 0.23333333333333334,
+     "fa_per_hour": 0.5632263832323433,
+     "latency_median_s": 66.0
+    },
+    "0.9/20": {
+     "sensitivity": 0.15757575757575756,
+     "fa_per_hour": 0.33078374888248735,
+     "latency_median_s": 65.0
+    },
+    "0.95/3": {
+     "sensitivity": 0.23939393939393938,
+     "fa_per_hour": 0.6526273964438264,
+     "latency_median_s": 56.0
+    },
+    "0.95/5": {
+     "sensitivity": 0.21515151515151515,
+     "fa_per_hour": 0.4559451673785636,
+     "latency_median_s": 58.0
+    },
+    "0.95/8": {
+     "sensitivity": 0.1606060606060606,
+     "fa_per_hour": 0.2860832422767458,
+     "latency_median_s": 59.0
+    },
+    "0.95/12": {
+     "sensitivity": 0.1303030303030303,
+     "fa_per_hour": 0.1341015198172246,
+     "latency_median_s": 54.0
+    },
+    "0.95/20": {
+     "sensitivity": 0.10303030303030303,
+     "fa_per_hour": 0.035760405284593226,
+     "latency_median_s": 63.5
+    },
+    "0.97/3": {
+     "sensitivity": 0.15757575757575756,
+     "fa_per_hour": 0.21456243170755934,
+     "latency_median_s": 55.0
+    },
+    "0.97/5": {
+     "sensitivity": 0.11818181818181818,
+     "fa_per_hour": 0.17880202642296614,
+     "latency_median_s": 53.0
+    },
+    "0.97/8": {
+     "sensitivity": 0.10303030303030303,
+     "fa_per_hour": 0.08046091189033476,
+     "latency_median_s": 57.5
+    },
+    "0.97/12": {
+     "sensitivity": 0.08181818181818182,
+     "fa_per_hour": 0.044700506605741534,
+     "latency_median_s": 62.0
+    },
+    "0.97/20": {
+     "sensitivity": 0.048484848484848485,
+     "fa_per_hour": 0.008940101321148307,
+     "latency_median_s": 84.5
+    },
+    "0.99/3": {
+     "sensitivity": 0.045454545454545456,
+     "fa_per_hour": 0.026820303963444918,
+     "latency_median_s": 90.0
+    },
+    "0.99/5": {
+     "sensitivity": 0.03636363636363636,
+     "fa_per_hour": 0.017880202642296613,
+     "latency_median_s": 128.5
+    },
+    "0.99/8": {
+     "sensitivity": 0.024242424242424242,
+     "fa_per_hour": 0.017880202642296613,
+     "latency_median_s": 131.5
+    },
+    "0.99/12": {
+     "sensitivity": 0.015151515151515152,
+     "fa_per_hour": 0.017880202642296613,
+     "latency_median_s": 99.0
+    },
+    "0.99/20": {
+     "sensitivity": 0.00909090909090909,
+     "fa_per_hour": 0.017880202642296613,
+     "latency_median_s": 52.0
+    }
+   }
+  },
+  "v5": {
+   "grid": {
+    "0.5/3": {
+     "sensitivity": 0.8787878787878788,
+     "fa_per_hour": 20.276149796364358,
+     "latency_median_s": -16.0
+    },
+    "0.5/5": {
+     "sensitivity": 0.8575757575757575,
+     "fa_per_hour": 15.859739743717096,
+     "latency_median_s": -7.0
+    },
+    "0.5/8": {
+     "sensitivity": 0.793939393939394,
+     "fa_per_hour": 10.486738849706963,
+     "latency_median_s": 4.0
+    },
+    "0.5/12": {
+     "sensitivity": 0.7575757575757576,
+     "fa_per_hour": 6.776596801430416,
+     "latency_median_s": 14.0
+    },
+    "0.5/20": {
+     "sensitivity": 0.6606060606060606,
+     "fa_per_hour": 3.1647958676865007,
+     "latency_median_s": 26.5
+    },
+    "0.6/3": {
+     "sensitivity": 0.8151515151515152,
+     "fa_per_hour": 13.93761795967021,
+     "latency_median_s": 1.0
+    },
+    "0.6/5": {
+     "sensitivity": 0.7727272727272727,
+     "fa_per_hour": 10.477798748385815,
+     "latency_median_s": 8.0
+    },
+    "0.6/8": {
+     "sensitivity": 0.7393939393939394,
+     "fa_per_hour": 6.222310519519222,
+     "latency_median_s": 14.0
+    },
+    "0.6/12": {
+     "sensitivity": 0.6757575757575758,
+     "fa_per_hour": 3.567100427138174,
+     "latency_median_s": 21.0
+    },
+    "0.6/20": {
+     "sensitivity": 0.5727272727272728,
+     "fa_per_hour": 1.8237806695142544,
+     "latency_median_s": 34.0
+    },
+    "0.7/3": {
+     "sensitivity": 0.7393939393939394,
+     "fa_per_hour": 7.751067845435582,
+     "latency_median_s": 10.5
+    },
+    "0.7/5": {
+     "sensitivity": 0.7090909090909091,
+     "fa_per_hour": 5.4355816032581705,
+     "latency_median_s": 15.0
+    },
+    "0.7/8": {
+     "sensitivity": 0.6515151515151515,
+     "fa_per_hour": 2.994933942584683,
+     "latency_median_s": 21.0
+    },
+    "0.7/12": {
+     "sensitivity": 0.5787878787878787,
+     "fa_per_hour": 1.868481176119996,
+     "latency_median_s": 27.0
+    },
+    "0.7/20": {
+     "sensitivity": 0.45454545454545453,
+     "fa_per_hour": 0.9834111453263137,
+     "latency_median_s": 40.0
+    },
+    "0.8/3": {
+     "sensitivity": 0.6757575757575758,
+     "fa_per_hour": 3.5134598192112843,
+     "latency_median_s": 19.0
+    },
+    "0.8/5": {
+     "sensitivity": 0.6303030303030303,
+     "fa_per_hour": 2.4942882686003776,
+     "latency_median_s": 24.0
+    },
+    "0.8/8": {
+     "sensitivity": 0.5242424242424243,
+     "fa_per_hour": 1.573457832522102,
+     "latency_median_s": 28.0
+    },
+    "0.8/12": {
+     "sensitivity": 0.46060606060606063,
+     "fa_per_hour": 1.0370517532532035,
+     "latency_median_s": 33.5
+    },
+    "0.8/20": {
+     "sensitivity": 0.3424242424242424,
+     "fa_per_hour": 0.5095857753054535,
+     "latency_median_s": 45.0
+    },
+    "0.85/3": {
+     "sensitivity": 0.6,
+     "fa_per_hour": 2.3780669514254495,
+     "latency_median_s": 24.0
+    },
+    "0.85/5": {
+     "sensitivity": 0.5272727272727272,
+     "fa_per_hour": 1.6539187444124368,
+     "latency_median_s": 27.5
+    },
+    "0.85/8": {
+     "sensitivity": 0.44242424242424244,
+     "fa_per_hour": 1.0638720572166485,
+     "latency_median_s": 33.0
+    },
+    "0.85/12": {
+     "sensitivity": 0.37575757575757573,
+     "fa_per_hour": 0.6794477004072713,
+     "latency_median_s": 37.0
+    },
+    "0.85/20": {
+     "sensitivity": 0.2696969696969697,
+     "fa_per_hour": 0.3844243568093772,
+     "latency_median_s": 47.0
+    },
+    "0.9/3": {
+     "sensitivity": 0.5060606060606061,
+     "fa_per_hour": 1.4214761100625808,
+     "latency_median_s": 29.0
+    },
+    "0.9/5": {
+     "sensitivity": 0.43333333333333335,
+     "fa_per_hour": 0.9565908413628688,
+     "latency_median_s": 31.0
+    },
+    "0.9/8": {
+     "sensitivity": 0.35454545454545455,
+     "fa_per_hour": 0.670507599086123,
+     "latency_median_s": 35.0
+    },
+    "0.9/12": {
+     "sensitivity": 0.30606060606060603,
+     "fa_per_hour": 0.5453461805900467,
+     "latency_median_s": 44.0
+    },
+    "0.9/20": {
+     "sensitivity": 0.23636363636363636,
+     "fa_per_hour": 0.3039634449190424,
+     "latency_median_s": 58.0
+    },
+    "0.95/3": {
+     "sensitivity": 0.3696969696969697,
+     "fa_per_hour": 0.9208304360782755,
+     "latency_median_s": 34.0
+    },
+    "0.95/5": {
+     "sensitivity": 0.3242424242424242,
+     "fa_per_hour": 0.7956690175821993,
+     "latency_median_s": 38.0
+    },
+    "0.95/8": {
+     "sensitivity": 0.2787878787878788,
+     "fa_per_hour": 0.5721664845534916,
+     "latency_median_s": 47.0
+    },
+    "0.95/12": {
+     "sensitivity": 0.23939393939393938,
+     "fa_per_hour": 0.3844243568093772,
+     "latency_median_s": 51.0
+    },
+    "0.95/20": {
+     "sensitivity": 0.1606060606060606,
+     "fa_per_hour": 0.17880202642296614,
+     "latency_median_s": 68.0
+    },
+    "0.97/3": {
+     "sensitivity": 0.27575757575757576,
+     "fa_per_hour": 0.5364060792688984,
+     "latency_median_s": 45.0
+    },
+    "0.97/5": {
+     "sensitivity": 0.2606060606060606,
+     "fa_per_hour": 0.3844243568093772,
+     "latency_median_s": 50.5
+    },
+    "0.97/8": {
+     "sensitivity": 0.23030303030303031,
+     "fa_per_hour": 0.22350253302870765,
+     "latency_median_s": 56.0
+    },
+    "0.97/12": {
+     "sensitivity": 0.19393939393939394,
+     "fa_per_hour": 0.1251614184960763,
+     "latency_median_s": 63.5
+    },
+    "0.97/20": {
+     "sensitivity": 0.12727272727272726,
+     "fa_per_hour": 0.044700506605741534,
+     "latency_median_s": 76.5
+    },
+    "0.99/3": {
+     "sensitivity": 0.12727272727272726,
+     "fa_per_hour": 0.06258070924803814,
+     "latency_median_s": 76.0
+    },
+    "0.99/5": {
+     "sensitivity": 0.10606060606060606,
+     "fa_per_hour": 0.06258070924803814,
+     "latency_median_s": 82.0
+    },
+    "0.99/8": {
+     "sensitivity": 0.08484848484848485,
+     "fa_per_hour": 0.044700506605741534,
+     "latency_median_s": 84.5
+    },
+    "0.99/12": {
+     "sensitivity": 0.03939393939393939,
+     "fa_per_hour": 0.026820303963444918,
+     "latency_median_s": 94.0
+    },
+    "0.99/20": {
+     "sensitivity": 0.01818181818181818,
+     "fa_per_hour": 0.008940101321148307,
+     "latency_median_s": 83.0
+    }
+   }
+  }
+ },
+ "best_grid_point_v5": {
+  "point": "0.8/3",
+  "sensitivity": 0.6757575757575758,
+  "fa_per_hour": 3.5134598192112843,
+  "latency_median_s": 19.0
+ },
+ "comparison": {
+  "v1_at_neo1_point": {
+   "sensitivity": 0.6060606060606061,
+   "fa_per_hour": 3.531340021853581,
+   "latency_median_s": 23.0
+  },
+  "v5_point": {
+   "threshold": 0.5,
+   "min_epochs": 20
+  },
+  "v5_at_point": {
+   "sensitivity": 0.6606060606060606,
+   "fa_per_hour": 3.1647958676865007,
+   "latency_median_s": 26.5
+  }
+ }
+}

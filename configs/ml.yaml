@@ -31,10 +31,13 @@ neonatal:  # seizure detector for neonates (increment 12, evaluation/prereg12.ap
   realtime: neonatal
   realtime_model:
     enabled: true
-    model: configs/models/ictal_gbm_realtime_neo1.json
+    # increment 27: + epoch rhythmicity (feature version 5), trained on all 79 Helsinki recordings;
+    # grouped CV on monitor traces at this same point: 0.661 seizures at 3.16 FA/h (neo1 features:
+    # 0.606 at 3.53). Not an independent test - docs/increment27_report.md. neo1: rollback.
+    model: configs/models/ictal_gbm_realtime_neo2.json
     threshold: 0.5
     min_epochs: 20
-    calibration: configs/calibration.ml_realtime_neo1.json
+    calibration: configs/calibration.ml_realtime_neo2.json
 provenance:
   preregistration: docs/preregistration_increment11.md
   neonatal: docs/preregistration_increment12.md

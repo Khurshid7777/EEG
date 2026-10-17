@@ -60,9 +60,12 @@ def main() -> int:
     ref = report["variants"]["v1"]["grid"][f"{NEO1_POINT['threshold']}/{NEO1_POINT['min_epochs']}"]
     feasible = {k: v for k, v in report["variants"]["v5"]["grid"].items() if v["fa_per_hour"] <= ref["fa_per_hour"]}
     best_key = max(feasible, key=lambda k: (feasible[k]["sensitivity"], -feasible[k]["fa_per_hour"]))
+    report["best_grid_point_v5"] = {"point": best_key, **feasible[best_key]}
+    # deployed point: neo1's own (0.5 / >= 20) - no post-processing chosen on these data
+    best_key = f"{NEO1_POINT['threshold']}/{NEO1_POINT['min_epochs']}"
     th, me = (float(x) for x in best_key.split("/"))
     report["comparison"] = {"v1_at_neo1_point": ref, "v5_point": {"threshold": th, "min_epochs": int(me)},
-                            "v5_at_point": feasible[best_key]}
+                            "v5_at_point": report["variants"]["v5"]["grid"][best_key]}
     print("comparison", json.dumps(report["comparison"]), flush=True)
 
     # final model on all recordings
