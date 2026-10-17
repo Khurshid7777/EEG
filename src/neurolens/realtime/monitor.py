@@ -74,6 +74,7 @@ class RealtimeMonitor:
         ml_mode = self.cfg.ml.realtime
         use_ml = (ml_mode is not None and ml_mode.enabled) if learned is None else bool(learned)
         neonate = patient is not None and patient.postmenstrual_age_weeks is not None
+        self.rhythm_features = False  # increment 27: compute epoch rhythmicity (traces for training)
         self._neonate = neonate
         self._patient = patient
         if neonate:
@@ -164,7 +165,8 @@ class RealtimeMonitor:
         )
         filt = apply_filters(sig, self.cfg.filters)
         analysis = rereference(filt, "average")
-        feats = compute_features(analysis, self.cfg.filters)
+        feats = compute_features(analysis, self.cfg.filters, rhythm=self.rhythm_features or bool(
+            self._ml is not None and getattr(self._ml, "needs_rhythm", False)))
 
         # streaming baseline: use history (pre-update) for this window's seizure
         # detection, then slowly update it toward the current window.

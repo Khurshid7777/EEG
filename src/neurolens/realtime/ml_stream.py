@@ -16,7 +16,9 @@ import numpy as np
 
 from ..contracts.events import Event, EventEvidence, Localization
 from ..layer4_detect.base import LABELS
-from ..layer4_detect.ml_ictal import SMOOTH_EPOCHS, StreamingFeaturizer
+from ..layer4_detect.ml_ictal import (
+    FEATURE_NAMES_V5, SMOOTH_EPOCHS, StreamingFeaturizer, StreamingFeaturizerV5,
+)
 
 
 class StreamingIctalML:
@@ -26,7 +28,9 @@ class StreamingIctalML:
         self.model = model
         self.threshold = float(threshold)
         self.min_epochs = int(min_epochs)
-        self._feat = StreamingFeaturizer()
+        # increment 27: models over feature version 5 also need epoch rhythmicity
+        self.needs_rhythm = list(getattr(model, "feature_names", [])) == FEATURE_NAMES_V5
+        self._feat = StreamingFeaturizerV5() if self.needs_rhythm else StreamingFeaturizer()
         self._pending_times: deque[float] = deque()
         self._p = deque(maxlen=smooth)
         self._last_t = -np.inf
@@ -44,11 +48,12 @@ class StreamingIctalML:
         if new.any():
             self._last_t = float(et[new][-1])
             self._pending_times.extend(et[new].tolist())
-            X = self._feat.push(
-                np.asarray(feats.epoch_rms)[new], np.asarray(feats.epoch_band_conc)[new],
-                np.asarray(feats.epoch_domfreq)[new],
-                {k: np.asarray(v)[new] for k, v in feats.epoch_relpow.items()},
-            )
+            args = (np.asarray(feats.epoch_rms)[new], np.asarray(feats.epoch_band_conc)[new],
+                    np.asarray(feats.epoch_domfreq)[new],
+                    {k: np.asarray(v)[new] for k, v in feats.epoch_relpow.items()})
+            if self.needs_rhythm:
+                args = args + (np.asarray(feats.extra["epoch_rhythm"])[new],)
+            X = self._feat.push(*args)
             if len(X):
                 for t, p in zip([self._pending_times.popleft() for _ in range(len(X))],
                                 self.model.predict_proba(X)):

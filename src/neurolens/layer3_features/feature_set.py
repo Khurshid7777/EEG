@@ -97,6 +97,7 @@ def compute_features(
     epoch_s: float = 2.0,
     overlap: float = 0.5,
     pdr_method: str = "whole",
+    rhythm: bool = False,
 ) -> FeatureSet:
     fs = sig.sampling_rate_hz
     names = sig.channel_names
@@ -199,5 +200,13 @@ def compute_features(
         burst=burst,
         representative_channel=rep,
         extra={"epoch_linelen": linelen, "epoch_teager": teager,
-               "feature_version": FEATURE_VERSION},
+               "feature_version": FEATURE_VERSION,
+               # increment 27: neonatal rhythmicity (opt-in; [n_epochs, 4])
+               **({"epoch_rhythm": _rhythm(data, eeg_idx, fs, times, epoch_s)} if rhythm else {})},
     )
+
+
+def _rhythm(data, eeg_idx, fs, times, epoch_s):
+    from .rhythm_ac import epoch_rhythm
+
+    return epoch_rhythm(data[eeg_idx], fs, np.asarray(times, float), epoch_s)

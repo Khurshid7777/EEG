@@ -323,3 +323,36 @@ def test_noage_threshold_only_when_noage_model_used(configs):
     icfg = configs.impression
     assert icfg.threshold_for(None, noage_model=False) == pytest.approx(icfg.record_threshold)
     assert icfg.threshold_for(None, noage_model=True) == pytest.approx(icfg.record_threshold_noage)
+
+
+def test_rhythmicity_offline_equals_streaming():
+    import numpy as np
+
+    from neurolens.layer3_features.rhythm_ac import epoch_rhythm
+    from neurolens.layer4_detect.ml_ictal import (
+        FEATURE_NAMES_V5, StreamingFeaturizerV5, _featurize_v1, rhythm_columns,
+    )
+    from types import SimpleNamespace
+
+    fs, rng = 200.0, np.random.default_rng(1)
+    t = np.arange(int(120 * fs)) / fs
+    x = rng.standard_normal((4, t.size)) * 10
+    x[:, int(60 * fs):int(80 * fs)] += 60 * np.sin(2 * np.pi * 2.0 * t[int(60 * fs):int(80 * fs)])
+    times = np.arange(1.0, 119.0, 1.0)
+    R = epoch_rhythm(x, fs, times)
+    assert np.isnan(R[0]).all() and np.isfinite(R[20]).all()
+    assert np.nanmean(R[62:78, 1]) > np.nanmean(R[20:50, 1]) + 0.3  # 2-Hz discharges are rhythmic
+    n = len(times)
+    feats = SimpleNamespace(epoch_rms=rng.uniform(5, 15, (n, 4)), epoch_band_conc=rng.uniform(0, 1, (n, 4)),
+                            epoch_domfreq=rng.uniform(1, 10, (n, 4)),
+                            epoch_relpow={b: rng.uniform(0, 1, (n, 4)) for b in ("delta", "theta", "alpha", "beta", "gamma")})
+    off = np.column_stack([_featurize_v1(feats), rhythm_columns(R)])
+    sf, rows = StreamingFeaturizerV5(), []
+    for a in range(0, n, 7):
+        b = min(n, a + 7)
+        out = sf.push(feats.epoch_rms[a:b], feats.epoch_band_conc[a:b], feats.epoch_domfreq[a:b],
+                      {k: v[a:b] for k, v in feats.epoch_relpow.items()}, R[a:b])
+        rows.append(out)
+    on = np.vstack([r for r in rows if len(r)])
+    assert on.shape == off.shape and off.shape[1] == len(FEATURE_NAMES_V5)
+    assert np.allclose(np.nan_to_num(on, nan=-9), np.nan_to_num(off, nan=-9))

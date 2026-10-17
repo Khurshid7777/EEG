@@ -170,7 +170,7 @@ def stream_from_trace(trace) -> SimpleNamespace:
     """Concatenate the *newest* epochs of each monitor window (those the stream
     had not seen before) into one causal epoch stream with absolute times —
     exactly what :class:`StreamingFeaturizer` receives in deployment."""
-    times, rms, conc, domf, rp = [], [], [], [], {}
+    times, rms, conc, domf, rp, rhy = [], [], [], [], {}, []
     last = -np.inf
     channels = None
     for t0, _t1, feats, _baseline in trace.windows:
@@ -185,11 +185,14 @@ def stream_from_trace(trace) -> SimpleNamespace:
         domf.append(np.asarray(feats.epoch_domfreq)[new])
         for k, v in feats.epoch_relpow.items():
             rp.setdefault(k, []).append(np.asarray(v)[new])
+        if "epoch_rhythm" in (getattr(feats, "extra", None) or {}):  # increment 27 traces
+            rhy.append(np.asarray(feats.extra["epoch_rhythm"])[new])
         last = et[new][-1]
     return SimpleNamespace(
         epoch_times=np.concatenate(times), epoch_rms=np.vstack(rms),
         epoch_band_conc=np.vstack(conc), epoch_domfreq=np.vstack(domf),
         epoch_relpow={k: np.vstack(v) for k, v in rp.items()}, eeg_channels=channels or [],
+        extra={"epoch_rhythm": np.vstack(rhy)} if rhy and len(rhy) == len(times) else {},
     )
 
 

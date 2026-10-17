@@ -134,14 +134,33 @@ FEATURE_NAMES_V2 = FEATURE_NAMES + MORPH_BASE + MORPH_CONTEXT
 
 
 FEATURE_NAMES_V4 = FEATURE_NAMES + ["age_years"]
+# increment 27: neonatal rhythmicity (layer3_features.rhythm_ac) + its causal baseline offset
+RHYTHM_FEATURES = ["rhy_max", "rhy_top3", "rhy_frac_ge_0.6", "rhy_period_s", "rhy_top3_vs_base"]
+FEATURE_NAMES_V5 = FEATURE_NAMES + RHYTHM_FEATURES
+RHYTHM_BASE_EPOCHS = 300  # ~5 min
+
+
+def rhythm_columns(R: np.ndarray, history: Optional[list] = None) -> np.ndarray:
+    """[n, 4] raw rhythmicity -> [n, 5]: + top-3 mean minus the median of the last
+    RHYTHM_BASE_EPOCHS top-3 values (causal, NaN ignored). ``history`` (a list) carries
+    the past values across calls (streaming)."""
+    R = np.atleast_2d(np.asarray(R, float))
+    hist = history if history is not None else []
+    rel = np.full(R.shape[0], np.nan)
+    for i, v in enumerate(R[:, 1]):
+        if np.isfinite(v):
+            hist.append(float(v))
+            del hist[:-RHYTHM_BASE_EPOCHS]
+            rel[i] = v - float(np.median(hist))
+    return np.column_stack([R, rel])
 
 
 def feature_names(version: int = 1) -> list[str]:
-    return {2: FEATURE_NAMES_V2, 4: FEATURE_NAMES_V4}.get(version, FEATURE_NAMES)
+    return {2: FEATURE_NAMES_V2, 4: FEATURE_NAMES_V4, 5: FEATURE_NAMES_V5}.get(version, FEATURE_NAMES)
 
 
 def names_for_width(n: int) -> list[str]:
-    for names in (FEATURE_NAMES, FEATURE_NAMES_V4, FEATURE_NAMES_V2):
+    for names in (FEATURE_NAMES, FEATURE_NAMES_V4, FEATURE_NAMES_V2, FEATURE_NAMES_V5):
         if len(names) == n:
             return names
     return [f"f{i}" for i in range(n)]
@@ -180,6 +199,12 @@ def featurize(features, version: int = 1, age_years: Optional[float] = None) -> 
     years (NaN when unknown — the trees route missing values)."""
     if version == 3:
         return _featurize_v1(features, gated=True)
+    if version == 5:
+        X = _featurize_v1(features)
+        R = (getattr(features, "extra", None) or {}).get("epoch_rhythm")
+        if R is None:
+            raise ValueError("feature version 5 needs epoch_rhythm (compute_features(..., rhythm=True))")
+        return np.column_stack([X, rhythm_columns(R)]) if X.shape[0] else np.zeros((0, len(FEATURE_NAMES_V5)))
     if version == 4:
         X = _featurize_v1(features)
         age = np.nan if age_years is None else float(age_years)
@@ -254,6 +279,26 @@ class StreamingFeaturizer:
         if self._B.shape[0] > self._KEEP:
             self._B = self._B[-self._TRIM_TO:]
         return X
+
+
+class StreamingFeaturizerV5:
+    """Streaming twin of ``featurize(version=5)``: the v1 streaming featurizer plus the
+    rhythmicity columns of the same epochs (queued until v1 emits their rows)."""
+
+    def __init__(self) -> None:
+        self._v1 = StreamingFeaturizer()
+        self._rq: list[np.ndarray] = []
+        self._hist: list[float] = []
+
+    def push(self, rms, conc, domf, relpow: dict, rhythm) -> np.ndarray:
+        R = np.atleast_2d(np.asarray(rhythm, float))
+        if R.shape[0]:
+            self._rq.extend(list(R))
+        X = self._v1.push(rms, conc, domf, relpow)
+        if X.shape[0] == 0:
+            return np.zeros((0, len(FEATURE_NAMES_V5)))
+        rows, self._rq = np.array(self._rq[:X.shape[0]]), self._rq[X.shape[0]:]
+        return np.column_stack([X, rhythm_columns(rows, self._hist)])
 
 
 class StreamingFeaturizerV2:
