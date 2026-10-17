@@ -4,7 +4,9 @@ property of the recording set-up? Helsinki seizure-free recordings replayed thro
 monitor with Cork's montage (9 electrodes: F3 F4 C3 C4 T3 T4 O1 O2 Cz) and/or Cork's
 200 Hz sampling rate.
 
-    PYTHONPATH=src python scripts/neonatal_device_perturb.py OUT.json [WORKERS]
+    PYTHONPATH=src python scripts/neonatal_device_perturb.py OUT.jsonl CONDITION [WORKERS]
+
+One condition per run; one JSON line per recording, written as it finishes (resumable).
 """
 
 import json
@@ -46,17 +48,19 @@ def _one(item):
 def main() -> int:
     from neurolens.datasets.helsinki import HelsinkiClient
 
+    out, cond = Path(sys.argv[1]), sys.argv[2]
+    workers = int(sys.argv[3]) if len(sys.argv) > 3 else 4
+    done = {(r["subject"], r["condition"]) for r in map(json.loads, out.read_text().splitlines())} if out.exists() else set()
     c = HelsinkiClient()
-    free = [(a.subject, str(c.local_path(a.file))) for a in c.all_annotations() if not a.seizures]
-    items = [(s, p, k) for k in CONDITIONS for s, p in free]
-    workers = int(sys.argv[2]) if len(sys.argv) > 2 else 4
-    with ProcessPoolExecutor(workers) as ex:
-        rows = list(ex.map(_one, items))
-    Path(sys.argv[1]).write_text(json.dumps(rows, indent=1) + "\n")
-    for k in CONDITIONS:
-        R = [r for r in rows if r["condition"] == k]
-        print(k, len(R), "seizure alarms/h", round(sum(r["seizure_alarms"] for r in R) / sum(r["hours"] for r in R), 2),
-              "records with alarms", sum(r["seizure_alarms"] > 0 for r in R), "status", sum(r["status"] for r in R))
+    items = [(a.subject, str(c.local_path(a.file)), cond) for a in c.all_annotations()
+             if not a.seizures and (a.subject, cond) not in done]
+    with ProcessPoolExecutor(workers) as ex, out.open("a") as f:
+        for r in ex.map(_one, items):
+            f.write(json.dumps(r) + "\n")
+            f.flush()
+    rows = [r for r in map(json.loads, out.read_text().splitlines()) if r["condition"] == cond]
+    print(cond, len(rows), "seizure alarms/h", round(sum(r["seizure_alarms"] for r in rows) / sum(r["hours"] for r in rows), 2),
+          "records with alarms", sum(r["seizure_alarms"] > 0 for r in rows), "status", sum(r["status"] for r in rows))
     return 0
 
 
