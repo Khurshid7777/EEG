@@ -146,3 +146,15 @@ def test_prereg28_evaluate_and_decision(tmp_path):
     a["decision"]["neonatal_background_alarms"] = "review"
     apply_decision(a, str(y))
     assert y.read_text().count("neonatal_background_alarms") == 1 and "review" in y.read_text()
+
+
+def test_monitor_reduces_to_model_electrodes(demo_edf, configs):
+    """Increment 30: the neonatal monitor analyses only the model's electrode set."""
+    from neurolens.contracts.signal import PatientInfo
+
+    mon = RealtimeMonitor(config=configs, patient=PatientInfo(postmenstrual_age_weeks=40))
+    assert mon.channels == ["F3", "F4", "C3", "C4", "T3", "T4", "O1", "O2", "Cz"]
+    mon.run(EdfReplaySource(demo_edf, chunk_s=configs.realtime.step_s))
+    eeg = [n for n in mon._names if n.upper() in {c.upper() for c in mon.channels}]
+    assert eeg and set(eeg) <= set(mon.channels)
+    assert RealtimeMonitor(config=configs).channels is None  # adults: all electrodes

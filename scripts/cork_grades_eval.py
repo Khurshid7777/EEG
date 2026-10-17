@@ -22,6 +22,7 @@ from pathlib import Path
 PMA_WEEKS = 40.0  # all neonates term; per-baby age not in the dataset
 BACKGROUND_ALARMS = ("burst_suppression", "suppression")
 OFFLINE_ONLY = "--offline-only" in sys.argv  # increment 29 (development): offline report only
+MONITOR_ONLY = "--monitor-only" in sys.argv  # increment 30 (development): monitor only
 
 
 def _one(item):
@@ -47,6 +48,9 @@ def _run(item):
     by_type = {}
     for a in s.alarms:
         by_type[a.type.value] = by_type.get(a.type.value, 0) + 1
+    if MONITOR_ONLY:
+        return {"file_id": file_id, "hours": s.duration_s / 3600, "alarms_by_type": by_type,
+                "background_alarms": sum(by_type.get(k, 0) for k in BACKGROUND_ALARMS), "detector": s.seizure_detector}
     out = Pipeline(provider_pref="template", run_ica=False).analyze_signal(ingest(Path(path), patient=patient))
     return {
         "file_id": file_id, "hours": s.duration_s / 3600, "alarms_by_type": by_type,
@@ -68,7 +72,7 @@ def _offline(out) -> dict:
 
 
 def main() -> int:
-    args = [a for a in sys.argv[1:] if a != "--offline-only"]
+    args = [a for a in sys.argv[1:] if a not in ("--offline-only", "--monitor-only")]
     root, out = Path(args[0]), Path(args[1])
     workers = int(args[2]) if len(args) > 2 else 4
     meta = {r["file_ID"]: r for r in csv.DictReader(open(root / "metadata.csv"))}
@@ -83,7 +87,7 @@ def main() -> int:
         m = meta[r["file_id"]]
         r.update(baby_id=m["baby_ID"], grade=int(m["grade"]), seizures_yn=m["seizures_YN"])
     out.write_text(json.dumps({"missing": missing, "failed": failed, "records": rows}, indent=1, default=float) + "\n")
-    if OFFLINE_ONLY:
+    if OFFLINE_ONLY or MONITOR_ONLY:
         return 0
     from neurolens.evaluation.prereg28 import evaluate
 

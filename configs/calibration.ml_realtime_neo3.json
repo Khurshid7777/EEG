@@ -1,0 +1,19 @@
+{
+  "version": "0.1.0",
+  "default": 1.0,
+  "temperatures": {},
+  "platt": {
+    "ictal_ml": [
+      1.9518,
+      -2.3736
+    ]
+  },
+  "metrics": {
+    "ictal_ml": {
+      "n_events": 869,
+      "true_events": 335,
+      "precision": 0.3855,
+      "source": "out-of-fold detections, grouped 10-fold CV, 79 Helsinki recordings, 9 electrodes"
+    }
+  }
+}
