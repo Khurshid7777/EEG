@@ -221,6 +221,11 @@ class RealtimeConfig(BaseModel):
         default=5000.0, gt=0, description="Per-window processing budget (must be << step)."
     )
     max_false_alarms_per_hour: float = Field(default=10.0, ge=0)
+    neonatal_background_alarms: Literal["critical", "review"] = Field(
+        default="critical",
+        description="Neonatal burst-suppression / inactive alarms: critical, or a warning for review "
+                    "(increment 28, decided by docs/preregistration_increment28.md).",
+    )
     alarms: dict[str, AlarmRule] = Field(
         default_factory=dict, description="Per-alarm-type rules keyed by AlarmType value."
     )

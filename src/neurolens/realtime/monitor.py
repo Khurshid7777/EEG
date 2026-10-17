@@ -219,10 +219,12 @@ class RealtimeMonitor:
 
                 if not discontinuity_abnormal_for_age(e, self._norms, self._patient):
                     continue  # discontinuity normal for the postmenstrual age
+            critical = not (self._neonate and self._rt.neonatal_background_alarms == "review")
             cands.append(AlarmCandidate(
-                type=AlarmType.BURST_SUPPRESSION, severity=AlarmSeverity.CRITICAL,
+                type=AlarmType.BURST_SUPPRESSION,
+                severity=AlarmSeverity.CRITICAL if critical else AlarmSeverity.WARNING,
                 message=_MSG[AlarmType.BURST_SUPPRESSION], confidence=e.confidence,
-                channels=e.localization.channels, evidence=[e.code], is_critical=True,
+                channels=e.localization.channels, evidence=[e.code], is_critical=critical,
             ))
 
         for e in det.by_group("periodic"):

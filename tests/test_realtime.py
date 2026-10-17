@@ -111,3 +111,38 @@ def test_monitor_summary_schema_valid(demo_edf, configs, tmp_path):
     summary = RealtimeMonitor(config=configs, out_dir=tmp_path / "rt").run(src)
     schema = json.loads((SCHEMAS / "monitor_summary.schema.json").read_text())
     jsonschema.validate(summary.model_dump(mode="json"), schema)
+
+
+def test_neonatal_background_alarm_review_mode(configs):
+    """Increment 28: 'review' turns neonatal burst-suppression alarms into capped warnings."""
+    import dataclasses
+
+    from neurolens.contracts.events import DetectionResult, Event, EventEvidence, Localization
+    from neurolens.contracts.signal import PatientInfo
+
+    ev = Event(code="burst_suppression", label_ru="ВП", label_uz="BS", group="suppression",
+               localization=Localization(region="generalized"), t_start=0.0, t_end=30.0, confidence=0.9,
+               evidence=[EventEvidence(feature="mean_ibi_s", value=20.0, unit="s")])
+    det = DetectionResult(events=[ev])
+    for mode, sev in (("critical", AlarmSeverity.CRITICAL), ("review", AlarmSeverity.WARNING)):
+        cfg = dataclasses.replace(configs, realtime=configs.realtime.model_copy(
+            update={"neonatal_background_alarms": mode}))
+        mon = RealtimeMonitor(config=cfg, patient=PatientInfo(postmenstrual_age_weeks=40))
+        (c,) = [c for c in mon._candidates(det, 0.0) if c.type == AlarmType.BURST_SUPPRESSION]
+        assert c.severity == sev and c.is_critical == (mode == "critical")
+
+
+def test_prereg28_evaluate_and_decision(tmp_path):
+    from neurolens.evaluation.prereg28 import apply_decision, evaluate
+
+    rows = [{"baby_id": f"b{i % 6}", "grade": g, "hours": 1.0, "background_alarms": a, "alarms_by_type": {}}
+            for i, (g, a) in enumerate([(1, 0)] * 8 + [(1, 2)] * 2 + [(2, 1)] * 3 + [(3, 3)] * 4 + [(4, 5)])]
+    a = evaluate(rows)
+    assert a["specificity"] == 0.8 and a["sensitivity"] == 1.0
+    assert a["hypotheses"]["H2_specificity_grade1_at_least_0.80"]
+    assert a["decision"]["neonatal_background_alarms"] == "critical"
+    y = tmp_path / "rt.yaml"
+    y.write_text("window_s: 30.0\nneonatal_background_alarms: critical\n")
+    a["decision"]["neonatal_background_alarms"] = "review"
+    apply_decision(a, str(y))
+    assert y.read_text().count("neonatal_background_alarms") == 1 and "review" in y.read_text()

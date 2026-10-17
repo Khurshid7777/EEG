@@ -37,3 +37,7 @@ alarms:
     refractory_s: 120.0
     max_per_hour: 3.0
     critical: false
+
+# Neonatal burst-suppression / inactive alarms: critical or "review" (warning).
+# Decided by the pre-registered increment 28 (docs/preregistration_increment28.md).
+neonatal_background_alarms: critical
