@@ -61,6 +61,7 @@ class RealtimeMonitor:
         config: ConfigBundle | None = None,
         montage_name: str = "double_banana",
         detectors: list[Detector] | None = None,
+        channels: list[str] | None = None,
         out_dir: str | Path | None = None,
         learned: Optional[bool] = None,
         patient: Optional[PatientInfo] = None,
@@ -74,6 +75,8 @@ class RealtimeMonitor:
         ml_mode = self.cfg.ml.realtime
         use_ml = (ml_mode is not None and ml_mode.enabled) if learned is None else bool(learned)
         neonate = patient is not None and patient.postmenstrual_age_weeks is not None
+        # electrodes to analyse (None = all); set by the learned detector's mode (increment 30)
+        self.channels: Optional[list[str]] = list(channels) if channels else None
         self.rhythm_features = False  # increment 27: compute epoch rhythmicity (traces for training)
         self._neonate = neonate
         self._patient = patient
@@ -97,6 +100,8 @@ class RealtimeMonitor:
             self._ml = StreamingIctalML(load_model(self.cfg.ml_model_path(ml_mode.model)),
                                         ml_mode.threshold, ml_mode.min_epochs)
             self._ml_name = ml_mode.model
+            if ml_mode.channels and self.channels is None:
+                self.channels = list(ml_mode.channels)
             if ml_mode.calibration:
                 from ..calibration.calibrator import ConfidenceCalibrator
 
@@ -126,7 +131,16 @@ class RealtimeMonitor:
     def run(self, source: StreamSource) -> MonitorSummary:
         rt = self._rt
         fs = source.sampling_rate_hz
-        buf = WindowBuffer(len(source.channel_names), fs, rt.window_s, rt.step_s)
+        names = list(source.channel_names)
+        keep = None
+        if self.channels is not None:
+            from ..layer1_ingest.electrodes import is_eeg_channel
+
+            want = {c.upper() for c in self.channels}
+            keep = [i for i, n in enumerate(names) if n.upper() in want or not is_eeg_channel(n)]
+            names = [names[i] for i in keep]
+        self._names = names
+        buf = WindowBuffer(len(names), fs, rt.window_s, rt.step_s)
         mgr = AlarmManager(rt)
         alarms = []
         latencies: list[float] = []
@@ -134,7 +148,7 @@ class RealtimeMonitor:
         last_t1 = 0.0
 
         for chunk in source.chunks():
-            for window_data, start_sample in buf.push(chunk.data):
+            for window_data, start_sample in buf.push(chunk.data if keep is None else chunk.data[keep]):
                 t0 = start_sample / fs
                 t1 = t0 + rt.window_s
                 last_t1 = t1
@@ -160,7 +174,7 @@ class RealtimeMonitor:
         sig = UnifiedSignal(
             signal=window_data.astype(np.float32),
             sampling_rate_hz=source.sampling_rate_hz,
-            channel_names=list(source.channel_names),
+            channel_names=list(getattr(self, "_names", None) or source.channel_names),
             reference=source.reference,
         )
         filt = apply_filters(sig, self.cfg.filters)
@@ -270,7 +284,7 @@ class RealtimeMonitor:
         from ..layer1_ingest.electrodes import is_eeg_channel
         from ..pipeline.pipeline import MIN_EEG_CHANNELS
 
-        n_eeg = sum(is_eeg_channel(n) for n in source.channel_names)
+        n_eeg = sum(is_eeg_channel(n) for n in (getattr(self, "_names", None) or source.channel_names))
         warnings = []
         if n_eeg < MIN_EEG_CHANNELS:
             warnings.append(f"insufficient_eeg_channels:{n_eeg}<{MIN_EEG_CHANNELS}: seizure/background "

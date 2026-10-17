@@ -260,6 +260,11 @@ class LearnedDetectorMode(BaseModel):
         description="Calibration JSON (Platt/temperature for code ictal_ml), repo-relative. "
                     "Calibrated values are what reports and alarms show; detection itself is "
                     "gated only by threshold/min_epochs.")
+    channels: Optional[list[str]] = Field(
+        default=None,
+        description="Electrodes the monitor analyses when this detector drives it (increment 30: "
+                    "the neonatal model is montage-dependent; the recording is reduced to this set, "
+                    "missing electrodes are skipped).")
 
 
 class SleepStagingConfig(BaseModel):

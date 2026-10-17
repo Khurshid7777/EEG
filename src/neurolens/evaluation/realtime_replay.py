@@ -38,12 +38,13 @@ class MonitorTrace:
     windows: list[tuple]  # (t0, t1, FeatureSet, baseline ndarray)
 
 
-def build_trace(ann: RecordAnnotation, path: Path, cfg: ConfigBundle, rhythm: bool = False) -> MonitorTrace:
+def build_trace(ann: RecordAnnotation, path: Path, cfg: ConfigBundle, rhythm: bool = False,
+                channels: list[str] | None = None) -> MonitorTrace:
     from ..realtime.monitor import RealtimeMonitor
     from ..realtime.stream import EdfReplaySource
 
     src = EdfReplaySource(path, chunk_s=cfg.realtime.step_s)
-    mon = RealtimeMonitor(cfg, detectors=[IctalRhythmDetector()], learned=False)
+    mon = RealtimeMonitor(cfg, detectors=[IctalRhythmDetector()], learned=False, channels=channels)
     mon.trace = []
     mon.rhythm_features = rhythm
     summary = mon.run(src)
@@ -57,6 +58,7 @@ def build_traces(
     progress: Optional[Callable[[str], None]] = None,
     workers: int = 4,
     rhythm: bool = False,
+    channels: list[str] | None = None,
 ) -> list[MonitorTrace]:
     """Traces for many records, memoised on disk (key: file + filters + window/step)."""
     out = []
@@ -68,7 +70,7 @@ def build_traces(
 
     ckey = hashlib.sha1(
         (cfg.filters.model_dump_json() + f"{rt.window_s}:{rt.step_s}|fv{FEATURE_VERSION}"
-         + ("|rhythm" if rhythm else "")).encode()
+         + ("|rhythm" if rhythm else "") + (f"|ch{','.join(channels)}" if channels else "")).encode()
     ).hexdigest()[:10]
     def cache_path(path: Path) -> Optional[Path]:
         if not cdir:
@@ -93,7 +95,7 @@ def build_traces(
 
         path_of = {ann.file: path for ann, path in todo}
         # replay source holds the whole record as float64 (~4x EDF bytes) + ingest peak
-        run_memory_bounded(build_trace, [(a, p, cfg, rhythm) for a, p in todo],
+        run_memory_bounded(build_trace, [(a, p, cfg, rhythm, channels) for a, p in todo],
                            [int(p.stat().st_size * 8) for _, p in todo],
                            max(1, min(workers, len(todo))), done)
     for ann, path in items:
