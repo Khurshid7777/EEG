@@ -1,0 +1,30 @@
+{
+ "as_delivered": {
+  "n": 111,
+  "n_excluded": 0,
+  "specificity": 0.963963963963964,
+  "specificity_ci95": [
+   0.910300108934208,
+   0.9900956341049395
+  ],
+  "rule_specificity": 0.8288288288288288,
+  "borderline": 6
+ },
+ "reduced_1020": {
+  "n": 111,
+  "n_excluded": 0,
+  "specificity": 0.9819819819819819,
+  "specificity_ci95": [
+   0.9364266753948407,
+   0.9978104371735338
+  ],
+  "rule_specificity": 0.8648648648648649,
+  "borderline": 7
+ },
+ "hypotheses": {
+  "H1_specificity_as_delivered_at_least_0.65": true
+ },
+ "decision": {
+  "montage_gate_for_routine_verdict": false
+ }
+}
