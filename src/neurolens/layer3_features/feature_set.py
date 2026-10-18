@@ -20,7 +20,7 @@ from .asymmetry import alpha_delta_ratio, asymmetry_index
 from .dsa import DSA, density_spectral_array
 from .epochs import epoch_indices
 from .spectral import BANDS, band_powers, peak_alpha_frequency, sef95, spectral_entropy
-from .suppression import BurstSuppression, burst_suppression
+from .suppression import BurstSuppression, burst_suppression, burst_suppression_acns
 
 # Homologous left/right channel pairs for asymmetry (classic 10-20).
 HOMOLOGOUS_PAIRS = [
@@ -30,7 +30,7 @@ HOMOLOGOUS_PAIRS = [
 
 
 # Bump when epoch features change, so derived caches are recomputed.
-FEATURE_VERSION = 2  # v2: + epoch line length and Teager energy (morphology)
+FEATURE_VERSION = 3  # v2: + epoch line length and Teager energy (morphology); v3: aEEG margins, ACNS continuity
 
 
 @dataclass
@@ -185,7 +185,10 @@ def compute_features(
     else:
         aeeg = aeeg_envelope(rep_sig, fs, channel=rep) if rep else None
     dsa = density_spectral_array(rep_sig, fs, channel=rep) if rep else None
-    burst = burst_suppression(rep_sig, fs)
+    # continuity / IBI from the ACNS suppression mask (< 10 µV peak-to-trough on the median
+    # channel) over all scalp channels (increment 29); the rectified envelope of one
+    # average-referenced channel accepted ~30 µV activity as suppression
+    burst = (burst_suppression_acns(data[eeg_idx], fs) if eeg_idx else burst_suppression(rep_sig, fs))
 
     return FeatureSet(
         fs=fs,

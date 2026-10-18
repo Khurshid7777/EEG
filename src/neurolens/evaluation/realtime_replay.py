@@ -70,7 +70,7 @@ def build_traces(
 
     ckey = hashlib.sha1(
         (cfg.filters.model_dump_json() + f"{rt.window_s}:{rt.step_s}|fv{FEATURE_VERSION}"
-         + ("|rhythm" if rhythm else "") + (f"|ch{','.join(channels)}" if channels else "")).encode()
+         + ("|rhythm" if rhythm else "") + (f"|ch{','.join(sorted({c.upper() for c in channels}))}" if channels else "")).encode()
     ).hexdigest()[:10]
     def cache_path(path: Path) -> Optional[Path]:
         if not cdir:

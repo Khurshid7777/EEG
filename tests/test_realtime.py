@@ -158,3 +158,12 @@ def test_monitor_reduces_to_model_electrodes(demo_edf, configs):
     eeg = [n for n in mon._names if n.upper() in {c.upper() for c in mon.channels}]
     assert eeg and set(eeg) <= set(mon.channels)
     assert RealtimeMonitor(config=configs).channels is None  # adults: all electrodes
+
+
+def test_monitor_incomplete_electrode_set_warns(demo_edf, configs):
+    """Increment 30 review: a recording without the model's electrode set is analysed as is,
+    with a warning (not reduced to too few channels, not a crash)."""
+    mon = RealtimeMonitor(config=configs, channels=["Fp1", "Fp2", "P3"])
+    s = mon.run(EdfReplaySource(demo_edf, chunk_s=configs.realtime.step_s))
+    assert any(w.startswith("model_electrode_set_incomplete") for w in s.warnings)
+    assert mon._names == list(EdfReplaySource(demo_edf).channel_names)

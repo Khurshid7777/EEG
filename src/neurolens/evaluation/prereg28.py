@@ -37,6 +37,8 @@ def _boot_ci(rows: list[dict], stat) -> list[float]:
         v = stat(sample)
         if v is not None and not np.isnan(v):
             vals.append(v)
+    if not vals:
+        return [float("nan"), float("nan")]
     return [float(np.quantile(vals, 0.025)), float(np.quantile(vals, 0.975))]
 
 
@@ -57,6 +59,8 @@ def _rho(rows):
 def evaluate(rows: list[dict]) -> dict[str, Any]:
     severe = [r for r in rows if r["grade"] >= 3]
     normal = [r for r in rows if r["grade"] == 1]
+    if not severe or not normal:
+        raise ValueError(f"need grade 3-4 and grade 1 hours (have {len(severe)} and {len(normal)})")
     tp = sum(r["background_alarms"] > 0 for r in severe)
     tn = sum(r["background_alarms"] == 0 for r in normal)
     sens, spec, rho = tp / len(severe), tn / len(normal), _rho(rows)

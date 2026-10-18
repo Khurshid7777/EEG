@@ -77,6 +77,8 @@ class RealtimeMonitor:
         neonate = patient is not None and patient.postmenstrual_age_weeks is not None
         # electrodes to analyse (None = all); set by the learned detector's mode (increment 30)
         self.channels: Optional[list[str]] = list(channels) if channels else None
+        self._names: Optional[list[str]] = None  # channels analysed in the current run
+        self._set_warning: Optional[str] = None
         self.rhythm_features = False  # increment 27: compute epoch rhythmicity (traces for training)
         self._neonate = neonate
         self._patient = patient
@@ -133,12 +135,20 @@ class RealtimeMonitor:
         fs = source.sampling_rate_hz
         names = list(source.channel_names)
         keep = None
+        self._set_warning = None
         if self.channels is not None:
-            from ..layer1_ingest.electrodes import is_eeg_channel
+            from ..layer1_ingest.electrodes import is_eeg_channel, normalize_channel_name
+            from ..pipeline.pipeline import MIN_EEG_CHANNELS
 
-            want = {c.upper() for c in self.channels}
-            keep = [i for i, n in enumerate(names) if n.upper() in want or not is_eeg_channel(n)]
-            names = [names[i] for i in keep]
+            want = {normalize_channel_name(c).upper() for c in self.channels}
+            sel = [i for i, n in enumerate(names) if n.upper() in want or not is_eeg_channel(n)]
+            n_set = sum(is_eeg_channel(names[i]) for i in sel)
+            if n_set >= MIN_EEG_CHANNELS:
+                keep = sel
+                names = [names[i] for i in keep]
+            else:  # the model's electrode set is not in this recording: analyse what there is
+                self._set_warning = (f"model_electrode_set_incomplete:{n_set}/{len(want)}: the seizure model "
+                                     "was trained on this electrode set; its alarm rate here is unverified")
         self._names = names
         buf = WindowBuffer(len(names), fs, rt.window_s, rt.step_s)
         mgr = AlarmManager(rt)
@@ -174,7 +184,7 @@ class RealtimeMonitor:
         sig = UnifiedSignal(
             signal=window_data.astype(np.float32),
             sampling_rate_hz=source.sampling_rate_hz,
-            channel_names=list(getattr(self, "_names", None) or source.channel_names),
+            channel_names=list(self._names if self._names is not None else source.channel_names),
             reference=source.reference,
         )
         filt = apply_filters(sig, self.cfg.filters)
@@ -284,8 +294,8 @@ class RealtimeMonitor:
         from ..layer1_ingest.electrodes import is_eeg_channel
         from ..pipeline.pipeline import MIN_EEG_CHANNELS
 
-        n_eeg = sum(is_eeg_channel(n) for n in (getattr(self, "_names", None) or source.channel_names))
-        warnings = []
+        n_eeg = sum(is_eeg_channel(n) for n in (self._names if self._names is not None else source.channel_names))
+        warnings = [self._set_warning] if self._set_warning else []
         if n_eeg < MIN_EEG_CHANNELS:
             warnings.append(f"insufficient_eeg_channels:{n_eeg}<{MIN_EEG_CHANNELS}: seizure/background "
                             "analysis not performed - absence of alarms does not mean absence of seizures")

@@ -10,12 +10,8 @@ Layer-5 rules turn into age-aware interpretation.
 
 from __future__ import annotations
 
-import numpy as np
-
 from ..contracts.events import Event, EventEvidence, Localization
-from ..layer1_ingest.electrodes import is_eeg_channel
 from ..layer3_features.aeeg_classify import AeegCategory, classify_aeeg
-from ..layer3_features.suppression import burst_suppression_acns
 from ..layer3_features.norms import NormsEngine
 from .base import Detector
 
@@ -36,13 +32,7 @@ class NeonatalBackgroundDetector(Detector):
         if pma is None or features.aeeg is None:
             return []
 
-        # increment 29: continuity / IBI from the ACNS suppression mask over all scalp channels
-        # (< 10 µV peak-to-trough on the median channel), not the rectified envelope of one
-        # average-referenced channel (that method accepted ~30 µV activity as suppression)
-        eeg_idx = [i for i, n in enumerate(sig.channel_names) if is_eeg_channel(n)]
-        burst = (burst_suppression_acns(sig.signal[eeg_idx].astype(np.float64), sig.sampling_rate_hz,
-                                        amp_thresh_uv=thresholds.suppression_amplitude_uv)
-                 if eeg_idx else features.burst)
+        burst = features.burst  # ACNS suppression mask over all scalp channels (increment 29)
         assess = classify_aeeg(features.aeeg, burst_suppression_ratio=burst.suppression_ratio)
         continuity = float(1.0 - burst.suppression_ratio)
         ibi = float(burst.mean_ibi_s)
@@ -95,8 +85,9 @@ class NeonatalBackgroundDetector(Detector):
                               reference=f">= {exp.get('continuity_normal_min')}"),
                 EventEvidence(feature="mean_ibi_s", value=round(ibi, 1), unit="s",
                               reference=f"<= {max_ibi}"),
-                EventEvidence(feature="swc_present", value=float(assess.swc_present),
-                              reference=f"ожидаемо: {swc_expected}"),
+                EventEvidence(feature="swc_present", value=float(assess.swc_present) if swc_assessable else None,
+                              reference=f"ожидаемо: {swc_expected}" if swc_assessable
+                              else "не оценивается: запись < 3 ч"),
             ],
             metadata=meta,
         ))
