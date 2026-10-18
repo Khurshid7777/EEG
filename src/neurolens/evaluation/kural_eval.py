@@ -76,7 +76,7 @@ def score_case(case: KuralCase, path: Path, cfg, model, threshold: float) -> Cas
     a = rereference(filt, "average")
     lo, hi = t - HALF_WINDOW_S, t + HALF_WINDOW_S
     X, t0 = ied_ml.window_features(a.signal, a.sampling_rate_hz, a.channel_names)
-    p = model.predict_proba(X) if X.shape[0] else np.zeros(0)
+    p = ied_ml.model_probability(model, X) if X.shape[0] else np.zeros(0)
     near = (t0 < hi) & (t0 + ied_ml.WIN_S > lo)
     learned = float(p[near].max()) if near.any() else 0.0
     call = any(s < hi and e > lo for s, e, _ in ied_ml.probability_events(t0, p, threshold))

@@ -201,15 +201,18 @@ THRESHOLD_GRID = tuple(sorted({round(float(v), 3) for v in np.concatenate(
     [np.arange(0.30, 0.90, 0.05), np.arange(0.90, 0.991, 0.01)])}))
 
 
-def fit_ied_gbm(X: np.ndarray, y: np.ndarray, params: dict | None = None):
+def fit_ied_gbm(X: np.ndarray, y: np.ndarray, params: dict | None = None, drop: tuple[str, ...] = ()):
+    """``X`` is the full window-feature matrix; ``drop`` names features left out (increment 31)."""
     from sklearn.ensemble import HistGradientBoostingClassifier
     import sklearn
 
     from ..layer4_detect.ml_ictal import export_hist_gbm
 
     p = {**IED_GBM_PARAMS, **(params or {})}
+    names = [n for n in ied_ml.feature_names() if n not in set(drop)]
+    X = ied_ml.select_features(X, names)
     clf = HistGradientBoostingClassifier(class_weight="balanced", **p).fit(X, y)
-    return export_hist_gbm(clf, ied_ml.feature_names(), {
+    return export_hist_gbm(clf, names, {
         "trainer": f"sklearn {sklearn.__version__} HistGradientBoostingClassifier",
         "params": p, "n_train": int(len(y)), "n_pos": int(np.sum(y)),
         "window_s": ied_ml.WIN_S, "hop_s": ied_ml.HOP_S, "features": FEATURE_VERSION,
@@ -222,7 +225,8 @@ def fold_of(record_id: int, normal: bool, k: int = 5) -> int:
 
 
 def cross_val_probabilities(records: list[IEDRecord], anns: dict[int, NMTAnnotation],
-                            k: int = 5, params: dict | None = None, progress=None) -> list[np.ndarray]:
+                            k: int = 5, params: dict | None = None, progress=None,
+                            drop: tuple[str, ...] = ()) -> list[np.ndarray]:
     xy = [training_xy(r, None if r.normal else anns.get(r.record_id)) for r in records]
     folds = [fold_of(r.record_id, r.normal, k) for r in records]
     out: list[Optional[np.ndarray]] = [None] * len(records)
@@ -230,10 +234,10 @@ def cross_val_probabilities(records: list[IEDRecord], anns: dict[int, NMTAnnotat
         tr = [i for i, g in enumerate(folds) if g != f]
         X = np.vstack([xy[i][0] for i in tr])
         y = np.concatenate([xy[i][1] for i in tr])
-        model = fit_ied_gbm(X, y, params)
+        model = fit_ied_gbm(X, y, params, drop)
         for i, g in enumerate(folds):
             if g == f:
-                out[i] = model.predict_proba(records[i].X) if records[i].X.shape[0] else np.zeros(0)
+                out[i] = ied_ml.model_probability(model, records[i].X) if records[i].X.shape[0] else np.zeros(0)
         if progress:
             progress(f)
     return out  # type: ignore[return-value]
@@ -297,18 +301,18 @@ def _sha256(path: Path) -> str:
 
 def freeze(records: list[IEDRecord], anns: dict[int, NMTAnnotation], model_path: Path,
            frozen_path: Path, fa_budget: float, cv_probs: list[np.ndarray] | None = None,
-           progress=None) -> dict:
+           progress=None, drop: tuple[str, ...] = ()) -> dict:
     """Cross-validate on the training split, pick the threshold (max sensitivity at
     FA/h <= budget on training normals), fit on all training records, save."""
-    probs = cv_probs if cv_probs is not None else cross_val_probabilities(records, anns, progress=progress)
+    probs = cv_probs if cv_probs is not None else cross_val_probabilities(records, anns, progress=progress, drop=drop)
     curve = learned_curve(records, anns, probs)
     op = operating_point(curve, fa_budget, "threshold")
     if op is None:
         raise RuntimeError(f"no threshold reaches {fa_budget} FA/h in cross-validation")
     xy = [training_xy(r, None if r.normal else anns.get(r.record_id)) for r in records]
-    model = fit_ied_gbm(np.vstack([a for a, _ in xy]), np.concatenate([b for _, b in xy]))
+    model = fit_ied_gbm(np.vstack([a for a, _ in xy]), np.concatenate([b for _, b in xy]), drop=drop)
     model.meta.update({"threshold": op["threshold"], "fa_budget_per_h": fa_budget,
-                       "training_records": len(records)})
+                       "training_records": len(records), "dropped_features": sorted(drop)})
     model.save(model_path)
     frozen = {
         "model": {"path": str(model_path), "sha256": _sha256(model_path)},
@@ -317,7 +321,7 @@ def freeze(records: list[IEDRecord], anns: dict[int, NMTAnnotation], model_path:
         "heuristic_cv_curve": heuristic_curve(records, anns),
         "training_records": sorted([[r.record_id, r.normal] for r in records]),
         "feature_version": FEATURE_VERSION, "amplitude_scale": AMPLITUDE_SCALE,
-        "merge_gap_s": MERGE_GAP_S, "tolerance_s": TOL_S,
+        "merge_gap_s": MERGE_GAP_S, "tolerance_s": TOL_S, "dropped_features": sorted(drop),
     }
     frozen_path.parent.mkdir(parents=True, exist_ok=True)
     frozen_path.write_text(json.dumps(frozen, indent=1, default=float) + "\n", encoding="utf-8")
@@ -332,7 +336,7 @@ def evaluate_frozen(records: list[IEDRecord], anns: dict[int, NMTAnnotation], fr
         raise RuntimeError("IED model does not match the frozen sha256")
     model = load_model(path)
     thr = frozen["threshold"]
-    probs = {id(r): (model.predict_proba(r.X) if r.X.shape[0] else np.zeros(0)) for r in records}
+    probs = {id(r): (ied_ml.model_probability(model, r.X) if r.X.shape[0] else np.zeros(0)) for r in records}
     dets = lambda r: learned_detections(r, probs[id(r)], thr)  # noqa: E731
     learned = evaluate(records, anns, dets)
     return {

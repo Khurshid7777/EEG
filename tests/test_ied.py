@@ -325,3 +325,20 @@ def test_old_index_without_offsets_is_upgraded(tmp_path, monkeypatch):
     c._index = None
     assert c.fetch(m).read_bytes() == payload  # zipfile path
     assert len(json.loads((tmp_path / "cache" / "index.json").read_text())[m]) == 5
+
+
+def test_ied_feature_subset_by_name():
+    """Increment 31: a model trained without the gain-dependent features is scored on the
+    matching columns of the full window-feature matrix."""
+    import numpy as np
+
+    from neurolens.layer4_detect import ied_ml
+
+    full = ied_ml.feature_names()
+    drop = ied_ml.gain_dependent_features()
+    assert drop and all("log_ptp_abs_max" in n for n in drop) and len(drop) == 3
+    X = np.arange(2 * len(full), dtype=float).reshape(2, -1)
+    keep = [n for n in full if n not in drop]
+    Xs = ied_ml.select_features(X, keep)
+    assert Xs.shape == (2, len(full) - 3) and ied_ml.select_features(X, full) is X
+    assert Xs[0, 0] == X[0, full.index(keep[0])]

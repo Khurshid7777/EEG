@@ -555,8 +555,11 @@ def _ied(args) -> int:
             raise SystemExit("freeze uses the training split only")
         from .evaluation.prereg15 import FA_BUDGET_PER_H
 
+        from .layer4_detect.ied_ml import gain_dependent_features
+
+        drop = tuple(gain_dependent_features()) if args.gain_invariant else ()
         fr = E.freeze(records, anns, Path(args.model), Path(args.frozen), FA_BUDGET_PER_H,
-                      progress=lambda f: print(f"fold {f} done", flush=True))
+                      progress=lambda f: print(f"fold {f} done", flush=True), drop=drop)
         print(json.dumps({k: fr[k] for k in ("threshold", "cv_operating_point", "model")}, indent=1,
                          default=float))
         return 0
@@ -776,6 +779,8 @@ def build_parser() -> argparse.ArgumentParser:
     ie.add_argument("--out", default="docs/increment15_metrics.json")
     ie.add_argument("--assess", action="store_true")
     ie.add_argument("--assessment", default="docs/increment15_assessment.json")
+    ie.add_argument("--gain-invariant", action="store_true", dest="gain_invariant",
+                    help="freeze: leave out the absolute-amplitude features (increment 31)")
     ie.set_defaults(func=_ied)
 
     ro = sub.add_parser("routine", help="NMT: routine-EEG specificity of the offline pipeline.")

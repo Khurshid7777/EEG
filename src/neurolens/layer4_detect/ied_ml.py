@@ -110,6 +110,26 @@ def feature_names() -> list[str]:
     return b + [f"prev_{n}" for n in b] + [f"next_{n}" for n in b]
 
 
+# features that scale with the recording gain (increment 31): the only absolute-amplitude
+# input; a model trained without them is invariant to the amplifier's µV calibration
+def gain_dependent_features() -> list[str]:
+    return [n for n in feature_names() if "log_ptp_abs_max" in n]
+
+
+def select_features(X: np.ndarray, model_feature_names: list[str]) -> np.ndarray:
+    """Columns of the full window-feature matrix that a model was trained on (by name)."""
+    full = feature_names()
+    if list(model_feature_names) == full:
+        return X
+    idx = [full.index(n) for n in model_feature_names]
+    return X[:, idx]
+
+
+def model_probability(model, X: np.ndarray) -> np.ndarray:
+    names = getattr(model, "feature_names", None)
+    return model.predict_proba(X if names is None else select_features(X, names))
+
+
 def window_features(x: np.ndarray, fs: float, names: list[str]) -> tuple[np.ndarray, np.ndarray]:
     """Feature matrix (K, F) and window start times (K,) for a (C, N) signal in µV."""
     idx = standard_channels(names)
@@ -193,7 +213,7 @@ def annotate_candidates(model, sig, events, threshold: float, half_window_s: flo
     X, t0 = window_features(sig.signal, sig.sampling_rate_hz, sig.channel_names)
     if X.shape[0] == 0:
         return 0
-    p = model.predict_proba(X)
+    p = model_probability(model, X)
     # record-level recurrence (increment 19): number of separate learned detections
     n_rec = len(probability_events(t0, p, recurrent_threshold)) if recurrent_threshold is not None else None
     high = 0
@@ -239,7 +259,7 @@ class MLSpikeDetector(Detector):
         X, t0 = window_features(sig.signal, fs, names)
         if X.shape[0] == 0:
             return []
-        p = self.model.predict_proba(X)
+        p = model_probability(self.model, X)
         idx = standard_channels(names)
         x = np.asarray(sig.signal[idx], dtype=np.float64)
         ch = [names[i] for i in idx]
