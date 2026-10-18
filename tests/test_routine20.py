@@ -356,3 +356,43 @@ def test_rhythmicity_offline_equals_streaming():
     on = np.vstack([r for r in rows if len(r)])
     assert on.shape == off.shape and off.shape[1] == len(FEATURE_NAMES_V5)
     assert np.allclose(np.nan_to_num(on, nan=-9), np.nan_to_num(off, nan=-9))
+
+
+def test_tuab_client_layout(tmp_path):
+    """Increment 32: TUAB labels/split from the path, age from the EDF header."""
+    from neurolens.datasets.tuab import TUABClient
+
+    def edf(rel, patient=b"X M 01-JAN-1960 X Age:57"):
+        p = tmp_path / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(b"0       " + patient.ljust(80) + b" " * 168)
+        return p
+
+    edf("edf/eval/normal/01_tcp_ar/aaaaaaaa_s001_t000.edf")
+    edf("edf/eval/abnormal/01_tcp_ar/aaaaaaab_s002_t001.edf", b"X F X")
+    edf("edf/train/normal/01_tcp_ar/aaaaaaac_s001_t000.edf")
+    (tmp_path / "README.edf").write_bytes(b"x")  # outside the layout: ignored
+    ev = TUABClient(tmp_path).records("eval")
+    assert [(r.name, r.abnormal, r.age_years) for r in ev] == [
+        ("aaaaaaab_s002_t001", True, None), ("aaaaaaaa_s001_t000", False, 57.0)]
+    assert len(TUABClient(tmp_path).records()) == 3 and ev[0].subject == "aaaaaaab"
+
+
+def test_prereg32_assess_and_decision(tmp_path):
+    from neurolens.evaluation.prereg32 import apply_decision, assess
+
+    def row(ab, p, model, rule):
+        return {"abnormal": ab, "record_probability": p, "impression_abnormal": model,
+                "rule_impression_abnormal": rule, "record_borderline": False, "age_years": 40.0}
+    rows = ([row(False, 0.1, False, False)] * 8 + [row(False, 0.6, True, True)] * 2
+            + [row(True, 0.9, True, False)] * 8 + [row(True, 0.2, False, False)] * 2
+            + [{"abnormal": True, "error": "x"}])
+    a = assess(rows)
+    assert a["n_scored"] == 20 and a["n_excluded"] == 1
+    assert a["model"]["specificity"] == 0.8 and a["model"]["sensitivity"] == 0.8
+    assert all(a["hypotheses"].values()) and a["decision"]["record_model_decides"]
+    y = tmp_path / "imp.yaml"
+    y.write_text("record_threshold: 0.25\nrecord_model_decides: true\n")
+    a["decision"]["record_model_decides"] = False
+    apply_decision(a, str(y))
+    assert "record_model_decides: false" in y.read_text() and "record_threshold: 0.25" in y.read_text()

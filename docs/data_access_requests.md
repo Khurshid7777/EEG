@@ -13,6 +13,9 @@ Helsinki, NMT, NMT-Events, IFCN, Cork, Sleep-EDF, CAP). Следующие пр�
 * **Как получить:** бесплатно; форма регистрации на сайте Neural Engineering Data Consortium
   (isip.piconepress.com → TUH EEG Corpus → «request access»), подписанное соглашение об
   использовании данных, после одобрения — логин для загрузки (rsync/https).
+* **Готово к запуску:** клиент `datasets/tuab.py`, скрипт `scripts/run_tuab_eval.py`, анализ
+  `evaluation/prereg32.py`, пре-регистрация `docs/preregistration_increment32.md` (зафиксирована).
+  Корпус положить в `data/tuab/`.
 * **Что проверим (пре-регистрация до открытия):** модель уровня записи v2 с порогами по возрасту
   и пограничной зоной, как в `configs/impression.yaml`, на оценочной части TUAB:
   специфичность, чувствительность, AUC против чисел NMT (0.789 / 0.800 / 0.897); перенос модели
