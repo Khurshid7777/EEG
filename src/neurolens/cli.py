@@ -613,6 +613,25 @@ def _ied_kural(args) -> int:
     return 0
 
 
+def _scan_check(args) -> int:
+    """Check a scanned paper-EEG page against docs/scanning_regulation.md."""
+    import json
+
+    from .layer1_ingest.scan_check import ScanForm, check_scan
+
+    form = ScanForm.model_validate_json(Path(args.form).read_text(encoding="utf-8"))
+    rep = check_scan(args.image, form)
+    for c in rep.checks:
+        mark = {"ok": "OK ", "warning": "!! ", "reject": "XX "}[c.status]
+        print(f"{mark}{c.name:22s} {str(c.value):>12s}  ({c.limit}) — {c.message_ru}")
+    print(json.dumps(rep.derived, ensure_ascii=False))
+    print("ПРИНЯТ" if rep.accepted else "ОТКЛОНЁН: пересканировать по регламенту")
+    if args.out:
+        Path(args.out).write_text(json.dumps(rep.to_dict(), ensure_ascii=False, indent=1, default=str) + "\n",
+                                  encoding="utf-8")
+    return 0 if rep.accepted else 2
+
+
 def _routine_one(item):
     rec, cache = item
     from .datasets.nmt import NMTClient
@@ -799,6 +818,12 @@ def build_parser() -> argparse.ArgumentParser:
     sv.add_argument("--host", default="127.0.0.1")
     sv.add_argument("--port", type=int, default=8000)
     sv.set_defaults(func=_serve)
+
+    sc = sub.add_parser("scan-check", help="Check a scanned paper-EEG page against the scanning regulation.")
+    sc.add_argument("image", help="Page image (PNG/TIFF).")
+    sc.add_argument("form", help="JSON form: paper speed, sensitivity, channel labels, calibration (ScanForm).")
+    sc.add_argument("--out", help="Write the full report as JSON.")
+    sc.set_defaults(func=_scan_check)
 
     s = sub.add_parser("export-schemas", help="Export JSON Schemas from contracts.")
     s.add_argument("dir", nargs="?", default=None)

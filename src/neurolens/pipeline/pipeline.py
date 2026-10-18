@@ -412,6 +412,12 @@ class Pipeline:
             gate.passed = False
             gate.reasons_ru.append("заключение «норма/отклонения» на рутинной ЭЭГ не прошло проверку")
             gate.reasons_uz.append("rutin EEGda «norma/og‘ish» xulosasi tekshiruvdan o‘tmagan")
+        from ..layer1_ingest.scan_check import gate_reasons
+
+        for ru, uz in gate_reasons(bool(analysis.provenance and analysis.provenance.digitized)):
+            gate.passed = False
+            gate.reasons_ru.append(ru)
+            gate.reasons_uz.append(uz)
         if amp_flag:
             gate.passed = False
             gate.reasons_ru.append("амплитуда ЭЭГ неправдоподобна (ошибка единиц/усиления в файле или крайнее подавление)")
