@@ -1,0 +1,1439 @@
+{
+ "model": {
+  "path": "configs/models/ied_gbm_v2.json",
+  "sha256": "3b3fdcc21816067cca6f172ab9b330bab6a0effdedc123e81463f155f6c9b5b4"
+ },
+ "threshold": 0.96,
+ "fa_budget_per_h": 15.0,
+ "cv_operating_point": {
+  "threshold": 0.96,
+  "sensitivity": 0.5245733788395904,
+  "sensitivity_ci95_record_bootstrap": [
+   0.36530476758571934,
+   0.6496684120341643
+  ],
+  "sensitivity_macro": 0.5135771683411812,
+  "n_ref": 2930,
+  "n_hit": 1537,
+  "n_records_with_ref": 50,
+  "fa_per_h_normal": 13.481875780201143,
+  "n_false_normal": 636,
+  "hours_normal": 47.17444444444445,
+  "n_normal": 120,
+  "normal_records_with_any_detection": 56,
+  "slowing_hit_rate": 0.14383561643835616,
+  "n_slowing": 730,
+  "unannotated_per_h_abnormal": 31.650258804425047
+ },
+ "cv_curve": [
+  {
+   "threshold": 0.3,
+   "sensitivity": 0.9607508532423208,
+   "sensitivity_ci95_record_bootstrap": [
+    0.9175633445830637,
+    0.9864775839912927
+   ],
+   "sensitivity_macro": 0.9454502994084525,
+   "n_ref": 2930,
+   "n_hit": 2815,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 372.6805944838307,
+   "n_false_normal": 17581,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 116,
+   "slowing_hit_rate": 0.8123287671232877,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 526.0428295950471
+  },
+  {
+   "threshold": 0.35,
+   "sensitivity": 0.956655290102389,
+   "sensitivity_ci95_record_bootstrap": [
+    0.9107588402834691,
+    0.984510209722935
+   ],
+   "sensitivity_macro": 0.9424704664471562,
+   "n_ref": 2930,
+   "n_hit": 2803,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 343.17309277622064,
+   "n_false_normal": 16189,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 116,
+   "slowing_hit_rate": 0.7849315068493151,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 495.2146554348929
+  },
+  {
+   "threshold": 0.4,
+   "sensitivity": 0.9535836177474403,
+   "sensitivity_ci95_record_bootstrap": [
+    0.9069535629782789,
+    0.9823007166673918
+   ],
+   "sensitivity_macro": 0.9371067099839663,
+   "n_ref": 2930,
+   "n_hit": 2794,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 314.83147655274746,
+   "n_false_normal": 14852,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 115,
+   "slowing_hit_rate": 0.7506849315068493,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 461.6005277580432
+  },
+  {
+   "threshold": 0.45,
+   "sensitivity": 0.9488054607508533,
+   "sensitivity_ci95_record_bootstrap": [
+    0.8996318839410651,
+    0.9784657216609746
+   ],
+   "sensitivity_macro": 0.9310511858305419,
+   "n_ref": 2930,
+   "n_hit": 2780,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 285.89631862825917,
+   "n_false_normal": 13487,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 115,
+   "slowing_hit_rate": 0.7205479452054795,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 426.0225312087689
+  },
+  {
+   "threshold": 0.5,
+   "sensitivity": 0.9409556313993174,
+   "sensitivity_ci95_record_bootstrap": [
+    0.8871524937299062,
+    0.9751600008824168
+   ],
+   "sensitivity_macro": 0.92489329978732,
+   "n_ref": 2930,
+   "n_hit": 2757,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 257.0247544574511,
+   "n_false_normal": 12125,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 114,
+   "slowing_hit_rate": 0.6821917808219178,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 387.6585811427991
+  },
+  {
+   "threshold": 0.55,
+   "sensitivity": 0.9331058020477816,
+   "sensitivity_ci95_record_bootstrap": [
+    0.873239379624384,
+    0.971239950742445
+   ],
+   "sensitivity_macro": 0.9149801958407326,
+   "n_ref": 2930,
+   "n_hit": 2734,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 231.778034246414,
+   "n_false_normal": 10934,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 110,
+   "slowing_hit_rate": 0.6397260273972603,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 354.5925098954633
+  },
+  {
+   "threshold": 0.6,
+   "sensitivity": 0.9215017064846417,
+   "sensitivity_ci95_record_bootstrap": [
+    0.8552307873428334,
+    0.9629728795240864
+   ],
+   "sensitivity_macro": 0.8671547582389226,
+   "n_ref": 2930,
+   "n_hit": 2700,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 206.40412652801658,
+   "n_false_normal": 9737,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 108,
+   "slowing_hit_rate": 0.6,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 317.50735816502583
+  },
+  {
+   "threshold": 0.65,
+   "sensitivity": 0.9098976109215017,
+   "sensitivity_ci95_record_bootstrap": [
+    0.8366587408548325,
+    0.9569561176975917
+   ],
+   "sensitivity_macro": 0.855583825950281,
+   "n_ref": 2930,
+   "n_hit": 2666,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 178.44407282662456,
+   "n_false_normal": 8418,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 108,
+   "slowing_hit_rate": 0.552054794520548,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 282.06637572312997
+  },
+  {
+   "threshold": 0.7,
+   "sensitivity": 0.89419795221843,
+   "sensitivity_ci95_record_bootstrap": [
+    0.8157824373768646,
+    0.9461541774332471
+   ],
+   "sensitivity_macro": 0.8392068607237824,
+   "n_ref": 2930,
+   "n_hit": 2620,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 151.69230044515626,
+   "n_false_normal": 7156,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 106,
+   "slowing_hit_rate": 0.5123287671232877,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 243.7480970262864
+  },
+  {
+   "threshold": 0.75,
+   "sensitivity": 0.8767918088737201,
+   "sensitivity_ci95_record_bootstrap": [
+    0.7893967331118494,
+    0.9367521689910304
+   ],
+   "sensitivity_macro": 0.825307795877259,
+   "n_ref": 2930,
+   "n_hit": 2569,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 126.6575594130532,
+   "n_false_normal": 5975,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 103,
+   "slowing_hit_rate": 0.4808219178082192,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 205.29280422206432
+  },
+  {
+   "threshold": 0.8,
+   "sensitivity": 0.8501706484641638,
+   "sensitivity_ci95_record_bootstrap": [
+    0.7538893431040051,
+    0.9181831754726312
+   ],
+   "sensitivity_macro": 0.797483278597001,
+   "n_ref": 2930,
+   "n_hit": 2491,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 100.58412040417363,
+   "n_false_normal": 4745,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 100,
+   "slowing_hit_rate": 0.4315068493150685,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 168.84705165939306
+  },
+  {
+   "threshold": 0.85,
+   "sensitivity": 0.8098976109215017,
+   "sensitivity_ci95_record_bootstrap": [
+    0.7021431906370178,
+    0.8874243421130965
+   ],
+   "sensitivity_macro": 0.7609477781974772,
+   "n_ref": 2930,
+   "n_hit": 2373,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 74.42588972372046,
+   "n_false_normal": 3511,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 92,
+   "slowing_hit_rate": 0.3589041095890411,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 130.52877296254948
+  },
+  {
+   "threshold": 0.9,
+   "sensitivity": 0.736518771331058,
+   "sensitivity_ci95_record_bootstrap": [
+    0.6089381544497049,
+    0.8337543245677784
+   ],
+   "sensitivity_macro": 0.7084876644620031,
+   "n_ref": 2930,
+   "n_hit": 2158,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 45.95708599288692,
+   "n_false_normal": 2168,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 85,
+   "slowing_hit_rate": 0.28904109589041094,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 87.91738556784735
+  },
+  {
+   "threshold": 0.91,
+   "sensitivity": 0.710580204778157,
+   "sensitivity_ci95_record_bootstrap": [
+    0.57850657895371,
+    0.8119966352195193
+   ],
+   "sensitivity_macro": 0.6871478557001265,
+   "n_ref": 2930,
+   "n_hit": 2082,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 40.7635961090044,
+   "n_false_normal": 1923,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 80,
+   "slowing_hit_rate": 0.2726027397260274,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 78.7374403734903
+  },
+  {
+   "threshold": 0.92,
+   "sensitivity": 0.6901023890784983,
+   "sensitivity_ci95_record_bootstrap": [
+    0.5547995962526978,
+    0.7961619387842023
+   ],
+   "sensitivity_macro": 0.6761568903223396,
+   "n_ref": 2930,
+   "n_hit": 2022,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 34.67979367359917,
+   "n_false_normal": 1636,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 77,
+   "slowing_hit_rate": 0.25753424657534246,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 70.33390845427787
+  },
+  {
+   "threshold": 0.93,
+   "sensitivity": 0.6607508532423209,
+   "sensitivity_ci95_record_bootstrap": [
+    0.5215726911358876,
+    0.772496240130342
+   ],
+   "sensitivity_macro": 0.6395608867783912,
+   "n_ref": 2930,
+   "n_hit": 1936,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 29.71948088654403,
+   "n_false_normal": 1402,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 72,
+   "slowing_hit_rate": 0.2328767123287671,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 61.108291890794675
+  },
+  {
+   "threshold": 0.94,
+   "sensitivity": 0.6283276450511945,
+   "sensitivity_ci95_record_bootstrap": [
+    0.48557408436362054,
+    0.7444932814171025
+   ],
+   "sensitivity_macro": 0.614856622499528,
+   "n_ref": 2930,
+   "n_hit": 1841,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 23.974845137433167,
+   "n_false_normal": 1131,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 70,
+   "slowing_hit_rate": 0.2095890410958904,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 51.60864711255455
+  },
+  {
+   "threshold": 0.95,
+   "sensitivity": 0.5791808873720137,
+   "sensitivity_ci95_record_bootstrap": [
+    0.4221667088574843,
+    0.7015262469097596
+   ],
+   "sensitivity_macro": 0.5613215392631784,
+   "n_ref": 2930,
+   "n_hit": 1697,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 18.33619897778929,
+   "n_false_normal": 865,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 63,
+   "slowing_hit_rate": 0.17123287671232876,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 42.24601644169288
+  },
+  {
+   "threshold": 0.96,
+   "sensitivity": 0.5245733788395904,
+   "sensitivity_ci95_record_bootstrap": [
+    0.36530476758571934,
+    0.6496684120341643
+   ],
+   "sensitivity_macro": 0.5135771683411812,
+   "n_ref": 2930,
+   "n_hit": 1537,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 13.481875780201143,
+   "n_false_normal": 636,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 56,
+   "slowing_hit_rate": 0.14383561643835616,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 31.650258804425047
+  },
+  {
+   "threshold": 0.97,
+   "sensitivity": 0.44505119453924913,
+   "sensitivity_ci95_record_bootstrap": [
+    0.2870051421466243,
+    0.5703932398103969
+   ],
+   "sensitivity_macro": 0.4387293726067869,
+   "n_ref": 2930,
+   "n_hit": 1304,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 8.669948418399793,
+   "n_false_normal": 409,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 45,
+   "slowing_hit_rate": 0.1136986301369863,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 21.511214858418754
+  },
+  {
+   "threshold": 0.98,
+   "sensitivity": 0.3409556313993174,
+   "sensitivity_ci95_record_bootstrap": [
+    0.21055735142122803,
+    0.44870220380734355
+   ],
+   "sensitivity_macro": 0.3527910490851439,
+   "n_ref": 2930,
+   "n_hit": 999,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 4.112396071319217,
+   "n_false_normal": 194,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 30,
+   "slowing_hit_rate": 0.06986301369863014,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 11.737541865421699
+  },
+  {
+   "threshold": 0.99,
+   "sensitivity": 0.13617747440273037,
+   "sensitivity_ci95_record_bootstrap": [
+    0.07783702017443778,
+    0.18324226226141777
+   ],
+   "sensitivity_macro": 0.18941451959508748,
+   "n_ref": 2930,
+   "n_hit": 399,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 0.9751042230963092,
+   "n_false_normal": 46,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 14,
+   "slowing_hit_rate": 0.023287671232876714,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 3.0599817314523494
+  }
+ ],
+ "heuristic_cv_curve": [
+  {
+   "sharpness_z": 4.0,
+   "sensitivity": 0.9982935153583617,
+   "sensitivity_ci95_record_bootstrap": [
+    0.9960061499678976,
+    1.0
+   ],
+   "sensitivity_macro": 0.9991708518904576,
+   "n_ref": 2930,
+   "n_hit": 2925,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 2542.3934804625856,
+   "n_false_normal": 119936,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.8589041095890411,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 2041.7842281538617
+  },
+  {
+   "sharpness_z": 5.0,
+   "sensitivity": 0.9873720136518771,
+   "sensitivity_ci95_record_bootstrap": [
+    0.9767321699978408,
+    0.9953129741479926
+   ],
+   "sensitivity_macro": 0.969724280648533,
+   "n_ref": 2930,
+   "n_hit": 2893,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 2336.413312292437,
+   "n_false_normal": 110219,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.7589041095890411,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 1972.0440474982238
+  },
+  {
+   "sharpness_z": 6.0,
+   "sensitivity": 0.9515358361774744,
+   "sensitivity_ci95_record_bootstrap": [
+    0.9172258251672246,
+    0.9757425869423293
+   ],
+   "sensitivity_macro": 0.9252481348024613,
+   "n_ref": 2930,
+   "n_hit": 2788,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 1663.3582212591562,
+   "n_false_normal": 78468,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.5726027397260274,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 1431.6147366284379
+  },
+  {
+   "sharpness_z": 7.0,
+   "sensitivity": 0.8747440273037542,
+   "sensitivity_ci95_record_bootstrap": [
+    0.8204469284882515,
+    0.9207487645098265
+   ],
+   "sensitivity_macro": 0.8681869197411757,
+   "n_ref": 2930,
+   "n_hit": 2563,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 1020.1709965376733,
+   "n_false_normal": 48126,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.44794520547945205,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 901.4158124429107
+  },
+  {
+   "sharpness_z": 8.0,
+   "sensitivity": 0.784641638225256,
+   "sensitivity_ci95_record_bootstrap": [
+    0.708644629228778,
+    0.8545469114219114
+   ],
+   "sensitivity_macro": 0.8099838739265636,
+   "n_ref": 2930,
+   "n_hit": 2299,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 640.961443342676,
+   "n_false_normal": 30237,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.3136986301369863,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 606.7898102100883
+  },
+  {
+   "sharpness_z": 10.0,
+   "sensitivity": 0.5921501706484642,
+   "sensitivity_ci95_record_bootstrap": [
+    0.49613608346264115,
+    0.6925494738239005
+   ],
+   "sensitivity_macro": 0.6964991926842978,
+   "n_ref": 2930,
+   "n_hit": 1735,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 383.3219492663165,
+   "n_false_normal": 18083,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.18356164383561643,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 389.987820968233
+  },
+  {
+   "sharpness_z": 12.0,
+   "sensitivity": 0.4416382252559727,
+   "sensitivity_ci95_record_bootstrap": [
+    0.3439267622592892,
+    0.5527688648041453
+   ],
+   "sensitivity_macro": 0.5947316287686593,
+   "n_ref": 2930,
+   "n_hit": 1294,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 286.9138186871423,
+   "n_false_normal": 13535,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.12191780821917808,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 294.9913731858317
+  },
+  {
+   "sharpness_z": 15.0,
+   "sensitivity": 0.28737201365187715,
+   "sensitivity_ci95_record_bootstrap": [
+    0.20414720117769705,
+    0.3925505388554032
+   ],
+   "sensitivity_macro": 0.4592388987857106,
+   "n_ref": 2930,
+   "n_hit": 842,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 199.3876157053018,
+   "n_false_normal": 9406,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.07945205479452055,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 206.11488886633512
+  },
+  {
+   "sharpness_z": 20.0,
+   "sensitivity": 0.14505119453924914,
+   "sensitivity_ci95_record_bootstrap": [
+    0.09042261146074859,
+    0.21325072157143724
+   ],
+   "sensitivity_macro": 0.29259750839175586,
+   "n_ref": 2930,
+   "n_hit": 425,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 114.48995454224273,
+   "n_false_normal": 5401,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 120,
+   "slowing_hit_rate": 0.03287671232876712,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 120.38972901654317
+  },
+  {
+   "sharpness_z": 25.0,
+   "sensitivity": 0.07610921501706484,
+   "sensitivity_ci95_record_bootstrap": [
+    0.04622372783794546,
+    0.11825646780827383
+   ],
+   "sensitivity_macro": 0.1930788754037052,
+   "n_ref": 2930,
+   "n_hit": 223,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 68.44807687778223,
+   "n_false_normal": 3229,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 119,
+   "slowing_hit_rate": 0.01643835616438356,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 72.48046280320715
+  },
+  {
+   "sharpness_z": 30.0,
+   "sensitivity": 0.03924914675767918,
+   "sensitivity_ci95_record_bootstrap": [
+    0.023677726367585077,
+    0.06460639951838704
+   ],
+   "sensitivity_macro": 0.11406055388757481,
+   "n_ref": 2930,
+   "n_hit": 115,
+   "n_records_with_ref": 50,
+   "fa_per_h_normal": 43.49812751725275,
+   "n_false_normal": 2052,
+   "hours_normal": 47.17444444444445,
+   "n_normal": 120,
+   "normal_records_with_any_detection": 118,
+   "slowing_hit_rate": 0.00821917808219178,
+   "n_slowing": 730,
+   "unannotated_per_h_abnormal": 46.08241144828986
+  }
+ ],
+ "training_records": [
+  [
+   4,
+   false
+  ],
+  [
+   6,
+   false
+  ],
+  [
+   8,
+   false
+  ],
+  [
+   16,
+   true
+  ],
+  [
+   24,
+   true
+  ],
+  [
+   26,
+   false
+  ],
+  [
+   40,
+   true
+  ],
+  [
+   48,
+   true
+  ],
+  [
+   56,
+   true
+  ],
+  [
+   64,
+   true
+  ],
+  [
+   72,
+   true
+  ],
+  [
+   80,
+   true
+  ],
+  [
+   88,
+   true
+  ],
+  [
+   96,
+   true
+  ],
+  [
+   104,
+   true
+  ],
+  [
+   112,
+   false
+  ],
+  [
+   120,
+   true
+  ],
+  [
+   128,
+   true
+  ],
+  [
+   136,
+   true
+  ],
+  [
+   138,
+   false
+  ],
+  [
+   144,
+   true
+  ],
+  [
+   152,
+   true
+  ],
+  [
+   160,
+   true
+  ],
+  [
+   168,
+   true
+  ],
+  [
+   176,
+   true
+  ],
+  [
+   180,
+   false
+  ],
+  [
+   184,
+   true
+  ],
+  [
+   192,
+   true
+  ],
+  [
+   200,
+   true
+  ],
+  [
+   208,
+   true
+  ],
+  [
+   216,
+   true
+  ],
+  [
+   222,
+   false
+  ],
+  [
+   224,
+   true
+  ],
+  [
+   232,
+   true
+  ],
+  [
+   240,
+   true
+  ],
+  [
+   248,
+   true
+  ],
+  [
+   250,
+   false
+  ],
+  [
+   256,
+   true
+  ],
+  [
+   264,
+   true
+  ],
+  [
+   266,
+   false
+  ],
+  [
+   272,
+   true
+  ],
+  [
+   278,
+   false
+  ],
+  [
+   280,
+   true
+  ],
+  [
+   288,
+   true
+  ],
+  [
+   296,
+   true
+  ],
+  [
+   304,
+   true
+  ],
+  [
+   306,
+   false
+  ],
+  [
+   312,
+   true
+  ],
+  [
+   320,
+   true
+  ],
+  [
+   328,
+   true
+  ],
+  [
+   330,
+   false
+  ],
+  [
+   336,
+   true
+  ],
+  [
+   344,
+   true
+  ],
+  [
+   352,
+   true
+  ],
+  [
+   354,
+   false
+  ],
+  [
+   360,
+   true
+  ],
+  [
+   368,
+   true
+  ],
+  [
+   376,
+   false
+  ],
+  [
+   384,
+   true
+  ],
+  [
+   386,
+   false
+  ],
+  [
+   392,
+   true
+  ],
+  [
+   400,
+   false
+  ],
+  [
+   408,
+   true
+  ],
+  [
+   416,
+   true
+  ],
+  [
+   424,
+   true
+  ],
+  [
+   432,
+   true
+  ],
+  [
+   440,
+   true
+  ],
+  [
+   444,
+   false
+  ],
+  [
+   448,
+   true
+  ],
+  [
+   456,
+   true
+  ],
+  [
+   464,
+   true
+  ],
+  [
+   472,
+   false
+  ],
+  [
+   480,
+   true
+  ],
+  [
+   488,
+   true
+  ],
+  [
+   494,
+   false
+  ],
+  [
+   496,
+   true
+  ],
+  [
+   502,
+   false
+  ],
+  [
+   504,
+   true
+  ],
+  [
+   510,
+   false
+  ],
+  [
+   512,
+   true
+  ],
+  [
+   520,
+   true
+  ],
+  [
+   528,
+   true
+  ],
+  [
+   536,
+   true
+  ],
+  [
+   538,
+   false
+  ],
+  [
+   544,
+   true
+  ],
+  [
+   552,
+   true
+  ],
+  [
+   556,
+   false
+  ],
+  [
+   560,
+   true
+  ],
+  [
+   568,
+   true
+  ],
+  [
+   570,
+   false
+  ],
+  [
+   576,
+   true
+  ],
+  [
+   584,
+   true
+  ],
+  [
+   586,
+   false
+  ],
+  [
+   592,
+   true
+  ],
+  [
+   594,
+   false
+  ],
+  [
+   598,
+   false
+  ],
+  [
+   600,
+   true
+  ],
+  [
+   608,
+   true
+  ],
+  [
+   620,
+   false
+  ],
+  [
+   624,
+   false
+  ],
+  [
+   632,
+   true
+  ],
+  [
+   634,
+   false
+  ],
+  [
+   638,
+   false
+  ],
+  [
+   640,
+   true
+  ],
+  [
+   648,
+   true
+  ],
+  [
+   652,
+   false
+  ],
+  [
+   656,
+   true
+  ],
+  [
+   664,
+   true
+  ],
+  [
+   672,
+   true
+  ],
+  [
+   676,
+   false
+  ],
+  [
+   680,
+   false
+  ],
+  [
+   688,
+   true
+  ],
+  [
+   696,
+   true
+  ],
+  [
+   700,
+   false
+  ],
+  [
+   704,
+   true
+  ],
+  [
+   712,
+   true
+  ],
+  [
+   720,
+   true
+  ],
+  [
+   728,
+   true
+  ],
+  [
+   734,
+   false
+  ],
+  [
+   736,
+   true
+  ],
+  [
+   744,
+   false
+  ],
+  [
+   750,
+   false
+  ],
+  [
+   752,
+   true
+  ],
+  [
+   760,
+   true
+  ],
+  [
+   764,
+   false
+  ],
+  [
+   768,
+   true
+  ],
+  [
+   776,
+   true
+  ],
+  [
+   784,
+   true
+  ],
+  [
+   790,
+   false
+  ],
+  [
+   792,
+   true
+  ],
+  [
+   800,
+   true
+  ],
+  [
+   808,
+   true
+  ],
+  [
+   816,
+   true
+  ],
+  [
+   824,
+   true
+  ],
+  [
+   828,
+   false
+  ],
+  [
+   832,
+   true
+  ],
+  [
+   840,
+   true
+  ],
+  [
+   848,
+   true
+  ],
+  [
+   856,
+   true
+  ],
+  [
+   862,
+   false
+  ],
+  [
+   864,
+   false
+  ],
+  [
+   872,
+   true
+  ],
+  [
+   880,
+   true
+  ],
+  [
+   884,
+   false
+  ],
+  [
+   888,
+   true
+  ],
+  [
+   896,
+   true
+  ],
+  [
+   908,
+   false
+  ],
+  [
+   912,
+   true
+  ],
+  [
+   920,
+   true
+  ],
+  [
+   926,
+   false
+  ],
+  [
+   928,
+   true
+  ],
+  [
+   936,
+   true
+  ],
+  [
+   940,
+   false
+  ],
+  [
+   944,
+   true
+  ],
+  [
+   948,
+   false
+  ],
+  [
+   952,
+   false
+  ],
+  [
+   956,
+   false
+  ],
+  [
+   960,
+   true
+  ],
+  [
+   964,
+   false
+  ],
+  [
+   968,
+   true
+  ],
+  [
+   976,
+   true
+  ],
+  [
+   984,
+   true
+  ],
+  [
+   992,
+   true
+  ],
+  [
+   1000,
+   true
+  ],
+  [
+   1004,
+   false
+  ],
+  [
+   1008,
+   true
+  ],
+  [
+   1016,
+   true
+  ],
+  [
+   1018,
+   false
+  ],
+  [
+   1020,
+   false
+  ],
+  [
+   1022,
+   false
+  ],
+  [
+   1024,
+   false
+  ],
+  [
+   1032,
+   true
+  ],
+  [
+   1040,
+   true
+  ],
+  [
+   1048,
+   true
+  ],
+  [
+   1056,
+   true
+  ],
+  [
+   1064,
+   false
+  ],
+  [
+   1066,
+   false
+  ],
+  [
+   1072,
+   false
+  ],
+  [
+   1080,
+   true
+  ],
+  [
+   1082,
+   false
+  ],
+  [
+   1086,
+   false
+  ],
+  [
+   1088,
+   false
+  ],
+  [
+   1090,
+   false
+  ],
+  [
+   1096,
+   true
+  ]
+ ],
+ "feature_version": "ied-f1",
+ "amplitude_scale": 100.0,
+ "merge_gap_s": 0.25,
+ "tolerance_s": 0.25,
+ "dropped_features": [
+  "log_ptp_abs_max",
+  "next_log_ptp_abs_max",
+  "prev_log_ptp_abs_max"
+ ]
+}
