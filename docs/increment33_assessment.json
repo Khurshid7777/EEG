@@ -1,0 +1,37 @@
+{
+ "n_rows": 88,
+ "n_scored": 88,
+ "n_excluded": 0,
+ "control_specificity": 1.0,
+ "control_specificity_ci95": [
+  0.8805551309304973,
+  1.0
+ ],
+ "rule_control_specificity": 0.7931034482758621,
+ "auc_alzheimer_vs_controls": 0.7514367816091954,
+ "auc_ftd_vs_controls": 0.7548725637181409,
+ "groups": {
+  "C": {
+   "n": 29,
+   "abnormal_verdicts": 0,
+   "rule_abnormal": 6,
+   "borderline": 0
+  },
+  "A": {
+   "n": 36,
+   "abnormal_verdicts": 7,
+   "rule_abnormal": 16,
+   "borderline": 11
+  },
+  "F": {
+   "n": 23,
+   "abnormal_verdicts": 0,
+   "rule_abnormal": 3,
+   "borderline": 2
+  }
+ },
+ "hypotheses": {
+  "H1_control_specificity_at_least_0.65": true,
+  "H2_auc_alzheimer_vs_controls_at_least_0.70": true
+ }
+}
