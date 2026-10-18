@@ -12,8 +12,9 @@ from pathlib import Path
 from ..contracts.signal import ClinicalContext, PatientInfo, UnifiedSignal
 from .base import Ingestor
 from .edf import EdfIngestor
+from .eeglab import EeglabIngestor
 
-_REGISTRY: list[Ingestor] = [EdfIngestor()]
+_REGISTRY: list[Ingestor] = [EdfIngestor(), EeglabIngestor()]
 
 
 def register_ingestor(ingestor: Ingestor) -> None:

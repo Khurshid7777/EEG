@@ -396,3 +396,36 @@ def test_prereg32_assess_and_decision(tmp_path):
     a["decision"]["record_model_decides"] = False
     apply_decision(a, str(y))
     assert "record_model_decides: false" in y.read_text() and "record_threshold: 0.25" in y.read_text()
+
+
+def test_eeglab_set_ingest(tmp_path):
+    """Increment 33: EEGLAB .set (data inside, and in a companion .fdt)."""
+    import numpy as np
+    from scipy.io import savemat
+
+    from neurolens.layer1_ingest.registry import ingest
+
+    rng = np.random.default_rng(0)
+    x = rng.normal(0, 20, (3, 1000)).astype(np.float32)
+    locs = np.array([("Fp1",), ("C3",), ("O2",)], dtype=[("labels", "O")])
+    eeg = {"nbchan": 3, "pnts": 1000, "srate": 250.0, "data": x, "chanlocs": locs, "ref": "A1 A2"}
+    savemat(tmp_path / "a.set", {"EEG": eeg})
+    s = ingest(tmp_path / "a.set")
+    assert s.channel_names == ["Fp1", "C3", "O2"] and s.sampling_rate_hz == 250.0
+    assert np.allclose(s.signal, x)
+    x.T.tofile(tmp_path / "b.fdt")  # column-major float32
+    savemat(tmp_path / "b.set", {"EEG": {**eeg, "data": "b.fdt"}})
+    assert np.allclose(ingest(tmp_path / "b.set").signal, x)
+
+
+def test_prereg33_assess():
+    from neurolens.evaluation.prereg33 import assess
+
+    def row(g, p, v):
+        return {"group": g, "record_probability": p, "impression_abnormal": v,
+                "rule_impression_abnormal": v, "record_borderline": False}
+    rows = ([row("C", 0.1, False)] * 8 + [row("C", 0.5, True)] * 2 + [row("A", 0.8, True)] * 9
+            + [row("A", 0.05, False)] + [row("F", 0.3, False)] * 3 + [{"group": "A", "error": "x"}])
+    a = assess(rows)
+    assert a["control_specificity"] == 0.8 and a["n_excluded"] == 1
+    assert abs(a["auc_alzheimer_vs_controls"] - 0.9) < 1e-9 and all(a["hypotheses"].values())
