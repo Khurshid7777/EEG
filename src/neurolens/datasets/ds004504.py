@@ -34,6 +34,8 @@ class DsRecord:
 
 
 class Ds004504Client:
+    base = BASE
+
     def __init__(self, cache: str | Path = "data/openneuro/ds004504"):
         self.cache = Path(cache)
 
@@ -42,7 +44,7 @@ class Ds004504Client:
         if not p.exists():
             p.parent.mkdir(parents=True, exist_ok=True)
             part = p.with_suffix(p.suffix + ".part")
-            with urllib.request.urlopen(f"{BASE}/{key}", timeout=120) as r, open(part, "wb") as f:
+            with urllib.request.urlopen(f"{self.base}/{key}", timeout=120) as r, open(part, "wb") as f:
                 while chunk := r.read(1 << 20):
                     f.write(chunk)
             part.replace(p)
@@ -58,3 +60,23 @@ class Ds004504Client:
 
     def fetch(self, rec: DsRecord) -> Path:
         return self._get(rec.key)
+
+
+class Ds003775Client(Ds004504Client):
+    """OpenNeuro ds003775 'SRM Resting-state EEG' (Hatlestad-Hall et al.; CC0): 111 healthy
+    adults 17-71 y, University of Oslo, BioSemi 64 channels 10-10, average reference,
+    1024 Hz, 4 min eyes closed (session t1). EDF."""
+
+    base = "https://s3.amazonaws.com/openneuro.org/ds003775"
+
+    def __init__(self, cache: str | Path = "data/openneuro/ds003775"):
+        super().__init__(cache)
+
+    def records(self) -> list[DsRecord]:
+        rows = csv.DictReader(io.StringIO(self._get("participants.tsv").read_text()), delimiter="\t")
+        return [DsRecord(i, r["participant_id"], "C", float(r["age"]) if r["age"] not in ("", "n/a") else None, None)
+                for i, r in enumerate(rows)]
+
+    def fetch(self, rec: DsRecord) -> Path:
+        s = rec.subject
+        return self._get(f"{s}/ses-t1/eeg/{s}_ses-t1_task-resteyesc_eeg.edf")

@@ -429,3 +429,14 @@ def test_prereg33_assess():
     a = assess(rows)
     assert a["control_specificity"] == 0.8 and a["n_excluded"] == 1
     assert abs(a["auc_alzheimer_vs_controls"] - 0.9) < 1e-9 and all(a["hypotheses"].values())
+
+
+def test_prereg34_assess():
+    from neurolens.evaluation.prereg34 import assess
+
+    def r(v, p=0.1):
+        return {"impression_abnormal": v, "rule_impression_abnormal": v, "record_probability": p}
+    a = assess([r(False)] * 7 + [r(True)] * 3, [r(False)] * 9 + [r(True)] + [{"error": "x"}])
+    assert a["as_delivered"]["specificity"] == 0.7 and a["reduced_1020"]["n_excluded"] == 1
+    assert a["hypotheses"]["H1_specificity_as_delivered_at_least_0.65"]
+    assert a["decision"]["montage_gate_for_routine_verdict"]  # 0.9 - 0.7 > 0.10
