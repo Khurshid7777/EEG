@@ -1,0 +1,37 @@
+{
+ "n": 185,
+ "n_normal": 95,
+ "n_abnormal": 90,
+ "with_rule": {
+  "specificity": 0.7894736842105263,
+  "specificity_ci95": [
+   0.6937576443105383,
+   0.8664067453084163
+  ],
+  "sensitivity": 0.8,
+  "sensitivity_ci95": [
+   0.7024575498672732,
+   0.8769444539890856
+  ]
+ },
+ "model_alone": {
+  "specificity": 0.7894736842105263,
+  "specificity_ci95": [
+   0.6937576443105383,
+   0.8664067453084163
+  ],
+  "sensitivity": 0.8,
+  "sensitivity_ci95": [
+   0.7024575498672732,
+   0.8769444539890856
+  ]
+ },
+ "kept": {
+  "normal": 0,
+  "abnormal": 0
+ },
+ "specificity_loss": 0.0,
+ "decision": {
+  "keep_record_model_cannot_clear": true
+ }
+}
