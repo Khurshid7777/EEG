@@ -440,3 +440,35 @@ def test_prereg34_assess():
     assert a["as_delivered"]["specificity"] == 0.7 and a["reduced_1020"]["n_excluded"] == 1
     assert a["hypotheses"]["H1_specificity_as_delivered_at_least_0.65"]
     assert a["decision"]["montage_gate_for_routine_verdict"]  # 0.9 - 0.7 > 0.10
+
+
+def test_prereg35_assess():
+    from neurolens.evaluation.prereg35 import assess
+
+    def r(h, v, p, poor, amp=20.0, rule=None):
+        return {"hospital": h, "impression_abnormal": v, "rule_impression_abnormal": v if rule is None else rule,
+                "record_probability": p, "poor_outcome": poor, "amplitude_sd_uv": amp}
+    rows = ([r("A", True, 0.9, True)] * 8 + [r("A", False, 0.1, False, rule=True)] * 2
+            + [r("B", False, 0.1, True, amp=0.01)] * 3 + [{"patient": "x", "error": "e"}])
+    a = assess(rows)
+    assert a["amplitude_plausible_hospitals"] == ["A"] and a["n_excluded"] == 1
+    assert a["main"]["sensitivity"] == 0.8 and a["auc_poor_vs_good"] == 1.0
+    assert all(a["hypotheses"].values()) and a["decision"]["severe_finding_gate"]  # rules 1.0 vs 0.8
+
+
+def test_wfdb_ingest_partial_and_segment_order(tmp_path):
+    import numpy as np
+
+    from neurolens.datasets.icare import candidate_order, segments
+    from neurolens.layer1_ingest.registry import ingest
+
+    d = np.array([[100, -50], [110, -40], [120, -30]], dtype="<i2")  # 3 samples x 2 channels
+    (tmp_path / "r.mat").write_bytes(b"\0" * 24 + d.tobytes())
+    (tmp_path / "r.hea").write_text("r 2 500 10\n"
+                                    "r.mat 16+24 10.0(100)/nu 16 0 100 0 0 Fp1\n"
+                                    "r.mat 16+24 2.0/uV 16 0 -50 0 0 Fp2\n#Utility frequency: 50\n")
+    s = ingest(tmp_path / "r.hea")
+    assert s.signal.shape == (2, 3) and s.channel_names == ["Fp1", "Fp2"]
+    assert np.allclose(s.signal[0], [0, 1, 2]) and np.allclose(s.signal[1], [-25, -20, -15])
+    html = 'href="0001_001_004_EEG.hea" href="0001_002_023_EEG.hea" href="0001_003_025_EEG.hea" href="0001_003_025_ECG.hea"'
+    assert candidate_order(segments(html)) == ["0001_002_023_EEG", "0001_003_025_EEG", "0001_001_004_EEG"]
