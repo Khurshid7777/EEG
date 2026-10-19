@@ -138,3 +138,14 @@ def test_monitor_request_overrides_do_not_leak(client_and_paths, demo_edf, confi
     r = client.post("/monitor", json={"path": str(demo_edf), "window_s": 10, "step_s": 5})
     assert r.status_code == 200
     assert (configs.realtime.window_s, configs.realtime.step_s) == before
+
+
+def test_check_upload(client_and_paths, demo_edf):
+    client, audit, _ = client_and_paths
+    with open(demo_edf, "rb") as fh:
+        r = client.post("/check/upload", files={"file": ("demo.edf", fh)}, data={"age_years": "40"})
+    assert r.status_code == 200
+    body = r.json()
+    names = {c["name"]: c["status"] for c in body["checks"]}
+    assert names["format"] == "ok" and names["patient_age"] == "ok" and body["path"] == "demo.edf"
+    assert "/check/upload" in audit.read_text()

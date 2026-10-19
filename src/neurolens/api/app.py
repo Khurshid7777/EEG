@@ -7,6 +7,7 @@ Thin service over the pipeline and real-time monitor. Endpoints:
   GET  /schemas/{name}         a generated JSON Schema
   POST /analyze                analyze an EDF by server-side path (JSON body)
   POST /analyze/upload         analyze an uploaded EDF (multipart)
+  POST /check/upload           intake check of an uploaded recording (recording regulation)
   POST /monitor                real-time cEEG monitor on an EDF by path (JSON body)
   POST /feedback               capture a neurophysiologist correction (TZ §13)
 
@@ -110,6 +111,31 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
             raise HTTPException(status_code=400, detail=str(exc))
         finally:
             tmp.unlink(missing_ok=True)
+
+    @app.post("/check/upload")
+    async def check_upload(
+        file: UploadFile = File(...),
+        age_years: Optional[float] = Form(None),
+        postmenstrual_age_weeks: Optional[float] = Form(None),
+    ) -> dict:
+        """Intake check of a recording against docs/recording_regulation.md (no analysis)."""
+        from ..layer1_ingest.file_check import check_recording
+
+        try:
+            patient = PatientInfo(age_years=age_years, postmenstrual_age_weeks=postmenstrual_age_weeks)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc))
+        suffix = Path(file.filename or "upload.edf").suffix or ".edf"
+        tmp = Path(tempfile.mkdtemp()) / f"upload{suffix}"
+        tmp.write_bytes(await file.read())
+        try:
+            rep = check_recording(tmp, patient).to_dict()
+        finally:
+            tmp.unlink(missing_ok=True)
+        rep["path"] = file.filename
+        audit.record("/check/upload", None, cfg.rule_base.version,
+                     {"accepted": rep["accepted"], "rejected": [c["name"] for c in rep["checks"] if c["status"] == "reject"]})
+        return rep
 
     @app.post("/monitor")
     def monitor(req: MonitorRequest) -> dict:

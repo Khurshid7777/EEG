@@ -632,6 +632,24 @@ def _scan_check(args) -> int:
     return 0 if rep.accepted else 2
 
 
+def _file_check(args) -> int:
+    """Check a digital EEG recording against docs/recording_regulation.md."""
+    import json
+
+    from .contracts.signal import PatientInfo
+    from .layer1_ingest.file_check import check_recording
+
+    rep = check_recording(args.file, PatientInfo(age_years=args.age, postmenstrual_age_weeks=args.pma))
+    for c in rep.checks:
+        mark = {"ok": "OK ", "warning": "!! ", "reject": "XX "}[c.status]
+        print(f"{mark}{c.name:18s} {c.value:>16s}  ({c.limit}) — {c.message_ru}")
+    print("ПРИНЯТ" if rep.accepted else "ОТКЛОНЁН: перезапишите или переэкспортируйте по регламенту")
+    if args.out:
+        Path(args.out).write_text(json.dumps(rep.to_dict(), ensure_ascii=False, indent=1, default=str) + "\n",
+                                  encoding="utf-8")
+    return 0 if rep.accepted else 2
+
+
 def _routine_one(item):
     rec, cache = item
     from .datasets.nmt import NMTClient
@@ -824,6 +842,13 @@ def build_parser() -> argparse.ArgumentParser:
     sc.add_argument("form", help="JSON form: paper speed, sensitivity, channel labels, calibration (ScanForm).")
     sc.add_argument("--out", help="Write the full report as JSON.")
     sc.set_defaults(func=_scan_check)
+
+    fc = sub.add_parser("file-check", help="Check a digital EEG file against the recording/export regulation.")
+    fc.add_argument("file", help="EDF/EDF+/BDF, EEGLAB .set or WFDB .hea.")
+    fc.add_argument("--age", type=float, default=None, help="Age in years.")
+    fc.add_argument("--pma", type=float, default=None, help="Postmenstrual age (weeks).")
+    fc.add_argument("--out", help="Write the full report as JSON.")
+    fc.set_defaults(func=_file_check)
 
     s = sub.add_parser("export-schemas", help="Export JSON Schemas from contracts.")
     s.add_argument("dir", nargs="?", default=None)
