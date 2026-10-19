@@ -338,6 +338,9 @@ class ImpressionConfig(BaseModel):
     # increment 23: |logit(p) - logit(threshold)| below this = borderline score (the verdict
     # flipped between halves of the same recording); 0 = off
     record_borderline_logit: float = Field(default=0.0, ge=0)
+    # increment 36 (D68): rule findings the record model may not turn into "normal" (or a
+    # borderline score) - on I-CARE coma EEG it cleared burst-suppression 201 times
+    record_model_cannot_clear: list[str] = Field(default_factory=list)
     # increment 24: age-free variant for recordings without patient age (the main model never
     # saw a missing age: specificity 0.97 / sensitivity 0.61 with age removed)
     record_model_noage: Optional[str] = None

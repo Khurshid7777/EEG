@@ -192,6 +192,27 @@ def test_record_score_decides_only_when_enabled(configs):
     assert s["decides"] and r.impression.ru.startswith("Заключение: признаки отклонений по совокупной")
 
 
+
+def test_record_model_cannot_clear_burst_suppression(configs):
+    from neurolens.contracts.report import Bilingual
+    from neurolens.pipeline.pipeline import apply_record_score
+
+    class Rep:
+        impression = Bilingual(ru="Заключение: вспышка-подавление.", uz="Xulosa: x.")
+
+    icfg = configs.impression.model_copy(update={"record_model_decides": True, "record_threshold": 0.3,
+                                                 "record_threshold_by_age": [], "record_borderline_logit": 1.0})
+    assert icfg.record_model_cannot_clear == ["burst_suppression"]  # configs/impression.yaml, D68
+    bs = {"impression_abnormal": True, "pathologic_nodes": ["burst_suppression", "mech:burst_suppression_context"]}
+    for p in (0.02, 0.25):  # clear "normal" and borderline
+        r = Rep()
+        s = apply_record_score(r, bs, p, icfg)
+        assert s["abnormal"] and not s["borderline"] and s["kept_rule_findings"] == ["burst_suppression"]
+        assert r.impression.ru.startswith("Заключение: отклонения — находка правил (burst_suppression)")
+    r = Rep()
+    s = apply_record_score(r, {"impression_abnormal": True, "pathologic_nodes": ["lpds"]}, 0.02, icfg)
+    assert not s["abnormal"] and "kept_rule_findings" not in s  # periodic discharges stay clearable
+
 def test_prereg22_rule_and_apply(tmp_path):
     import shutil
 
@@ -479,3 +500,17 @@ def test_icare_missing_age_is_none():
 
     assert IcareRecord(0, "0592", {"Age": "nan"}).age_years is None
     assert IcareRecord(0, "0284", {"Age": "53"}).age_years == 53.0
+
+
+def test_prereg36_assess():
+    from neurolens.evaluation.prereg36 import assess
+
+    def r(lab, imp, model, kept=()):
+        return {"abnormal": lab, "impression_abnormal": imp, "model_abnormal": model, "record_probability": 0.1,
+                "kept_rule_findings": list(kept)}
+    rows = [r(False, False, False)] * 98 + [r(False, True, False, ["burst_suppression"])] * 2 \
+        + [r(True, True, False, ["burst_suppression"])] + [r(True, True, True)] * 9
+    a = assess(rows)
+    assert abs(a["specificity_loss"] - 0.02) < 1e-9 and a["decision"]["keep_record_model_cannot_clear"]
+    assert a["with_rule"]["sensitivity"] == 1.0 and a["model_alone"]["sensitivity"] == 0.9
+    assert a["kept"] == {"normal": 2, "abnormal": 1}

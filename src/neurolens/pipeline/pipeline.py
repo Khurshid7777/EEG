@@ -92,6 +92,20 @@ def apply_record_score(report, summary: dict, p: float, icfg, reasons: list | No
     borderline = icfg.record_borderline_logit > 0 and abs(lg(p) - lg(thr)) < icfg.record_borderline_logit
     score = {"probability": round(p, 3), "threshold": thr, "abnormal": abnormal, "borderline": borderline,
              "decides": bool(icfg.record_model_decides), "reasons": reasons or []}
+    kept = sorted(set(icfg.record_model_cannot_clear) & set(summary.get("pathologic_nodes") or []))
+    if icfg.record_model_decides and kept and (not abnormal or borderline):
+        # the score was learned on routine waking EEG and cannot overrule these findings (D68)
+        score.update(abnormal=True, borderline=False, model_abnormal=abnormal, model_borderline=borderline,
+                     kept_rule_findings=kept)
+        if report.impression is not None:
+            imp = report.impression
+            report.impression = Bilingual(
+                ru=f"Заключение: отклонения — находка правил ({', '.join(kept)}) не может быть отменена "
+                   f"совокупной оценкой записи ({p:.2f} при пороге {thr:.2f}), обученной на рутинной ЭЭГ "
+                   f"бодрствования. {imp.ru}",
+                uz=f"Xulosa: og‘ishlar — qoidalar topilmasi ({', '.join(kept)}) uyg‘oqlikdagi oddiy EEG’da "
+                   f"o‘rgatilgan umumiy baho ({p:.2f}, chegara {thr:.2f}) bilan bekor qilinmaydi. {imp.uz}")
+        return score
     if icfg.record_model_decides and borderline and report.impression is not None:
         imp = report.impression
         report.impression = Bilingual(

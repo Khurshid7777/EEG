@@ -60,6 +60,9 @@ def run_record(path: Path, rec: NMTRecord, scale: float = AMPLITUDE_SCALE, cfg=N
         "rule_impression_abnormal": row["impression_abnormal"],
         "record_probability": rs.get("probability"),
         "record_borderline": rs.get("borderline"),
+        # increment 36: what the record model alone said when a rule finding was kept (D68)
+        "kept_rule_findings": rs.get("kept_rule_findings") or [],
+        "model_abnormal": bool(rs.get("model_abnormal", rs.get("abnormal"))) if rs else None,
         "critical_codes": sorted({c.code for c in out.report.critical_findings}),
     }
 

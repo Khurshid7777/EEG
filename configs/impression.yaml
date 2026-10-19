@@ -35,6 +35,12 @@ record_threshold_by_age:
 # development recordings so that verdicts outside it flip between halves of the same EEG in
 # <= 10% (9.7%); evaluation-split halves: 9.5%; 27% of full evaluation recordings are borderline.
 record_borderline_logit: 1.0  # increment 26: re-tuned for record_gbm_v2 (v1: 0.85)
+# increment 36 (D68, docs/preregistration_increment36.md): findings the record model may not
+# clear. On I-CARE (coma after cardiac arrest) the model overruled burst-suppression 201 times
+# (sensitivity 0.31 -> 0.64 post hoc with this list); burst-suppression occurred in none of 140
+# healthy adults (ds003775, ds004504) nor in the NMT evaluation normals. Periodic discharges are
+# not listed: the rules find them in healthy elderly (8 of 140).
+record_model_cannot_clear: [burst_suppression]
 # increment 24: recordings without patient age are scored by the age-free variant (trained on
 # the same 1,045 recordings; out-of-fold AUC 0.863, threshold 0.248 at specificity 0.75,
 # docs/increment24_cv_noage.json).
