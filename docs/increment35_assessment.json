@@ -1,0 +1,132 @@
+{
+ "n_rows": 607,
+ "n_scored": 606,
+ "n_excluded": 1,
+ "hospital_amplitude_sd_uv": {
+  "A": 15.695881843566895,
+  "B": 19.7737455368042,
+  "D": 19.19888973236084,
+  "E": 30.43937110900879,
+  "F": 25.470645904541016
+ },
+ "amplitude_plausible_hospitals": [
+  "A",
+  "B",
+  "D",
+  "E",
+  "F"
+ ],
+ "main": {
+  "n": 606,
+  "abnormal_verdicts": 186,
+  "sensitivity": 0.3069306930693069,
+  "sensitivity_ci95": [
+   0.2704014295294145,
+   0.3453539365482579
+  ],
+  "rule_sensitivity": 0.7805280528052805,
+  "borderline": 135
+ },
+ "all_hospitals": {
+  "n": 606,
+  "abnormal_verdicts": 186,
+  "sensitivity": 0.3069306930693069,
+  "sensitivity_ci95": [
+   0.2704014295294145,
+   0.3453539365482579
+  ],
+  "rule_sensitivity": 0.7805280528052805,
+  "borderline": 135
+ },
+ "by_hospital": {
+  "A": {
+   "n": 261,
+   "abnormal_verdicts": 114,
+   "sensitivity": 0.4367816091954023,
+   "sensitivity_ci95": [
+    0.3757163224374767,
+    0.49929900361969043
+   ],
+   "rule_sensitivity": 0.8352490421455939,
+   "borderline": 68
+  },
+  "B": {
+   "n": 120,
+   "abnormal_verdicts": 45,
+   "sensitivity": 0.375,
+   "sensitivity_ci95": [
+    0.28831367057013424,
+    0.4680118617139824
+   ],
+   "rule_sensitivity": 0.7833333333333333,
+   "borderline": 29
+  },
+  "D": {
+   "n": 82,
+   "abnormal_verdicts": 3,
+   "sensitivity": 0.036585365853658534,
+   "sensitivity_ci95": [
+    0.007609277302094527,
+    0.10321502161816952
+   ],
+   "rule_sensitivity": 0.7195121951219512,
+   "borderline": 8
+  },
+  "E": {
+   "n": 74,
+   "abnormal_verdicts": 8,
+   "sensitivity": 0.10810810810810811,
+   "sensitivity_ci95": [
+    0.04784399039492812,
+    0.201950136231846
+   ],
+   "rule_sensitivity": 0.6351351351351351,
+   "borderline": 15
+  },
+  "F": {
+   "n": 69,
+   "abnormal_verdicts": 16,
+   "sensitivity": 0.2318840579710145,
+   "sensitivity_ci95": [
+    0.13873517686376866,
+    0.3490694807111464
+   ],
+   "rule_sensitivity": 0.7971014492753623,
+   "borderline": 15
+  }
+ },
+ "by_outcome": {
+  "poor": {
+   "n": 381,
+   "abnormal_verdicts": 88,
+   "sensitivity": 0.23097112860892388,
+   "sensitivity_ci95": [
+    0.18957283205796158,
+    0.27660573828391355
+   ],
+   "rule_sensitivity": 0.7979002624671916,
+   "borderline": 80
+  },
+  "good": {
+   "n": 225,
+   "abnormal_verdicts": 98,
+   "sensitivity": 0.43555555555555553,
+   "sensitivity_ci95": [
+    0.369779071324436,
+    0.5030527732108031
+   ],
+   "rule_sensitivity": 0.7511111111111111,
+   "borderline": 55
+  }
+ },
+ "auc_poor_vs_good": 0.38811898512685916,
+ "n_poor": 381,
+ "n_good": 225,
+ "hypotheses": {
+  "H1_sensitivity_at_least_0.80": false,
+  "H2_auc_poor_vs_good_outcome_at_least_0.60": false
+ },
+ "decision": {
+  "severe_finding_gate": true
+ }
+}
