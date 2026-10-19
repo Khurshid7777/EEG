@@ -472,3 +472,10 @@ def test_wfdb_ingest_partial_and_segment_order(tmp_path):
     assert np.allclose(s.signal[0], [0, 1, 2]) and np.allclose(s.signal[1], [-25, -20, -15])
     html = 'href="0001_001_004_EEG.hea" href="0001_002_023_EEG.hea" href="0001_003_025_EEG.hea" href="0001_003_025_ECG.hea"'
     assert candidate_order(segments(html)) == ["0001_002_023_EEG", "0001_003_025_EEG", "0001_001_004_EEG"]
+
+
+def test_icare_missing_age_is_none():
+    from neurolens.datasets.icare import IcareRecord
+
+    assert IcareRecord(0, "0592", {"Age": "nan"}).age_years is None
+    assert IcareRecord(0, "0284", {"Age": "53"}).age_years == 53.0

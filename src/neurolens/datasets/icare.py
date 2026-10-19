@@ -9,6 +9,8 @@ first ``minutes`` with an HTTP range request (format 16 is sample-interleaved).
 
 from __future__ import annotations
 
+import http.client
+import math
 import re
 import time
 import urllib.request
@@ -29,9 +31,10 @@ class IcareRecord:
     @property
     def age_years(self) -> float | None:
         try:
-            return float(self.meta.get("Age", ""))
+            age = float(self.meta.get("Age", ""))
         except ValueError:
             return None
+        return None if math.isnan(age) else age  # "Age: nan" = not recorded
 
     @property
     def hospital(self) -> str:
@@ -75,7 +78,7 @@ class IcareClient:
                 if byte_range is not None and len(data) < byte_range and r.status == 206:
                     raise OSError(f"truncated range transfer: {len(data)} of {byte_range} bytes")
                 return data
-            except OSError:
+            except (OSError, http.client.HTTPException):  # incl. IncompleteRead mid-transfer
                 if attempt == retries:
                     raise
                 time.sleep(2 ** (attempt + 1))
