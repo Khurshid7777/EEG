@@ -19,6 +19,7 @@ data/synthetic/*.edf
 
 # Runtime logs (API audit trail, neurophysiologist feedback)
 *.jsonl
+!docs/increment*.jsonl
 audit.log.jsonl
 feedback.jsonl
 
