@@ -1,0 +1,23 @@
+{
+ "nmt_before": {
+  "specificity": 0.7894736842105263,
+  "sensitivity": 0.8,
+  "pdr_found_normal": 0.9578947368421052
+ },
+ "nmt_after": {
+  "specificity": 0.7894736842105263,
+  "sensitivity": 0.7888888888888889,
+  "pdr_found_normal": 0.9473684210526315
+ },
+ "nmt_normals_losing_pdr": 1,
+ "ds003775_specificity_before": 0.963963963963964,
+ "ds003775_specificity_after": 0.963963963963964,
+ "losses": {
+  "nmt_specificity_loss": 0.0,
+  "nmt_sensitivity_loss": 0.011111111111111183,
+  "ds003775_specificity_loss": 0.0
+ },
+ "decision": {
+  "keep_pdr_posterior_dominance": true
+ }
+}
