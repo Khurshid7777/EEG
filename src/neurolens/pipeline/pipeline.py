@@ -336,7 +336,8 @@ class Pipeline:
         )
 
         # --- Layer 3: features ---
-        features = compute_features(analysis, cfg.filters, pdr_method=cfg.thresholds.pdr_method)
+        features = compute_features(analysis, cfg.filters, pdr_method=cfg.thresholds.pdr_method,
+                                    pdr_posterior_dominance_min=cfg.thresholds.pdr_posterior_dominance_min)
 
         # --- Layer 4: detection ---
         detectors = default_detectors()

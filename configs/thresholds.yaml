@@ -53,6 +53,10 @@ spike_candidate_rank: confidence
 # increment 20 (development, not pre-registered): the "alert" estimate (upper quartile of
 # 10-s epoch peaks) fixed as many normal as it lost abnormal recordings (any quantile) -> off.
 pdr_method: whole
+# increment 37 (docs/preregistration_increment37.md): a PDR must be posterior dominant - its
+# power over O1/O2 at least that over F3/F4 (ACNS definition). On I-CARE coma EEG a 4-13 Hz
+# peak ("PDR" median 7 Hz) kept the rules at "normal" in 22% of recordings (increment 35).
+pdr_posterior_dominance_min: 1.0
 routine_max_duration_s: 2700       # < 45 min = routine EEG
 
 # Rhythmic delta activity (GRDA/LRDA)

@@ -39,6 +39,22 @@ def posterior_dominant_rhythm(
     return float(np.percentile(genuine, PDR_ALERT_QUANTILE, method="nearest"))
 
 
+def posterior_dominance(occ: np.ndarray, front: np.ndarray, fs: float, f0: float,
+                        half_width_hz: float = 1.0) -> float:
+    """Power of the rhythm (``f0`` +/- ``half_width_hz``) over the occipital average divided
+    by that over the frontal average (increment 37). A posterior dominant rhythm is by
+    definition posterior (ACNS 2021); a 4-13 Hz peak as strong or stronger frontally - alpha/
+    theta coma, sedation - is not one."""
+    from scipy.signal import welch
+
+    nper = int(min(len(occ), max(64, fs * 4)))
+    f, po = welch(np.asarray(occ, dtype=np.float64), fs=fs, nperseg=nper)
+    _, pf = welch(np.asarray(front, dtype=np.float64), fs=fs, nperseg=nper)
+    band = (f >= f0 - half_width_hz) & (f <= f0 + half_width_hz)
+    den = float(pf[band].sum())
+    return float(po[band].sum() / den) if den > 0 else float("inf")
+
+
 def continuity_index(x: np.ndarray, fs: float, amp_thresh_uv: float = 10.0) -> float:
     """1 - suppression_ratio: fraction of time the trace is continuous (0..1)."""
     return float(1.0 - suppression_ratio(x, fs, amp_thresh_uv=amp_thresh_uv))

@@ -18,6 +18,8 @@ def summarize(analysis, features, detection, graph) -> dict:
         "pathologic_nodes": patho,
         "impression_abnormal": bool(patho),
         "pdr_hz": float(features.pdr_hz),
+        "pdr_hz_unchecked": features.extra.get("pdr_hz_unchecked"),
+        "pdr_posterior_ratio": features.extra.get("pdr_posterior_ratio"),
         "global_rel_delta": float(features.global_relpow["delta"]),
         "global_rel_theta": float(features.global_relpow["theta"]),
         "global_rel_alpha": float(features.global_relpow["alpha"]),

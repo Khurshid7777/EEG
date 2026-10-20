@@ -514,3 +514,19 @@ def test_prereg36_assess():
     assert abs(a["specificity_loss"] - 0.02) < 1e-9 and a["decision"]["keep_record_model_cannot_clear"]
     assert a["with_rule"]["sensitivity"] == 1.0 and a["model_alone"]["sensitivity"] == 0.9
     assert a["kept"] == {"normal": 2, "abnormal": 1}
+
+
+def test_prereg37_assess():
+    from neurolens.evaluation.prereg37 import assess
+
+    def n(lab, imp, pdr=9.0, un=9.0):
+        return {"abnormal": lab, "impression_abnormal": imp, "pdr_hz": pdr, "pdr_hz_unchecked": un}
+
+    def d(imp):
+        return {"impression_abnormal": imp, "record_probability": 0.1}
+    old = [n(False, False)] * 50 + [n(True, True)] * 50
+    new = [n(False, False)] * 49 + [n(False, True, 0.0)] + [n(True, True)] * 50
+    a = assess(old, new, [d(False)] * 100, [d(False)] * 98 + [d(True)] * 2)
+    assert a["nmt_normals_losing_pdr"] == 1 and a["decision"]["keep_pdr_posterior_dominance"]
+    a = assess(old, new, [d(False)] * 100, [d(False)] * 97 + [d(True)] * 3)
+    assert not a["decision"]["keep_pdr_posterior_dominance"]

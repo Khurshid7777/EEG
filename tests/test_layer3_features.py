@@ -61,3 +61,30 @@ def test_asymmetry_index_sign():
     assert asymmetry_index(10, 2) > 0  # left greater -> positive
     assert asymmetry_index(2, 10) < 0
     assert asymmetry_index(5, 5) == 0
+
+
+def test_pdr_must_be_posterior_dominant():
+    import numpy as np
+
+    from neurolens.contracts.signal import UnifiedSignal
+    from neurolens.layer3_features.background import posterior_dominance
+    from neurolens.layer3_features.feature_set import compute_features
+
+    fs, n = 200.0, 200 * 120
+    t = np.arange(n) / fs
+    rng = np.random.default_rng(1)
+    alpha = 30 * np.sin(2 * np.pi * 9.5 * t)
+    names = ["F3", "F4", "C3", "C4", "O1", "O2"]
+
+    def sig(front_gain, occ_gain):
+        g = {"F3": front_gain, "F4": front_gain, "O1": occ_gain, "O2": occ_gain}
+        x = np.stack([g.get(c, 0.3) * alpha + rng.normal(0, 3, n) for c in names]).astype(np.float32)
+        return UnifiedSignal(signal=x, sampling_rate_hz=fs, channel_names=names)
+
+    assert posterior_dominance(alpha, 0.5 * alpha, fs, 9.5) > 3.5
+    post = compute_features(sig(0.3, 1.0), pdr_posterior_dominance_min=1.0)
+    front = compute_features(sig(1.0, 0.4), pdr_posterior_dominance_min=1.0)
+    off = compute_features(sig(1.0, 0.4))
+    assert abs(post.pdr_hz - 9.5) < 0.5 and post.extra["pdr_posterior_ratio"] > 1
+    assert front.pdr_hz == 0.0 and abs(front.extra["pdr_hz_unchecked"] - 9.5) < 0.5
+    assert abs(off.pdr_hz - 9.5) < 0.5  # default: criterion off

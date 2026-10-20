@@ -98,6 +98,7 @@ def compute_features(
     overlap: float = 0.5,
     pdr_method: str = "whole",
     rhythm: bool = False,
+    pdr_posterior_dominance_min: float = 0.0,
 ) -> FeatureSet:
     fs = sig.sampling_rate_hz
     names = sig.channel_names
@@ -159,6 +160,17 @@ def compute_features(
         return data[names.index(name)] if name in names else np.zeros(sig.n_samples)
 
     pdr = posterior_dominant_rhythm(_chan("O1"), _chan("O2"), fs, method=pdr_method)
+    # increment 37: the peak must be posterior dominant (occipital vs F3/F4 power at the PDR)
+    pdr_unchecked, pdr_ratio = pdr, None
+    front = [n for n in ("F3", "F4") if n in eeg_names]
+    if pdr > 0 and front and "O1" in eeg_names and "O2" in eeg_names:
+        from .background import posterior_dominance
+
+        occ = (_chan("O1").astype(np.float64) + _chan("O2")) / 2.0
+        frn = np.mean([_chan(n).astype(np.float64) for n in front], axis=0)
+        pdr_ratio = posterior_dominance(occ, frn, fs, pdr)
+        if pdr_posterior_dominance_min > 0 and pdr_ratio < pdr_posterior_dominance_min:
+            pdr = 0.0
 
     # --- asymmetry over homologous pairs (delta-band power based) ---
     asym: dict[str, float] = {}
@@ -211,6 +223,7 @@ def compute_features(
         representative_channel=rep,
         extra={"epoch_linelen": linelen, "epoch_teager": teager,
                "feature_version": FEATURE_VERSION,
+               "pdr_hz_unchecked": pdr_unchecked, "pdr_posterior_ratio": pdr_ratio,
                # increment 27: neonatal rhythmicity (opt-in; [n_epochs, 4])
                **({"epoch_rhythm": _rhythm(data, eeg_idx, fs, times, epoch_s)} if rhythm else {})},
     )

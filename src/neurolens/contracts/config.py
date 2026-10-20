@@ -121,6 +121,10 @@ class Thresholds(BaseModel):
         default="whole", pattern="^(whole|alert)$",
         description="Posterior dominant rhythm estimate: whole-record spectral peak, or 'alert' - "
                     "upper quartile of 10-s epoch peaks (increment 20).")
+    pdr_posterior_dominance_min: float = Field(
+        default=0.0, ge=0,
+        description="Increment 37: the PDR peak counts only if its power over O1/O2 is at least this "
+                    "multiple of that over F3/F4 (a posterior dominant rhythm is posterior); 0 = off.")
     field_required: bool = Field(
         default=False, description="Increment 20: lateralized PDs/RDA whose channels contain no two "
                                    "neighbouring electrodes are 'no field' hypotheses (uncertain).")
