@@ -530,3 +530,34 @@ def test_prereg37_assess():
     assert a["nmt_normals_losing_pdr"] == 1 and a["decision"]["keep_pdr_posterior_dominance"]
     a = assess(old, new, [d(False)] * 100, [d(False)] * 97 + [d(True)] * 3)
     assert not a["decision"]["keep_pdr_posterior_dominance"]
+
+
+def test_vepiset_events_and_prereg38():
+    import numpy as np
+
+    from neurolens.datasets.vepiset import parse_events
+    from neurolens.evaluation.prereg38 import assess
+    from neurolens.evaluation.vepiset_eval import reference_events
+
+    ev = np.array([["10.0", "0", "Waking"], ["12.5", "0", "!"], ["20.0", "0", "!start"],
+                   ["23.0", "0", "!end"], ["300.0", "0", "Sleeping"]])
+    a = parse_events(ev)
+    assert a.discharges == [(12.5, 12.5), (20.0, 23.0)] and a.states[-1] == (300.0, "Sleeping")
+    assert reference_events(a) == [(12.35, 12.65), (20.0, 23.0)]
+
+    def sr(normal, ref, hit, det):
+        return {"n_ref": ref, "n_hit": hit, "n_slow": 0, "n_slow_hit": 0, "n_det": det,
+                "n_false": det if normal else 0, "n_unannotated": 0, "hours": 1 / 3, "normal": normal}
+
+    def row(normal, pos_scores, neg_scores):
+        ep = [{"label": 1, "learned": s, "heuristic_z": 6.0, "state": "Waking"} for s in pos_scores] + \
+             [{"label": 0, "learned": s, "heuristic_z": 6.0, "state": "Waking"} for s in neg_scores]
+        n_ref = len(pos_scores)
+        return {"n_ref": n_ref, "epochs": ep, "learned": sr(normal, n_ref, n_ref // 2, 2),
+                "heuristic": {"6.0": sr(normal, n_ref, n_ref, 50)}}
+    rows = [row(False, [0.9, 0.8], [0.1, 0.2, 0.3]) for _ in range(5)] + [row(True, [], [0.1, 0.4])] * 3 \
+        + [{"name": "x", "error": "e"}]
+    res = assess(rows)
+    assert res["auc_learned"] == 1.0 and res["auc_heuristic"] == 0.5 and res["n_excluded"] == 1
+    assert all(res["hypotheses"].values()) and res["decision"]["keep_learned_probability_as_evidence"]
+    assert res["learned_at_frozen_threshold"]["sensitivity"] == 0.5
