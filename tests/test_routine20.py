@@ -561,3 +561,24 @@ def test_vepiset_events_and_prereg38():
     assert res["auc_learned"] == 1.0 and res["auc_heuristic"] == 0.5 and res["n_excluded"] == 1
     assert all(res["hypotheses"].values()) and res["decision"]["keep_learned_probability_as_evidence"]
     assert res["learned_at_frozen_threshold"]["sensitivity"] == 0.5
+
+
+def test_aubmc_offsets_and_prereg39():
+    from neurolens.datasets.aubmc import edf_start_seconds, to_offset
+    from neurolens.evaluation.prereg39 import assess
+
+    hdr = b" " * 168 + b"09.07.15" + b"23.50.00" + b" " * 72
+    st = edf_start_seconds(hdr)
+    assert st == 23 * 3600 + 50 * 60 and to_offset((0, 10, 0), st) == 1200.0  # across midnight
+
+    def rec(f, n, tp, fp_list, hours=1.0):
+        return {"file": f, "hours": hours, "n_seizures": n, "tp": tp, "fp": len(fp_list), "latencies_s": [5.0] * tp,
+                "false_positives": fp_list}
+
+    def mode(m, tp, fps):
+        return {"mode": m, "records": [rec("p1/p1_Record1.edf", 2, tp, fps)]}
+    metrics = {"results": [mode("realtime-ml-A", 2, [(10, 20)]), mode("realtime-threshold-default", 1, [(10, 20), (50, 60)]),
+                           mode("offline-ml-A", 2, [(100, 110)]), mode("offline-threshold-default", 2, [])]}
+    a = assess(metrics, {"p1/p1_Record1.edf": [(100, 200)]})
+    assert a["fa_per_hour_excluding_ambiguous"]["offline-ml-A"] == 0.0
+    assert all(a["hypotheses"].values()) and a["decision"] == {"offline_default": "learned_v2", "realtime_default": "learned_v2"}
