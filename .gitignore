@@ -38,3 +38,4 @@ data/tuab/
 data/openneuro/
 data/icare/
 data/vepiset/
+data/*.log
