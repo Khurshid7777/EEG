@@ -39,3 +39,4 @@ data/openneuro/
 data/icare/
 data/vepiset/
 data/*.log
+data/aubmc/
