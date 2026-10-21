@@ -39,6 +39,9 @@ STANDARD_19 = ("FP1", "FP2", "F3", "F4", "C3", "C4", "P3", "P4", "O1", "O2",
                "F7", "F8", "T3", "T4", "T5", "T6", "FZ", "CZ", "PZ")
 _ALIASES = {"T7": "T3", "T8": "T4", "P7": "T5", "P8": "T6"}
 METRICS = ("ptp", "slope", "sharp", "ll", "delta_next")
+# increment 40 (v3): waveform and field at the maximal-slope channel (IFCN criteria)
+MORPHOLOGY = ["peak_width_s_at_max_slope", "peak_asym_at_max_slope", "peak_negative_at_max_slope",
+              "field_neighbours_at_max_slope", "field_fraction_at_max_slope"]
 AGGS = ("max", "second", "top3", "median", "n_gt3", "n_gt5")
 
 
@@ -89,6 +92,58 @@ def channel_metrics(x: np.ndarray, fs: float) -> dict[str, np.ndarray]:
     return out
 
 
+def peak_morphology(x: np.ndarray, fs: float, K: int) -> dict[str, np.ndarray]:
+    """Per channel and window (increment 40), the most prominent peak of either polarity in the
+    window: half-prominence width (s), rise/fall asymmetry (rise time / fall time) and polarity
+    (1 = surface-negative, a trough in the referential signal). IFCN criteria: a spike lasts
+    20-70 ms and a sharp wave 70-200 ms, the waveform is asymmetric and usually negative."""
+    from scipy.signal import find_peaks, peak_widths
+
+    win, hop = int(round(WIN_S * fs)), int(round(HOP_S * fs))
+    C = x.shape[0]
+    out = {k: np.zeros((C, K)) for k in ("width", "asym", "neg")}
+    best = np.full((C, K), -np.inf)
+    for c in range(C):
+        for sign in (1.0, -1.0):
+            y = sign * x[c]
+            pk, pr = find_peaks(y, prominence=0)
+            if pk.size == 0:
+                continue
+            prom = pr["prominences"]
+            w, _, lips, rips = peak_widths(y, pk, rel_height=0.5, prominence_data=(prom, pr["left_bases"], pr["right_bases"]))
+            rise, fall = pk - lips, rips - pk
+            asym = rise / np.maximum(fall, 1e-6)
+            order = np.argsort(prom)        # ascending: the most prominent peak is written last
+            for back in (0, 1):             # a window covers two hops
+                k = pk[order] // hop - back
+                ok = (k >= 0) & (k < K) & (pk[order] < k * hop + win)
+                k, o = k[ok], order[ok]
+                better = prom[o] > best[c, k]
+                k, o = k[better], o[better]
+                best[c, k] = prom[o]
+                out["width"][c, k] = w[o] / fs
+                out["asym"][c, k] = asym[o]
+                out["neg"][c, k] = 1.0 if sign < 0 else 0.0
+    return out
+
+
+def field_counts(ptp_bg: np.ndarray, arg: np.ndarray, ch: list[str]) -> tuple[np.ndarray, np.ndarray]:
+    """Neighbours (10-20 chains) of the maximal channel carrying >= half its relative amplitude:
+    count and fraction of the neighbours present (a cerebral discharge has a field)."""
+    from .periodic import _ADJ
+
+    nb = [[j for j, d in enumerate(ch) if d in _ADJ.get(c, set())] for c in ch]
+    K = ptp_bg.shape[1]
+    cnt, frac = np.zeros(K), np.zeros(K)
+    for i in range(len(ch)):
+        sel = np.where(arg == i)[0]
+        if sel.size == 0 or not nb[i]:
+            continue
+        hit = (ptp_bg[nb[i]][:, sel] >= 0.5 * ptp_bg[i, sel]).sum(axis=0)
+        cnt[sel], frac[sel] = hit, hit / len(nb[i])
+    return cnt, frac
+
+
 def _aggregate(m: np.ndarray) -> list[np.ndarray]:
     """(C, K) relative metric -> aggregates across channels, each (K,)."""
     s = np.sort(m, axis=0)[::-1]
@@ -102,7 +157,7 @@ def base_feature_names() -> list[str]:
         for m in METRICS:
             names += [f"{m}_{scope}_{a}" for a in AGGS]
     return names + ["hf_ratio_at_max_slope", "hf_ratio_median", "fp_dominance",
-                    "log_ptp_abs_max", "slope_ptp_ratio_at_max"]
+                    "log_ptp_abs_max", "slope_ptp_ratio_at_max"] + MORPHOLOGY
 
 
 def feature_names() -> list[str]:
@@ -162,6 +217,9 @@ def window_features(x: np.ndarray, fs: float, names: list[str]) -> tuple[np.ndar
         cols.append(np.ones(K))
     cols.append(np.log10(raw["ptp"].max(axis=0) + 1.0))
     cols.append(slope_bg[arg, k] / (ptp_bg[arg, k] + 1e-6))
+    morph = peak_morphology(x, fs, K)
+    cols += [morph["width"][arg, k], morph["asym"][arg, k], morph["neg"][arg, k]]
+    cols += list(field_counts(ptp_bg, arg, ch))
     B = np.column_stack(cols)
     prev = np.vstack([B[:1], B[:-1]])
     nxt = np.vstack([B[1:], B[-1:]])

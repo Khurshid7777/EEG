@@ -37,7 +37,7 @@ from ..layer4_detect import ied_ml
 MERGE_GAP_S = 0.25
 TOL_S = 0.25
 HEURISTIC_Z_GRID = (4.0, 5.0, 6.0, 7.0, 8.0, 10.0, 12.0, 15.0, 20.0, 25.0, 30.0)
-FEATURE_VERSION = "ied-f1"
+FEATURE_VERSION = "ied-f2"  # increment 40: + waveform morphology and field (v3)
 
 
 def merge_intervals(iv: list[tuple[float, float]], gap: float = MERGE_GAP_S) -> list[tuple[float, float]]:

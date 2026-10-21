@@ -342,3 +342,23 @@ def test_ied_feature_subset_by_name():
     Xs = ied_ml.select_features(X, keep)
     assert Xs.shape == (2, len(full) - 3) and ied_ml.select_features(X, full) is X
     assert Xs[0, 0] == X[0, full.index(keep[0])]
+
+
+def test_peak_morphology_width_polarity_and_field():
+    import numpy as np
+
+    from neurolens.layer4_detect.ied_ml import WIN_S, field_counts, peak_morphology
+
+    fs = 200.0
+    x = np.zeros((2, int(4 * fs)))
+    t = np.arange(x.shape[1]) / fs
+    x[0] -= 80 * np.exp(-0.5 * ((t - 1.1) / 0.02) ** 2)        # negative spike, half width ~47 ms
+    x[1] += 80 * np.exp(-0.5 * ((t - 2.6) / 0.08) ** 2)        # positive slow transient
+    K = int((x.shape[1] - WIN_S * fs) // (0.25 * fs)) + 1
+    m = peak_morphology(x, fs, K)
+    k1, k2 = int(1.0 / 0.25), int(2.5 / 0.25)
+    assert m["neg"][0, k1] == 1.0 and 0.03 < m["width"][0, k1] < 0.07
+    assert m["neg"][1, k2] == 0.0 and m["width"][1, k2] > 0.15
+    ptp = np.array([[10.0, 1.0], [6.0, 1.0], [1.0, 1.0]])      # 3 channels, 2 windows
+    cnt, frac = field_counts(ptp, np.array([0, 0]), ["F3", "C3", "O1"])
+    assert cnt[0] == 1 and frac[0] == 1.0                       # C3 is F3's only neighbour present
