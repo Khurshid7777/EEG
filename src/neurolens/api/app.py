@@ -6,7 +6,8 @@ Thin service over the pipeline and real-time monitor. Endpoints:
   GET  /config/montages        available montages
   GET  /schemas/{name}         a generated JSON Schema
   POST /analyze                analyze an EDF by server-side path (JSON body)
-  POST /analyze/upload         analyze an uploaded EDF (multipart)
+  POST /analyze/upload         analyze an uploaded recording (multipart; EDF/BDF, or a .zip with
+                               BrainVision / EEGLAB / WFDB files)
   POST /check/upload           intake check of an uploaded recording (recording regulation)
   POST /monitor                real-time cEEG monitor on an EDF by path (JSON body)
   POST /feedback               capture a neurophysiologist correction (TZ §13)
@@ -17,7 +18,7 @@ Results are deidentified (§12) and every request is audit-logged.
 from __future__ import annotations
 
 import json
-import tempfile
+import shutil
 from pathlib import Path
 from typing import Optional
 
@@ -30,6 +31,7 @@ from ..pipeline.config_loader import load_configs
 from .audit import AuditLogger
 from .models import AnalyzeParams, AnalyzeRequest, FeedbackRequest, MonitorRequest
 from .service import run_analyze, run_monitor
+from .uploads import UploadError, materialize
 
 _SCHEMAS_DIR = Path(__file__).resolve().parents[3] / "schemas"
 
@@ -102,15 +104,16 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
             )
         except ValueError as exc:  # pydantic ValidationError: invalid form value -> 422, not 500
             raise HTTPException(status_code=422, detail=str(exc))
-        suffix = Path(file.filename or "upload.edf").suffix or ".edf"
-        tmp = Path(tempfile.mkdtemp()) / f"upload{suffix}"
-        tmp.write_bytes(await file.read())
+        try:
+            tmp, tmpdir = materialize(await file.read(), file.filename)
+        except UploadError as exc:
+            raise HTTPException(status_code=422, detail=str(exc))
         try:
             return run_analyze(tmp, params, cfg, audit)
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc))
         finally:
-            tmp.unlink(missing_ok=True)
+            shutil.rmtree(tmpdir, ignore_errors=True)
 
     @app.post("/check/upload")
     async def check_upload(
@@ -125,13 +128,14 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
             patient = PatientInfo(age_years=age_years, postmenstrual_age_weeks=postmenstrual_age_weeks)
         except ValueError as exc:
             raise HTTPException(status_code=422, detail=str(exc))
-        suffix = Path(file.filename or "upload.edf").suffix or ".edf"
-        tmp = Path(tempfile.mkdtemp()) / f"upload{suffix}"
-        tmp.write_bytes(await file.read())
+        try:
+            tmp, tmpdir = materialize(await file.read(), file.filename)
+        except UploadError as exc:
+            raise HTTPException(status_code=422, detail=str(exc))
         try:
             rep = check_recording(tmp, patient).to_dict()
         finally:
-            tmp.unlink(missing_ok=True)
+            shutil.rmtree(tmpdir, ignore_errors=True)
         rep["path"] = file.filename
         audit.record("/check/upload", None, cfg.rule_base.version,
                      {"accepted": rep["accepted"], "rejected": [c["name"] for c in rep["checks"] if c["status"] == "reject"]})

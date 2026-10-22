@@ -149,3 +149,36 @@ def test_check_upload(client_and_paths, demo_edf):
     names = {c["name"]: c["status"] for c in body["checks"]}
     assert names["format"] == "ok" and names["patient_age"] == "ok" and body["path"] == "demo.edf"
     assert "/check/upload" in audit.read_text()
+
+
+def _bv_zip(names=("r",)):
+    import io
+    import zipfile
+
+    import numpy as np
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        for n in names:
+            x = (np.random.default_rng(0).normal(0, 200, (19, 250 * 240))).astype("<i2")
+            z.writestr(f"deep/../{n}.eeg", x.T.tobytes())
+            chans = "".join(f"Ch{i + 1}={c},,0.1\n" for i, c in enumerate(
+                ["Fp1", "Fp2", "F7", "F3", "Fz", "F4", "F8", "T3", "C3", "Cz", "C4", "T4", "T5", "P3", "Pz",
+                 "P4", "T6", "O1", "O2"]))
+            z.writestr(f"{n}.vhdr", "Brain Vision Data Exchange Header File Version 1.0\n[Common Infos]\n"
+                       f"DataFile={n}.eeg\nDataFormat=BINARY\nDataOrientation=MULTIPLEXED\n"
+                       "NumberOfChannels=19\nSamplingInterval=4000\n[Binary Infos]\nBinaryFormat=INT_16\n"
+                       "[Channel Infos]\n" + chans)
+    return buf.getvalue()
+
+
+def test_check_upload_zip_brainvision(client_and_paths):
+    client, _, _ = client_and_paths
+    r = client.post("/check/upload", files={"file": ("rec.zip", _bv_zip())}, data={"age_years": "30"})
+    assert r.status_code == 200
+    st = {c["name"]: c["status"] for c in r.json()["checks"]}
+    assert st["format"] == "ok" and st["electrodes_1020"] == "ok" and st["sampling_rate"] == "ok"
+    r = client.post("/check/upload", files={"file": ("two.zip", _bv_zip(("a", "b")))})
+    assert r.status_code == 422 and "one per request" in r.json()["detail"]
+    r = client.post("/check/upload", files={"file": ("bad.zip", b"not a zip")})
+    assert r.status_code == 422
