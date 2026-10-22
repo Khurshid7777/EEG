@@ -844,7 +844,7 @@ def build_parser() -> argparse.ArgumentParser:
     sc.set_defaults(func=_scan_check)
 
     fc = sub.add_parser("file-check", help="Check a digital EEG file against the recording/export regulation.")
-    fc.add_argument("file", help="EDF/EDF+/BDF, EEGLAB .set or WFDB .hea.")
+    fc.add_argument("file", help="EDF/EDF+/BDF, BrainVision .vhdr, EEGLAB .set or WFDB .hea.")
     fc.add_argument("--age", type=float, default=None, help="Age in years.")
     fc.add_argument("--pma", type=float, default=None, help="Postmenstrual age (weeks).")
     fc.add_argument("--out", help="Write the full report as JSON.")

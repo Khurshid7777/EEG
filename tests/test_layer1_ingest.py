@@ -76,3 +76,23 @@ def test_file_check_unreadable(tmp_path):
     p.write_bytes(b"not an edf")
     rep = check_recording(p)
     assert not rep.accepted and rep.checks[0].name == "format"
+
+
+def test_brainvision_vectorized_int16_with_units(tmp_path):
+    import numpy as np
+
+    from neurolens.layer1_ingest.brainvision import read_markers
+    from neurolens.layer1_ingest.registry import ingest
+
+    d = np.array([[10, 20, 30, 40], [-5, -5, 5, 5]], dtype="<i2")          # 2 channels x 4 samples
+    (tmp_path / "r.eeg").write_bytes(d.tobytes())                          # VECTORIZED: ch1 then ch2
+    (tmp_path / "r.vhdr").write_text(
+        "Brain Vision Data Exchange Header File Version 1.0\n[Common Infos]\nDataFile=r.eeg\nMarkerFile=r.vmrk\n"
+        "DataFormat=BINARY\nDataOrientation=VECTORIZED\nNumberOfChannels=2\nSamplingInterval=4000\n"
+        "[Binary Infos]\nBinaryFormat=INT_16\n[Channel Infos]\n; comment\nCh1=Fp1,,0.1,µV\nCh2=O2,,2,nV\n")
+    (tmp_path / "r.vmrk").write_text(
+        "Brain Vision Data Exchange Marker File, Version 1.0\n[Marker Infos]\nMk1=Comment,eyes closed,3,1,0\n")
+    s = ingest(tmp_path / "r.vhdr")
+    assert s.sampling_rate_hz == 250.0 and s.channel_names == ["Fp1", "O2"]
+    assert np.allclose(s.signal[0], [1, 2, 3, 4]) and np.allclose(s.signal[1], [-0.01, -0.01, 0.01, 0.01])
+    assert read_markers(tmp_path / "r.vmrk", 250.0) == [(0.008, 0.004, "Comment: eyes closed")]
