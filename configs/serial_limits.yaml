@@ -1,0 +1,31 @@
+source: OpenNeuro ds004148 sub-01..30, session 1 vs 3, eyes closed, 19 10-20 electrodes
+  (increment 42, docs/preregistration_increment42.md)
+z: 2.576
+n_subjects: 30
+errors: []
+limits:
+  pdr_hz:
+    limit: 1.0287
+    n_pairs: 29
+    mean: 0.0862
+    sd: 0.3968
+  global_rel_delta:
+    limit: 0.8844
+    n_pairs: 30
+    mean: 0.1324
+    sd: 0.3222
+  global_rel_theta:
+    limit: 1.3004
+    n_pairs: 30
+    mean: -0.0886
+    sd: 0.5055
+  global_rel_alpha:
+    limit: 1.4009
+    n_pairs: 30
+    mean: -0.3192
+    sd: 0.4479
+  robust_amplitude_uv:
+    limit: 0.414
+    n_pairs: 30
+    mean: -0.0377
+    sd: 0.1589
