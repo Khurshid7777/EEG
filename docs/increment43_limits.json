@@ -1,0 +1,79 @@
+{
+ "n_subjects": 100,
+ "errors": [],
+ "v1": {
+  "source": "OpenNeuro ds005385 (Dortmund Vital Study) development sample (seed 43, 100 people), session 1 eyes closed before vs after 2 h of tasks, 19 10-20 electrodes (increment 43)",
+  "version": 1,
+  "z": 2.576,
+  "limits": {
+   "pdr_hz": {
+    "limit": 1.1362,
+    "n_pairs": 80,
+    "mean": -0.1156,
+    "sd": 0.4283
+   },
+   "global_rel_delta": {
+    "limit": 1.0416,
+    "n_pairs": 100,
+    "mean": 0.0079,
+    "sd": 0.4063
+   },
+   "global_rel_theta": {
+    "limit": 1.2016,
+    "n_pairs": 100,
+    "mean": -0.0051,
+    "sd": 0.4688
+   },
+   "global_rel_alpha": {
+    "limit": 1.6009,
+    "n_pairs": 100,
+    "mean": -0.076,
+    "sd": 0.6199
+   },
+   "robust_amplitude_uv": {
+    "limit": 0.3375,
+    "n_pairs": 100,
+    "mean": 0.0069,
+    "sd": 0.1315
+   }
+  }
+ },
+ "v2": {
+  "source": "OpenNeuro ds005385 (Dortmund Vital Study) development sample (seed 43, 100 people), session 1 eyes closed before vs after 2 h of tasks, 19 10-20 electrodes (increment 43)",
+  "version": 2,
+  "z": 2.576,
+  "alert_quantile": 0.75,
+  "limits": {
+   "pdr_hz": {
+    "limit": 1.1362,
+    "n_pairs": 80,
+    "mean": -0.1156,
+    "sd": 0.4283
+   },
+   "alert_rel_delta": {
+    "limit": 0.7478,
+    "n_pairs": 100,
+    "mean": -0.197,
+    "sd": 0.2142
+   },
+   "alert_rel_theta": {
+    "limit": 0.4163,
+    "n_pairs": 100,
+    "mean": 0.0068,
+    "sd": 0.1623
+   },
+   "alert_rel_alpha": {
+    "limit": 0.6742,
+    "n_pairs": 100,
+    "mean": 0.1225,
+    "sd": 0.2325
+   },
+   "robust_amplitude_uv": {
+    "limit": 0.3375,
+    "n_pairs": 100,
+    "mean": 0.0069,
+    "sd": 0.1315
+   }
+  }
+ }
+}
