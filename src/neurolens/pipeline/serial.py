@@ -6,6 +6,11 @@ alpha power and robust amplitude (log ratio). A change is flagged when it exceed
 day-to-day variability of healthy people: ``z * RMS`` of the same quantity between repeat
 recordings (``configs/serial_limits.yaml``, increment 42, OpenNeuro ds004148). Detectors that
 fired in only one of the recordings are listed without a limit.
+
+v2 (increment 43): the band shares are measured on the most alert epochs only - the quarter of
+2-s epochs with the highest posterior alpha share (``alert_rel_*`` in the record summary) - since
+drowsiness at a repeat recording changed the whole-record shares as much as eye opening did
+(increment 42). The quantities compared are those listed in the limits file.
 """
 
 from __future__ import annotations
@@ -19,7 +24,7 @@ import yaml
 from ..contracts.report import Bilingual
 
 QUANTITIES = ("pdr_hz", "global_rel_delta", "global_rel_theta", "global_rel_alpha", "robust_amplitude_uv")
-LOG_RATIO = {"global_rel_delta", "global_rel_theta", "global_rel_alpha", "robust_amplitude_uv"}
+QUANTITIES_V2 = ("pdr_hz", "alert_rel_delta", "alert_rel_theta", "alert_rel_alpha", "robust_amplitude_uv")
 Z = 2.576
 LIMITS_PATH = Path(__file__).resolve().parents[3] / "configs" / "serial_limits.yaml"
 
@@ -29,6 +34,9 @@ _NAMES = {
     "global_rel_theta": ("доля тета", "teta ulushi"),
     "global_rel_alpha": ("доля альфа", "alfa ulushi"),
     "robust_amplitude_uv": ("амплитуда", "amplituda"),
+    "alert_rel_delta": ("доля дельта (бодрствование)", "delta ulushi (bedorlik)"),
+    "alert_rel_theta": ("доля тета (бодрствование)", "teta ulushi (bedorlik)"),
+    "alert_rel_alpha": ("доля альфа (бодрствование)", "alfa ulushi (bedorlik)"),
 }
 
 
@@ -43,9 +51,9 @@ def change(q: str, a, b) -> float | None:
     return math.log(b / a) if a > 0 and b > 0 else None
 
 
-def derive_limits(pairs: list[tuple[dict, dict]], z: float = Z) -> dict:
+def derive_limits(pairs: list[tuple[dict, dict]], z: float = Z, quantities=QUANTITIES) -> dict:
     out = {}
-    for q in QUANTITIES:
+    for q in quantities:
         d = np.array([c for a, b in pairs if (c := change(q, a.get(q), b.get(q))) is not None])
         out[q] = {"limit": round(float(z * np.sqrt(np.mean(d ** 2))), 4) if d.size else None,
                   "n_pairs": int(d.size), "mean": round(float(d.mean()), 4) if d.size else None,
@@ -65,7 +73,7 @@ def compare(prior: dict, current: dict, limits: dict | None = None) -> dict:
     (its ``limits`` mapping is used); None -> values side by side, no flags."""
     lim = (limits or {}).get("limits", {})
     rows = []
-    for q in QUANTITIES:
+    for q in (tuple(lim) or QUANTITIES):
         a, b = prior.get(q), current.get(q)
         c = change(q, a, b)
         l_ = (lim.get(q) or {}).get("limit")

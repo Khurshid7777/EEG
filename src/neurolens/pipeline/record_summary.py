@@ -5,6 +5,23 @@ model sees in the pipeline exactly the features it was trained on."""
 from __future__ import annotations
 
 META_KEYS = ("artifact_hypothesis", "review_candidate")
+ALERT_QUANTILE = 0.75   # increment 43: top quarter of epochs by posterior alpha
+POSTERIOR = ("O1", "O2")
+
+
+def alert_band_shares(features, q: float = ALERT_QUANTILE) -> dict:
+    """Delta / theta / alpha shares averaged over the most alert epochs - those whose posterior
+    (O1/O2, else all-channel) alpha share is at or above the record's ``q``-quantile - for the
+    serial comparison (D77). Empty when the recording has no epochs."""
+    import numpy as np
+
+    rp = features.epoch_relpow
+    if not rp or rp["alpha"].size == 0:
+        return {}
+    post = [features.eeg_channels.index(c) for c in POSTERIOR if c in features.eeg_channels]
+    pa = rp["alpha"][:, post].mean(axis=1) if post else rp["alpha"].mean(axis=1)
+    keep = pa >= np.quantile(pa, q)
+    return {f"alert_rel_{b}": float(rp[b][keep].mean()) for b in ("delta", "theta", "alpha")}
 
 
 def summarize(analysis, features, detection, graph) -> dict:
@@ -23,6 +40,7 @@ def summarize(analysis, features, detection, graph) -> dict:
         "global_rel_delta": float(features.global_relpow["delta"]),
         "global_rel_theta": float(features.global_relpow["theta"]),
         "global_rel_alpha": float(features.global_relpow["alpha"]),
+        **alert_band_shares(features),
         "robust_amplitude_uv": robust_amplitude_uv(analysis),
         "flags": list(analysis.quality.flags),
         "duration_s": float(features.duration_s),
