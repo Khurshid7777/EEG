@@ -33,6 +33,7 @@ def run_analyze(
     params: AnalyzeParams,
     config: ConfigBundle,
     audit: AuditLogger,
+    prior_summary: dict | None = None,
 ) -> dict[str, Any]:
     mode = OperatingMode.B_AUTONOMOUS if params.mode.upper() == "B" else OperatingMode.A_DECISION_SUPPORT
     pipe = Pipeline(config=config, provider_pref=params.provider)
@@ -40,6 +41,11 @@ def run_analyze(
         path, mode=mode, montage_name=params.montage,
         patient=_patient(params), context=_context(params),
     )
+    if prior_summary is not None:
+        from ..pipeline.serial import compare, compare_text, load_limits
+
+        cmp = compare(prior_summary, out.result_json["record_summary"], load_limits())
+        out.result_json["serial_comparison"] = {**cmp, "text": compare_text(cmp).model_dump()}
     result, subject_id = deidentify_result(out.result_json)
     audit.record(
         "/analyze", subject_id, out.graph.rule_base_version,

@@ -105,9 +105,15 @@ def compare_text(cmp: dict) -> Bilingual:
         uz.append("yo‘qoldi: " + ", ".join(cmp["detectors_gone"]))
     head_ru = "По сравнению с прошлой записью: " if ru else "Сравнимых величин нет."
     head_uz = "Oldingi yozuvga nisbatan: " if uz else "Taqqoslanadigan qiymatlar yo‘q."
+    # increment 42: the limits held on stable healthy people (3% flagged) but caught eye opening as
+    # an alpha decrease in only 10%: they flag large changes only - say so in every comparison
     note_ru = (" Пределы — изменчивость здоровых между повторными записями; у пациентов она может быть больше."
+               " Пределы широкие: отмечаются только крупные изменения, отсутствие отметки не исключает"
+               " умеренного изменения — сравните записи визуально."
                if cmp.get("limits_source") else " Пределы изменчивости не заданы: только значения.")
     note_uz = (" Chegaralar — sog‘lomlarda takroriy yozuvlar orasidagi o‘zgaruvchanlik; bemorlarda kattaroq bo‘lishi mumkin."
+               " Chegaralar keng: faqat katta o‘zgarishlar belgilanadi, belgi yo‘qligi o‘rtacha o‘zgarishni"
+               " istisno qilmaydi — yozuvlarni vizual solishtiring."
                if cmp.get("limits_source") else " O‘zgaruvchanlik chegaralari berilmagan: faqat qiymatlar.")
     return Bilingual(ru=head_ru + "; ".join(ru) + ("." if ru else "") + note_ru,
                      uz=head_uz + "; ".join(uz) + ("." if uz else "") + note_uz)

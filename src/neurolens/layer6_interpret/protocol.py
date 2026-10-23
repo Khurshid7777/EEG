@@ -13,9 +13,11 @@ _SECTION_TITLES = {
 }
 
 
-def render_protocol(report: LLMReport, sleep: dict | None = None, procedures: dict | None = None) -> str:
+def render_protocol(report: LLMReport, sleep: dict | None = None, procedures: dict | None = None,
+                    serial: dict | None = None) -> str:
     """``sleep``: ``result_json["sleep_staging"]`` when the recording was staged;
-    ``procedures``: ``result_json["procedures"]`` when the recording has markers."""
+    ``procedures``: ``result_json["procedures"]`` when the recording has markers;
+    ``serial``: ``result_json["serial_comparison"]`` when a prior EEG was given."""
     lines: list[str] = []
     lines.append("=" * 72)
     lines.append("ПРОТОКОЛ ЭЭГ / EEG BAYONNOMASI — NeuroLens")
@@ -74,6 +76,15 @@ def render_protocol(report: LLMReport, sleep: dict | None = None, procedures: di
         lines.append("— Функциональные пробы / Funksional sinamalar —")
         lines.append(f"  RU: {ptxt.ru}")
         lines.append(f"  UZ: {ptxt.uz}")
+
+    if serial:
+        from ..pipeline.serial import compare_text
+
+        stxt = compare_text(serial)
+        lines.append("")
+        lines.append("— Сравнение с прошлой ЭЭГ / Oldingi EEG bilan taqqoslash —")
+        lines.append(f"  RU: {stxt.ru}")
+        lines.append(f"  UZ: {stxt.uz}")
 
     lines.append("")
     lines.append("— Заключение / Xulosa —")

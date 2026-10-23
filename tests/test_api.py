@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -60,6 +62,16 @@ def test_analyze_upload(client_and_paths, demo_edf):
         )
     assert r.status_code == 200
     assert len(r.json()["events"]) > 0
+    prior = r.json()["record_summary"]
+    with open(demo_edf, "rb") as fh:
+        r2 = client.post("/analyze/upload", files={"file": ("rec.edf", fh, "application/octet-stream")},
+                         data={"provider": "deterministic", "prior_record_summary": json.dumps(prior)})
+    sc = r2.json()["serial_comparison"]
+    assert not sc["any_exceeds"] and all(q["change"] in (0.0, None) for q in sc["quantities"])
+    assert "прошлой записью" in sc["text"]["ru"]
+    with open(demo_edf, "rb") as fh:
+        bad = client.post("/analyze/upload", files={"file": ("rec.edf", fh)}, data={"prior_record_summary": "[1]"})
+    assert bad.status_code == 422
 
 
 def test_monitor(client_and_paths, demo_edf):

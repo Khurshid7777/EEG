@@ -183,7 +183,7 @@ class PipelineOutput:
     @property
     def protocol_text(self) -> str:
         return render_protocol(self.report, self.result_json.get("sleep_staging"),  # skip note handled there
-                               self.result_json.get("procedures"))
+                               self.result_json.get("procedures"), self.result_json.get("serial_comparison"))
 
 
 class Pipeline:

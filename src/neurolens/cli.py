@@ -46,12 +46,49 @@ def _analyze(args) -> int:
     out = pipe.analyze_file(
         args.file, mode=mode, montage_name=args.montage, patient=patient, context=context
     )
+    if getattr(args, "prior", None):
+        from .pipeline.serial import compare, load_limits
+
+        out.result_json["serial_comparison"] = compare(_summary_of(args.prior, patient),
+                                                       out.result_json["record_summary"], load_limits())
     print(out.protocol_text)
     if args.out:
         paths = pipe.save_outputs(out, args.out)
         print("\nСохранено / Saqlangan:")
         for k, p in paths.items():
             print(f"  {k}: {p}")
+    return 0
+
+
+def _summary_of(path: str, patient=None) -> dict:
+    """Record summary of a prior EEG: its saved ``result.json`` or the recording itself."""
+    import json
+
+    p = Path(path)
+    if p.suffix.lower() == ".json":
+        return json.loads(p.read_text(encoding="utf-8"))["record_summary"]
+    from .pipeline.pipeline import Pipeline
+
+    return Pipeline(provider_pref="deterministic").analyze_file(p, patient=patient).result_json["record_summary"]
+
+
+def _compare(args) -> int:
+    """Serial comparison of two EEGs of the same patient (D76)."""
+    import json
+
+    from .pipeline.serial import compare, compare_text, load_limits
+
+    patient = PatientInfo(age_years=args.age) if args.age is not None else None
+    cmp = compare(_summary_of(args.prior, patient), _summary_of(args.current, patient), load_limits())
+    txt = compare_text(cmp)
+    for r in cmp["quantities"]:
+        mark = "!! " if r["exceeds"] else "   "
+        print(f"{mark}{r['quantity']:22s} {r['prior']!s:>10.10s} -> {r['current']!s:>10.10s}  "
+              f"change {r['change']!s:>8.8s} (limit {r['limit']})")
+    print(f"RU: {txt.ru}\nUZ: {txt.uz}")
+    if args.out:
+        Path(args.out).write_text(json.dumps(cmp, ensure_ascii=False, indent=1, default=float) + "\n",
+                                  encoding="utf-8")
     return 0
 
 
@@ -706,7 +743,16 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Routine EEG or long-term/ICU monitoring (default: inferred from duration).")
     a.add_argument("--calibration", default=None, help="Confidence calibration JSON file.")
     a.add_argument("--overrides", default=None, help="Threshold override YAML (e.g. configs/thresholds.physionet.yaml).")
+    a.add_argument("--prior", default=None,
+                   help="Prior EEG of the same patient (its result.json or the recording): adds a serial comparison.")
     a.set_defaults(func=_analyze)
+
+    cm = sub.add_parser("compare", help="Compare two EEGs of the same patient (serial comparison).")
+    cm.add_argument("prior", help="Prior EEG: result.json of a previous analyze, or the recording.")
+    cm.add_argument("current", help="Current EEG: result.json or the recording.")
+    cm.add_argument("--age", type=float, default=None, help="Age in years (when recordings are given).")
+    cm.add_argument("--out", help="Write the comparison as JSON.")
+    cm.set_defaults(func=_compare)
 
     d = sub.add_parser("demo", help="Generate a synthetic EDF and analyze it.")
     d.add_argument("--out", default="out_demo")

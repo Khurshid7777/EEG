@@ -1,0 +1,42 @@
+{
+ "errors": [],
+ "H1": {
+  "n": 30,
+  "any_exceeds": 1,
+  "fraction": 0.033,
+  "ci95": [
+   0.001,
+   0.172
+  ],
+  "per_quantity": {
+   "pdr_hz": 0.0,
+   "global_rel_delta": 0.033,
+   "global_rel_theta": 0.033,
+   "global_rel_alpha": 0.0,
+   "robust_amplitude_uv": 0.0
+  },
+  "pass": true
+ },
+ "H2": {
+  "n": 30,
+  "alpha_decrease_exceeds": 3,
+  "fraction": 0.1,
+  "ci95": [
+   0.021,
+   0.265
+  ],
+  "pass": false
+ },
+ "secondary_session1_vs_2": {
+  "n": 30,
+  "any_exceeds": 0,
+  "per_quantity": {
+   "pdr_hz": 0.0,
+   "global_rel_delta": 0.0,
+   "global_rel_theta": 0.0,
+   "global_rel_alpha": 0.0,
+   "robust_amplitude_uv": 0.0
+  }
+ },
+ "decision": "freeze_insensitive"
+}

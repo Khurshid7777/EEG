@@ -95,7 +95,16 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
         postmenstrual_age_weeks: Optional[float] = Form(None),
         clinical_question: Optional[str] = Form(None),
         recording_setting: Optional[str] = Form(None),
+        prior_record_summary: Optional[str] = Form(None),
     ) -> dict:
+        """``prior_record_summary``: the ``record_summary`` of a previous response for the same
+        patient (JSON) - adds a serial comparison (D76)."""
+        try:
+            prior = json.loads(prior_record_summary) if prior_record_summary else None
+            if prior is not None and not isinstance(prior, dict):
+                raise ValueError("prior_record_summary must be a JSON object")
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=f"prior_record_summary: {exc}")
         try:
             params = AnalyzeParams(
                 mode=mode, montage=montage, provider=provider,
@@ -109,7 +118,7 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
         except UploadError as exc:
             raise HTTPException(status_code=422, detail=str(exc))
         try:
-            return run_analyze(tmp, params, cfg, audit)
+            return run_analyze(tmp, params, cfg, audit, prior_summary=prior)
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc))
         finally:
