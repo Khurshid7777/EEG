@@ -1,0 +1,95 @@
+{
+ "errors": [],
+ "H1_v2_stable_any_exceeds": {
+  "k": 18,
+  "n": 100,
+  "fraction": 0.18,
+  "ci95": [
+   0.11,
+   0.269
+  ],
+  "per_quantity": {
+   "pdr_hz": 0.1,
+   "alert_rel_delta": 0.01,
+   "alert_rel_theta": 0.07,
+   "alert_rel_alpha": 0.03,
+   "robust_amplitude_uv": 0.02
+  },
+  "pass": false
+ },
+ "H2_v2_eyes_open_detected": {
+  "k": 50,
+  "n": 100,
+  "fraction": 0.5,
+  "ci95": [
+   0.398,
+   0.602
+  ],
+  "pass": true
+ },
+ "H3_v2_vs_v1": {
+  "v2_detected": 50,
+  "v1_detected": 18,
+  "v2_only": 32,
+  "v1_only": 0,
+  "mcnemar_one_sided_p": 0.0,
+  "pass": true
+ },
+ "v1_stable_any_exceeds": {
+  "k": 15,
+  "n": 100,
+  "fraction": 0.15,
+  "ci95": [
+   0.086,
+   0.235
+  ],
+  "per_quantity": {
+   "pdr_hz": 0.1,
+   "global_rel_delta": 0.02,
+   "global_rel_theta": 0.01,
+   "global_rel_alpha": 0.02,
+   "robust_amplitude_uv": 0.02
+  }
+ },
+ "secondary_transfer_ds004148_v1_limits": {
+  "k": 17,
+  "n": 100,
+  "fraction": 0.17,
+  "ci95": [
+   0.102,
+   0.258
+  ],
+  "per_quantity": {
+   "pdr_hz": 0.1,
+   "global_rel_delta": 0.03,
+   "global_rel_theta": 0.01,
+   "global_rel_alpha": 0.03,
+   "robust_amplitude_uv": 0.02
+  }
+ },
+ "secondary_5_years_v2": {
+  "k": 3,
+  "n": 22,
+  "fraction": 0.136,
+  "ci95": [
+   0.029,
+   0.349
+  ],
+  "per_quantity": {
+   "pdr_hz": 0.0,
+   "alert_rel_delta": 0.0,
+   "alert_rel_theta": 0.0,
+   "alert_rel_alpha": 0.091,
+   "robust_amplitude_uv": 0.045
+  },
+  "mean_change": {
+   "pdr_hz": -0.026,
+   "alert_rel_delta": -0.017,
+   "alert_rel_theta": -0.002,
+   "alert_rel_alpha": -0.007,
+   "robust_amplitude_uv": 0.04
+  }
+ },
+ "decision": "keep_v1",
+ "keep_large_changes_note": true
+}

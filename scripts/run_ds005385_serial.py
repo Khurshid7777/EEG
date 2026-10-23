@@ -165,7 +165,7 @@ def assess(test: Path, limits_path: Path) -> dict:
            "H1_v2_stable_any_exceeds": {**h1, "per_quantity": per_q(s2), "pass": h1["fraction"] <= 0.15},
            "H2_v2_eyes_open_detected": {**h2, "pass": h2["fraction"] >= 0.40},
            "H3_v2_vs_v1": {"v2_detected": sum(det2), "v1_detected": sum(det1), "v2_only": b, "v1_only": c,
-                           "mcnemar_one_sided_p": round(float(p3), 5), "pass": p3 < 0.05},
+                           "mcnemar_one_sided_p": round(float(p3), 5), "pass": bool(p3 < 0.05)},
            "v1_stable_any_exceeds": {**frac(sum(c["any_exceeds"] for c in s1), len(s1)), "per_quantity": per_q(s1)},
            "secondary_transfer_ds004148_v1_limits": (
                {**frac(sum(c["any_exceeds"] for c in transfer), len(transfer)), "per_quantity": per_q(transfer)}

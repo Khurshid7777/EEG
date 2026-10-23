@@ -7,7 +7,7 @@ day-to-day variability of healthy people: ``z * RMS`` of the same quantity betwe
 recordings (``configs/serial_limits.yaml``, increment 42, OpenNeuro ds004148). Detectors that
 fired in only one of the recordings are listed without a limit.
 
-v2 (increment 43): the band shares are measured on the most alert epochs only - the quarter of
+v2 (increment 43; pre-registered, NOT adopted - specificity 0.82 < 0.85, D77): the band shares are measured on the most alert epochs only - the quarter of
 2-s epochs with the highest posterior alpha share (``alert_rel_*`` in the record summary) - since
 drowsiness at a repeat recording changed the whole-record shares as much as eye opening did
 (increment 42). The quantities compared are those listed in the limits file.
@@ -114,14 +114,20 @@ def compare_text(cmp: dict) -> Bilingual:
     head_ru = "По сравнению с прошлой записью: " if ru else "Сравнимых величин нет."
     head_uz = "Oldingi yozuvga nisbatan: " if uz else "Taqqoslanadigan qiymatlar yo‘q."
     # increment 42: the limits held on stable healthy people (3% flagged) but caught eye opening as
-    # an alpha decrease in only 10%: they flag large changes only - say so in every comparison
+    # an alpha decrease in only 10%: they flag large changes only - say so in every comparison.
+    # Increment 43 (ds005385, 20-70 y): 15-17% of stable people get a flag, mostly the PDR
+    # (drowsy whole-record peak) - say that too
     note_ru = (" Пределы — изменчивость здоровых между повторными записями; у пациентов она может быть больше."
                " Пределы широкие: отмечаются только крупные изменения, отсутствие отметки не исключает"
-               " умеренного изменения — сравните записи визуально."
+               " умеренного изменения — сравните записи визуально. У ~15% здоровых при повторе в тот же"
+               " день есть хотя бы одна отметка, чаще по основному ритму из-за дремоты: такую отметку"
+               " проверьте по записи."
                if cmp.get("limits_source") else " Пределы изменчивости не заданы: только значения.")
     note_uz = (" Chegaralar — sog‘lomlarda takroriy yozuvlar orasidagi o‘zgaruvchanlik; bemorlarda kattaroq bo‘lishi mumkin."
                " Chegaralar keng: faqat katta o‘zgarishlar belgilanadi, belgi yo‘qligi o‘rtacha o‘zgarishni"
-               " istisno qilmaydi — yozuvlarni vizual solishtiring."
+               " istisno qilmaydi — yozuvlarni vizual solishtiring. Sog‘lomlarning ~15% ida o‘sha kuni"
+               " takrorlanganda kamida bitta belgi bor, ko‘pincha mudroqlik tufayli asosiy ritm bo‘yicha:"
+               " bunday belgini yozuv bo‘yicha tekshiring."
                if cmp.get("limits_source") else " O‘zgaruvchanlik chegaralari berilmagan: faqat qiymatlar.")
     return Bilingual(ru=head_ru + "; ".join(ru) + ("." if ru else "") + note_ru,
                      uz=head_uz + "; ".join(uz) + ("." if uz else "") + note_uz)
