@@ -1,5 +1,6 @@
 """Uploaded recordings -> a local file the ingestors can read. A single file is saved as is; a
-``.zip`` carries multi-file formats (BrainVision .vhdr/.vmrk/.eeg, EEGLAB .set/.fdt, WFDB .hea/.mat)
+``.zip`` carries multi-file formats (BrainVision .vhdr/.vmrk/.eeg, EEGLAB .set/.fdt, WFDB .hea/.mat,
+Nihon Kohden .EEG/.21E/.LOG/.PNT)
 and is unpacked flat (names only - no paths from the archive are used) into a private directory.
 """
 
@@ -11,7 +12,8 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-PRIMARY = (".vhdr", ".set", ".hea", ".edf", ".bdf")   # the file the ingestor is pointed at
+# the file the ingestor is pointed at; ".eeg" last: inside a BrainVision archive the .vhdr wins
+PRIMARY = (".vhdr", ".set", ".hea", ".edf", ".bdf", ".eeg")
 MAX_MEMBERS = 64
 MAX_UNPACKED_BYTES = 8 << 30
 
