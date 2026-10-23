@@ -61,18 +61,16 @@ class FileReport:
 
 
 def _edf_header(path: Path) -> dict:
-    """Physical units, prefilter strings, annotations and patient field of an EDF/BDF."""
+    """Physical units, prefilter strings and patient field of an EDF/BDF."""
     from .edf import open_edf
 
     r = open_edf(path)
     try:
         n = r.signals_in_file
         get = lambda name, i: getattr(r, name)(i) if hasattr(r, name) else ""
-        ann = r.readAnnotations() if hasattr(r, "readAnnotations") else ([], [], [])
         return {"labels": list(r.getSignalLabels()),
                 "dims": [get("getPhysicalDimension", i) for i in range(n)],
                 "prefilter": [get("getPrefilter", i) for i in range(n)],
-                "annotations": [str(t) for t in (ann[2] if len(ann) > 2 else [])],
                 "birthdate": getattr(r, "getBirthdate", lambda: "")() or ""}
     finally:
         r.close()
@@ -182,12 +180,19 @@ def check_recording(path: str | Path, patient: PatientInfo | None = None) -> Fil
         "канал ЭКГ есть" if has_ecg else
         "нет канала ЭКГ: кардиоартефакт хуже отличается от периодических разрядов — записывайте ЭКГ")
 
-    if hdr:
-        ann = hdr["annotations"]
-        st = "ok" if ann else "warning"
-        add("annotations", st, str(len(ann)), "метки проб (ГВ, ФС, открыл/закрыл глаза)",
-            "метки событий есть" if ann else
-            "нет меток: экспортируйте EDF+ с аннотациями (гипервентиляция, фотостимуляция, глаза)")
+    from ..layer3_features.procedures import tag_markers
+
+    tagged, _ = tag_markers(sig.markers)
+    kinds = {t.kind for t in tagged}
+    procs = [n for ks, n in (({"eyes_closed", "eyes_open"}, "глаза"), ({"hv_start"}, "ГВ"), ({"photic"}, "ФС"))
+             if ks & kinds]
+    st = "ok" if procs else "warning"
+    add("annotations", st, f"{len(sig.markers)} (пробы: {', '.join(procs) or 'нет'})",
+        "метки проб (глаза открыты/закрыты, ГВ, ФС)",
+        "метки проб есть" if procs else
+        ("метки есть, но пробы не распознаны: подписывайте «глаза закрыты/открыты», «ГВ начало/конец», "
+         "«ФС 6 Гц»" if sig.markers else
+         "нет меток: экспортируйте с аннотациями (EDF+ или .vmrk) — гипервентиляция, фотостимуляция, глаза"))
 
     rep.summary = {"sampling_rate_hz": fs, "duration_min": round(dur_min, 2), "n_channels": len(sig.channel_names),
                    "electrodes_1020": len(have), "reference": ref, "age_years": age}

@@ -77,6 +77,15 @@ class Provenance(BaseModel):
     pipeline_version: Optional[str] = None
 
 
+class Marker(BaseModel):
+    """An event marker stored with the recording (EDF+ annotation, BrainVision .vmrk):
+    eyes open/closed, hyperventilation, photic stimulation, technician comments."""
+
+    onset_s: float
+    duration_s: float = 0.0
+    text: str
+
+
 class UnifiedSignal(BaseModel):
     """Single internal representation of an EEG recording (TZ §3).
 
@@ -101,6 +110,7 @@ class UnifiedSignal(BaseModel):
     context: ClinicalContext = Field(default_factory=ClinicalContext)
     quality: QualityInfo = Field(default_factory=QualityInfo)
     provenance: Provenance = Field(default_factory=Provenance)
+    markers: list[Marker] = Field(default_factory=list)
 
     @field_validator("signal")
     @classmethod

@@ -2,7 +2,7 @@
 ``.vhdr``, a binary data file and an optional marker file ``.vmrk``. Supported: DataFormat=BINARY,
 orientation MULTIPLEXED or VECTORIZED, INT_16 / UINT_16 / INT_32 / IEEE_FLOAT_32. Physical value =
 raw x resolution, in the channel's unit (µV unless given: nV, µV/uV, mV, V). No MNE dependency.
-Markers are parsed (:func:`read_markers`) but, as with EDF+ annotations, not carried in the signal.
+Markers (:func:`read_markers`) are carried as :attr:`UnifiedSignal.markers`.
 """
 
 from __future__ import annotations
@@ -12,7 +12,7 @@ from pathlib import Path
 
 import numpy as np
 
-from ..contracts.signal import ClinicalContext, PatientInfo, Provenance, UnifiedSignal
+from ..contracts.signal import ClinicalContext, Marker, PatientInfo, Provenance, UnifiedSignal
 from .base import Ingestor
 from .electrodes import detect_electrode_system, normalize_channel_name
 
@@ -83,9 +83,13 @@ class BrainVisionIngestor(Ingestor):
         scale = np.array([r * _UNIT_TO_UV.get(u.lower(), 1.0) for r, u in zip(h["resolution"], h["units"])],
                          dtype=np.float64)[:, None]
         names = [normalize_channel_name(s) for s in h["names"]]
+        mk = h["marker_file"]
+        markers = ([Marker(onset_s=o, duration_s=d, text=t) for o, d, t in read_markers(mk, h["fs"])]
+                   if mk is not None and mk.exists() else [])
         return UnifiedSignal(
             signal=(data.astype(np.float64) * scale).astype(np.float32), sampling_rate_hz=h["fs"],
             channel_names=names, electrode_system=detect_electrode_system(names), reference="unknown",
             source=self.source_name, patient=patient or PatientInfo(), context=context or ClinicalContext(),
             provenance=Provenance(digitized=False, confidence=1.0, source_file=path.name, pipeline_version="0.1.0"),
+            markers=markers,
         )

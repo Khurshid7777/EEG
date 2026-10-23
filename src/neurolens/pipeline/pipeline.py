@@ -182,7 +182,8 @@ class PipelineOutput:
 
     @property
     def protocol_text(self) -> str:
-        return render_protocol(self.report, self.result_json.get("sleep_staging"))  # skip note handled there
+        return render_protocol(self.report, self.result_json.get("sleep_staging"),  # skip note handled there
+                               self.result_json.get("procedures"))
 
 
 class Pipeline:
@@ -510,6 +511,11 @@ class Pipeline:
             "per_code_temperatures": calibrator.temperatures if calibrator else {},
             "metrics": calibrator.metrics if calibrator else {},
         }
+        from ..layer3_features.procedures import analyze_procedures
+
+        procedures = analyze_procedures(analysis)
+        if procedures is not None:
+            result_json["procedures"] = procedures
         sleep = self._sleep_staging(signal)
         if sleep is not None:
             result_json["sleep_staging"] = sleep

@@ -17,6 +17,8 @@ def test_normalize_channel_names():
     assert normalize_channel_name("T7") == "T3"  # 10-10 -> classic alias
     assert normalize_channel_name("P8") == "T6"
     assert normalize_channel_name("EKG") == "ECG"
+    assert normalize_channel_name("O1..") == "O1"   # BCI2000 EDF (EEGMMIDB) pads with dots
+    assert normalize_channel_name("Fc5.") == "Fc5"
 
 
 def test_detect_system_10_20():
@@ -96,3 +98,26 @@ def test_brainvision_vectorized_int16_with_units(tmp_path):
     assert s.sampling_rate_hz == 250.0 and s.channel_names == ["Fp1", "O2"]
     assert np.allclose(s.signal[0], [1, 2, 3, 4]) and np.allclose(s.signal[1], [-0.01, -0.01, 0.01, 0.01])
     assert read_markers(tmp_path / "r.vmrk", 250.0) == [(0.008, 0.004, "Comment: eyes closed")]
+    assert [(m.onset_s, m.text) for m in s.markers] == [(0.008, "Comment: eyes closed")]
+
+
+def test_edf_plus_annotations_become_markers(tmp_path):
+    import numpy as np
+    import pyedflib
+
+    from neurolens.layer1_ingest.file_check import check_recording
+    from neurolens.layer1_ingest.registry import ingest
+
+    p = tmp_path / "a.edf"
+    names = ["Fp1", "Fp2", "O1", "O2"]
+    w = pyedflib.EdfWriter(str(p), len(names), file_type=pyedflib.FILETYPE_EDFPLUS)
+    w.setSignalHeaders([{"label": n, "dimension": "uV", "sample_frequency": 200, "physical_max": 500,
+                         "physical_min": -500, "digital_max": 32767, "digital_min": -32768} for n in names])
+    w.writeSamples([np.random.default_rng(0).normal(0, 20, 200 * 60) for _ in names])
+    w.writeAnnotation(5.0, -1, "Eyes closed")
+    w.writeAnnotation(30.0, 180.0, "HV")
+    w.close()
+    s = ingest(p)
+    assert [(round(m.onset_s), m.text) for m in s.markers] == [(5, "Eyes closed"), (30, "HV")]
+    ann = {c.name: c for c in check_recording(p).checks}["annotations"]
+    assert ann.status == "ok" and "глаза" in ann.value and "ГВ" in ann.value

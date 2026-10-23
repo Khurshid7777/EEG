@@ -18,6 +18,7 @@ import pyedflib
 from ..contracts.signal import (
     ClinicalContext,
     ElectrodeSystem,
+    Marker,
     PatientInfo,
     Provenance,
     UnifiedSignal,
@@ -84,6 +85,7 @@ class EdfIngestor(Ingestor):
                 reference = "average_from_bipolar"
 
             electrode_system = detect_electrode_system(channel_names)
+            markers = _markers(reader)
         finally:
             reader.close()
 
@@ -100,9 +102,20 @@ class EdfIngestor(Ingestor):
                 digitized=False, confidence=1.0, source_file=path.name,
                 pipeline_version="0.1.0",
             ),
+            markers=markers,
         )
         out.quality.flags.extend(flags)
         return out
+
+
+def _markers(reader) -> list[Marker]:
+    """EDF+ annotations as markers (none for plain EDF or the fallback reader)."""
+    try:
+        on, dur, txt = reader.readAnnotations()
+    except Exception:  # noqa: BLE001 - annotations are optional
+        return []
+    return [Marker(onset_s=float(o), duration_s=max(0.0, float(d)) if d == d else 0.0, text=str(t).strip())
+            for o, d, t in zip(on, dur, txt) if str(t).strip()]
 
 
 def open_edf(path: str | Path):

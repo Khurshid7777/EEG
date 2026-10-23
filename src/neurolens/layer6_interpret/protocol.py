@@ -13,8 +13,9 @@ _SECTION_TITLES = {
 }
 
 
-def render_protocol(report: LLMReport, sleep: dict | None = None) -> str:
-    """``sleep``: ``result_json["sleep_staging"]`` when the recording was staged."""
+def render_protocol(report: LLMReport, sleep: dict | None = None, procedures: dict | None = None) -> str:
+    """``sleep``: ``result_json["sleep_staging"]`` when the recording was staged;
+    ``procedures``: ``result_json["procedures"]`` when the recording has markers."""
     lines: list[str] = []
     lines.append("=" * 72)
     lines.append("ПРОТОКОЛ ЭЭГ / EEG BAYONNOMASI — NeuroLens")
@@ -64,6 +65,15 @@ def render_protocol(report: LLMReport, sleep: dict | None = None) -> str:
         lines.append("— Сон / Uyqu —")
         lines.append(f"  RU: {txt.ru}")
         lines.append(f"  UZ: {txt.uz}")
+
+    from ..layer3_features.procedures import procedures_text
+
+    ptxt = procedures_text(procedures)
+    if ptxt is not None:
+        lines.append("")
+        lines.append("— Функциональные пробы / Funksional sinamalar —")
+        lines.append(f"  RU: {ptxt.ru}")
+        lines.append(f"  UZ: {ptxt.uz}")
 
     lines.append("")
     lines.append("— Заключение / Xulosa —")

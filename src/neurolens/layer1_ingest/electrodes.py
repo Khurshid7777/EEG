@@ -47,7 +47,7 @@ def normalize_channel_name(raw: str, strip_cz: bool = True) -> str:
     # Drop a trailing reference tag: "-Ref", "-REF", "-LE", "-A1", "-AVG"...
     tags = "ref|le|avg|average|a1|a2|m1|m2|linked.*" + ("|cz" if strip_cz else "")
     s = re.sub(rf"(?i)[-_ ]({tags})$", "", s)
-    s = s.strip(" -_")
+    s = s.strip(" -_.")  # BCI2000 EDF pads labels with dots ("O1..", "Fc5.")
 
     up = s.upper()
     # Non-EEG modality channels

@@ -1,0 +1,17 @@
+{
+  "n": 109,
+  "n_analysed": 109,
+  "errors": [],
+  "reactive_fraction": 0.872,
+  "attenuation_median": 0.833,
+  "attenuation_iqr": [
+    0.671,
+    0.949
+  ],
+  "ec_pdr_found_fraction": 0.963,
+  "ec_pdr_in_8_13_fraction": 1.0,
+  "ec_pdr_median_hz": 10.25,
+  "H1": true,
+  "H2": true,
+  "decision": "include"
+}
