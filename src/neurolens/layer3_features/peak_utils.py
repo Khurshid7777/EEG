@@ -32,14 +32,21 @@ def spectral_peak(x: np.ndarray, fs: float, fmin: float = 4.0, fmax: float = 13.
     if nper < 16:
         return 0.0
     f, p = welch(x, fs=fs, nperseg=nper)
+    freq, prom = peak_from_psd(f, p, fmin, fmax)
+    return freq if prom >= np.log10(min_ratio) else 0.0
+
+
+def peak_from_psd(f: np.ndarray, p: np.ndarray, fmin: float = 4.0, fmax: float = 13.0) -> tuple[float, float]:
+    """(frequency, prominence) of the largest excess of a spectrum over its 1/f fit (1-``fmin`` and
+    15-30 Hz) within [fmin, fmax]; prominence = log10(spectrum / fit) at that frequency
+    (-inf when the spectrum cannot be fitted). Shared by :func:`spectral_peak` and the per-epoch
+    rhythm measures."""
     fit = ((f >= 1.0) & (f < fmin)) | ((f >= 15.0) & (f <= 30.0))
     band = (f >= fmin) & (f <= fmax)
     if fit.sum() < 3 or not band.any() or np.all(p[band] <= 0):
-        return 0.0
+        return 0.0, float("-inf")
     lf, lp = np.log10(f[fit]), np.log10(p[fit] + 1e-20)
     slope, icpt = np.polyfit(lf, lp, 1)
     resid = np.log10(p[band] + 1e-20) - (slope * np.log10(f[band]) + icpt)
     k = int(np.argmax(resid))
-    if resid[k] < np.log10(min_ratio):
-        return 0.0
-    return float(f[band][k])
+    return float(f[band][k]), float(resid[k])
