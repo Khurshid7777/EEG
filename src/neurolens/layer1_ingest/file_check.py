@@ -102,11 +102,11 @@ def check_recording(path: str | Path, patient: PatientInfo | None = None) -> Fil
     try:
         sig = get_ingestor(path).read(path, patient=patient)
     except Exception as exc:  # noqa: BLE001 - unreadable is the finding
-        add("format", "reject", path.suffix or "-", "EDF/EDF+/BDF, BrainVision .vhdr, EEGLAB .set, WFDB .hea, Nihon Kohden .EEG",
+        add("format", "reject", path.suffix or "-", "EDF/EDF+/BDF, BrainVision .vhdr, Nihon Kohden .EEG, Persyst .lay, EEGLAB .set, WFDB .hea",
             f"файл не читается ({type(exc).__name__}): экспортируйте запись в EDF+ (см. регламент §3)")
         return rep
     hdr = _edf_header(path) if path.suffix.lower() in (".edf", ".bdf") else {}
-    add("format", "ok", path.suffix.lower(), "EDF/EDF+/BDF, BrainVision .vhdr, EEGLAB .set, WFDB .hea, Nihon Kohden .EEG", "формат читается")
+    add("format", "ok", path.suffix.lower(), "EDF/EDF+/BDF, BrainVision .vhdr, Nihon Kohden .EEG, Persyst .lay, EEGLAB .set, WFDB .hea", "формат читается")
 
     fs = sig.sampling_rate_hz
     st = "reject" if fs < MIN_FS_HZ else "warning" if fs < RECOMMENDED_FS_HZ else "ok"
