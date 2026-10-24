@@ -1,7 +1,7 @@
 """Ingestor registry — dispatch by file extension (TZ §4).
 
-EDF/BDF, EEGLAB, WFDB, BrainVision, Nihon Kohden and Persyst are registered. Further instrument formats
-(Natus/XLTEK, Micromed) and streaming (LSL) register here in v2 behind the same
+EDF/BDF, EEGLAB, WFDB, BrainVision, Nihon Kohden, Persyst and Micromed are registered. Further instrument formats
+(Natus/XLTEK) and streaming (LSL) register here in v2 behind the same
 ``Ingestor`` interface without touching downstream layers.
 """
 
@@ -14,12 +14,13 @@ from .base import Ingestor
 from .brainvision import BrainVisionIngestor
 from .edf import EdfIngestor
 from .eeglab import EeglabIngestor
+from .micromed import MicromedIngestor
 from .nihon import NihonKohdenIngestor
 from .persyst import PersystIngestor
 from .wfdb import WfdbIngestor
 
 _REGISTRY: list[Ingestor] = [EdfIngestor(), EeglabIngestor(), WfdbIngestor(), BrainVisionIngestor(),
-                             NihonKohdenIngestor(), PersystIngestor()]
+                             NihonKohdenIngestor(), PersystIngestor(), MicromedIngestor()]
 
 
 def register_ingestor(ingestor: Ingestor) -> None:

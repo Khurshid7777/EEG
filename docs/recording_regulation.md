@@ -34,7 +34,7 @@
 
 | № | Проверка (`file-check`) | Норма | Отклоняется | Предупреждение |
 |---|---|---|---|---|
-| 2.1 | `format` — формат | EDF / EDF+ / BDF; также BrainVision `.vhdr` (с `.eeg` и `.vmrk` рядом), Nihon Kohden `.EEG` (с `.21E`, `.LOG`, `.PNT` рядом), Persyst `.lay` (с `.dat`), EEGLAB `.set`, WFDB `.hea` | не читается | — |
+| 2.1 | `format` — формат | EDF / EDF+ / BDF; также BrainVision `.vhdr` (с `.eeg` и `.vmrk` рядом), Nihon Kohden `.EEG` (с `.21E`, `.LOG`, `.PNT` рядом), Micromed `.TRC`, Persyst `.lay` (с `.dat`), EEGLAB `.set`, WFDB `.hea` | не читается | — |
 | 2.2 | `sampling_rate` — частота дискретизации | **≥ 200 Гц** (лучше 256–500 Гц) | < 100 Гц | 100–199 Гц |
 | 2.3 | `electrodes_1020` — электроды 10-20 | **все 19**: Fp1 Fp2 F7 F3 Fz F4 F8 T3 C3 Cz C4 T4 T5 P3 Pz P4 T6 O1 O2 (T7/T8/P7/P8 принимаются) | < 16 | 16–18 |
 | 2.4 | `reference` — референт | **референтная запись** (A1/A2, усреднённый или общий референт) | — | экспортирован биполярный монтаж |

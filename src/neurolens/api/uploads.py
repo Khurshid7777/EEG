@@ -13,7 +13,7 @@ import zipfile
 from pathlib import Path
 
 # the file the ingestor is pointed at; ".eeg" last: inside a BrainVision archive the .vhdr wins
-PRIMARY = (".vhdr", ".set", ".hea", ".lay", ".edf", ".bdf", ".eeg")
+PRIMARY = (".vhdr", ".set", ".hea", ".lay", ".edf", ".bdf", ".trc", ".eeg")
 MAX_MEMBERS = 64
 MAX_UNPACKED_BYTES = 8 << 30
 
