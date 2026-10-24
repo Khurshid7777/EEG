@@ -124,7 +124,15 @@ def _monitor(args) -> int:
         cfg.realtime.window_s = args.window
     if args.step is not None:
         cfg.realtime.step_s = args.step
-    source = EdfReplaySource(args.file, chunk_s=cfg.realtime.step_s, realtime=args.realtime)
+    if args.lsl is not None:
+        from .realtime.lsl import LslStreamSource
+
+        source = LslStreamSource(stream_name=args.lsl or None, chunk_s=min(1.0, cfg.realtime.step_s),
+                                 max_duration_s=args.duration)
+    elif args.file:
+        source = EdfReplaySource(args.file, chunk_s=cfg.realtime.step_s, realtime=args.realtime)
+    else:
+        raise SystemExit("monitor: give a recording file or --lsl [STREAM_NAME]")
     from .contracts.signal import PatientInfo
 
     patient = (PatientInfo(age_years=args.age, postmenstrual_age_weeks=args.pma)
@@ -155,6 +163,13 @@ def _monitor(args) -> int:
     if args.out:
         path = save_json(summary.model_dump(mode="json"), Path(args.out) / "monitor_summary.json")
         print(f"\nСводка/Xulosa: {path}")
+    return 0
+
+
+def _lsl_stream(args) -> int:
+    from .realtime.lsl import stream_recording
+
+    stream_recording(args.file, name=args.name, speed=args.speed)
     return 0
 
 
@@ -759,8 +774,11 @@ def build_parser() -> argparse.ArgumentParser:
     d.add_argument("--provider", default="auto", choices=["auto", "anthropic", "deterministic"])
     d.set_defaults(func=_demo)
 
-    m = sub.add_parser("monitor", help="Stream an EDF as real-time cEEG with alarms.")
-    m.add_argument("file")
+    m = sub.add_parser("monitor", help="Real-time cEEG with alarms: replay a recording or read a live LSL stream.")
+    m.add_argument("file", nargs="?", default=None)
+    m.add_argument("--lsl", nargs="?", const="", default=None, metavar="STREAM_NAME",
+                   help="Read a live Lab Streaming Layer EEG stream (by name; without a name: the first of type EEG).")
+    m.add_argument("--duration", type=float, default=None, help="With --lsl: stop after this many seconds.")
     m.add_argument("--montage", default="double_banana")
     m.add_argument("--window", type=float, default=None, help="Analysis window (s).")
     m.add_argument("--step", type=float, default=None, help="Advance between analyses (s).")
@@ -771,6 +789,12 @@ def build_parser() -> argparse.ArgumentParser:
     m.add_argument("--pma", type=float, default=None,
                    help="Postmenstrual age (weeks) — neonate: neonatal seizure detector (configs/ml.yaml).")
     m.set_defaults(func=_monitor)
+
+    ls = sub.add_parser("lsl-stream", help="Publish a recording as a live LSL EEG stream (µV), paced to wall-clock.")
+    ls.add_argument("file")
+    ls.add_argument("--name", default=None, help="Stream name (default: file name).")
+    ls.add_argument("--speed", type=float, default=1.0, help="Playback speed (1 = real time).")
+    ls.set_defaults(func=_lsl_stream)
 
     cal = sub.add_parser("calibrate", help="Fit confidence calibration from a feedback log.")
     cal.add_argument("--feedback", required=True, help="Path to the feedback JSONL log.")

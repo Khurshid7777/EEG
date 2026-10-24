@@ -6,13 +6,13 @@ and raises :class:`~neurolens.contracts.alarms.Alarm` s via the
 :class:`AlarmManager`, which controls false-alarms/hour (persistence, refractory,
 per-hour caps) and attaches an EEG fragment to each alarm.
 
-The concrete source is a streaming EDF replay (offline, deterministic); an LSL
-source is provided as an optional interface (v2, requires liblsl).
+Sources: a recording-file replay (offline, deterministic) and a live Lab Streaming Layer inlet
+(:mod:`neurolens.realtime.lsl`, needs ``pylsl``, which bundles liblsl; D82).
 """
 
 from __future__ import annotations
 
-from .stream import Chunk, StreamSource, EdfReplaySource, LslStreamSource
+from .stream import Chunk, StreamSource, EdfReplaySource
 from .buffer import WindowBuffer
 from .alarms import AlarmManager
 from .monitor import RealtimeMonitor
@@ -21,7 +21,6 @@ __all__ = [
     "Chunk",
     "StreamSource",
     "EdfReplaySource",
-    "LslStreamSource",
     "WindowBuffer",
     "AlarmManager",
     "RealtimeMonitor",

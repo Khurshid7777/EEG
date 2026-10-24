@@ -1,10 +1,9 @@
 """Stream sources for real-time cEEG (TZ §4).
 
 A :class:`StreamSource` yields :class:`Chunk` s of samples in stream order.
-``EdfReplaySource`` replays an EDF file chunk-by-chunk (optionally paced to
-wall-clock) — the concrete offline/deterministic source. ``LslStreamSource`` is
-an optional interface over Lab Streaming Layer (requires the native ``liblsl``;
-a no-op stub otherwise, wired in v2).
+``EdfReplaySource`` replays a recording file chunk-by-chunk (optionally paced to
+wall-clock) — the offline/deterministic source. The live source over Lab Streaming
+Layer is :class:`neurolens.realtime.lsl.LslStreamSource` (D82).
 """
 
 from __future__ import annotations
@@ -61,51 +60,3 @@ class EdfReplaySource(StreamSource):
             if self.realtime:
                 time.sleep((stop - start) / fs)  # pace to wall-clock
             yield Chunk(data=self._data[:, start:stop], t_start=start / fs)
-
-
-class LslStreamSource(StreamSource):  # pragma: no cover - requires liblsl
-    """Optional LSL source (TZ §4). Requires ``pylsl`` + native ``liblsl``.
-
-    Kept as an interface so the monitor is transport-agnostic; not exercised in
-    the offline test suite.
-    """
-
-    def __init__(self, stream_name: str | None = None, chunk_s: float = 5.0):
-        try:
-            import pylsl  # noqa: F401
-        except Exception as exc:  # liblsl not installed
-            raise RuntimeError(
-                "LSL source requires pylsl + native liblsl (v2). "
-                "Use EdfReplaySource for offline streaming."
-            ) from exc
-        self._pylsl = __import__("pylsl")
-        streams = self._pylsl.resolve_streams()
-        if not streams:
-            raise RuntimeError("no LSL streams found")
-        info = next((s for s in streams if not stream_name or s.name() == stream_name), streams[0])
-        self._inlet = self._pylsl.StreamInlet(info)
-        self.sampling_rate_hz = float(info.nominal_srate())
-        self.channel_names = _lsl_channel_names(info)
-        self.reference = "unknown"
-        self.chunk_s = chunk_s
-
-    def chunks(self) -> Iterator[Chunk]:
-        fs = self.sampling_rate_hz
-        want = int(self.chunk_s * fs)
-        t = 0.0
-        while True:
-            samples, _ = self._inlet.pull_chunk(timeout=self.chunk_s, max_samples=want)
-            if not samples:
-                break
-            data = np.asarray(samples, dtype=np.float64).T  # [channels][samples]
-            yield Chunk(data=data, t_start=t)
-            t += data.shape[1] / fs
-
-
-def _lsl_channel_names(info) -> list[str]:  # pragma: no cover
-    names = []
-    ch = info.desc().child("channels").child("channel")
-    for _ in range(info.channel_count()):
-        names.append(ch.child_value("label"))
-        ch = ch.next_sibling()
-    return names or [f"ch{i}" for i in range(info.channel_count())]

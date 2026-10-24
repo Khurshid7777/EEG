@@ -296,6 +296,7 @@ class RealtimeMonitor:
 
         n_eeg = sum(is_eeg_channel(n) for n in (self._names if self._names is not None else source.channel_names))
         warnings = [self._set_warning] if self._set_warning else []
+        warnings += source.warnings() if hasattr(source, "warnings") else []
         if n_eeg < MIN_EEG_CHANNELS:
             warnings.append(f"insufficient_eeg_channels:{n_eeg}<{MIN_EEG_CHANNELS}: seizure/background "
                             "analysis not performed - absence of alarms does not mean absence of seizures")
