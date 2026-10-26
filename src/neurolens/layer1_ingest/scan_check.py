@@ -23,6 +23,10 @@ from pydantic import BaseModel, ConfigDict, Field
 
 MM_PER_INCH = 25.4
 LOSSLESS = {"PNG", "TIFF"}
+# Untrusted uploads: only these decoders are tried, and an image larger than an A3 page at
+# 1200 dpi is refused before decoding (decompression bombs; D85)
+DECODERS = ("PNG", "TIFF", "JPEG")
+MAX_PIXELS = 300_000_000
 # regulation limits (docs/scanning_regulation.md §3)
 MIN_DPI = 300
 RECOMMENDED_DPI = 600
@@ -104,10 +108,18 @@ def check_scan(path: str | Path, form: ScanForm) -> ScanReport:
     path = Path(path)
     rep = ScanReport(str(path))
     add = lambda *a: rep.checks.append(Check(*a))  # noqa: E731
-    with Image.open(path) as im:
-        fmt, mode, (w, h) = im.format, im.mode, im.size
-        dpi = im.info.get("dpi")
-        gray = np.asarray(im.convert("L"))
+    try:
+        with Image.open(path, formats=DECODERS) as im:
+            fmt, mode, (w, h) = im.format, im.mode, im.size
+            if w * h > MAX_PIXELS:
+                raise ValueError(f"{w}x{h} px exceeds {MAX_PIXELS} px")
+            dpi = im.info.get("dpi")
+            gray = np.asarray(im.convert("L"))
+    except Exception as exc:  # noqa: BLE001 - an unreadable or unsafe image is the finding
+        add("format", "reject", path.suffix or "-", "PNG или TIFF (также принимается JPEG для отказа с объяснением)",
+            f"изображение не читается или слишком велико ({type(exc).__name__}): сохраните скан как PNG/TIFF "
+            "по регламенту сканирования")
+        return rep
 
     # 1. format and colour depth
     add("format", "ok" if fmt in LOSSLESS else "reject", fmt, "PNG или TIFF без сжатия с потерями",

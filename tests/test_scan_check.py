@@ -104,3 +104,19 @@ def test_pipeline_digitized_signal_gate(demo_edf, configs):
     out = Pipeline(config=configs, provider_pref="deterministic").analyze_signal(sig, mode=OperatingMode.B_AUTONOMOUS)
     assert out.gate.passed is False
     assert any("оцифрован с изображения" in r for r in out.gate.reasons_ru)
+
+
+def test_scan_check_rejects_non_image_and_other_formats(tmp_path):
+    from neurolens.layer1_ingest.scan_check import ScanForm, check_scan
+
+    bad = tmp_path / "x.png"
+    bad.write_bytes(b"not an image at all")
+    gif = tmp_path / "y.gif"
+    from PIL import Image
+
+    Image.new("L", (10, 10)).save(gif, format="GIF")         # decoder outside the allowed set
+    form = ScanForm(paper_speed_mm_s=30, sensitivity_uv_per_mm=7, channel_labels=["Fp1-F7"], montage="longitudinal bipolar",
+                     page_index=1, n_pages=1)
+    for p in (bad, gif):
+        rep = check_scan(p, form)
+        assert not rep.accepted and rep.checks[0].name == "format" and rep.checks[0].status == "reject"
