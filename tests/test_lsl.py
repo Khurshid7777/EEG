@@ -52,7 +52,7 @@ def test_units_names_and_gaps():
 def test_monitor_over_lsl_matches_file_replay(demo_edf):
     name = f"demo-{uuid.uuid4().hex[:8]}"
     th = threading.Thread(target=stream_recording, args=(demo_edf,),
-                          kwargs={"name": name, "speed": 40.0, "start_delay_s": 1.5}, daemon=True)
+                          kwargs={"name": name, "speed": 40.0, "start_delay_s": 0.5}, daemon=True)
     th.start()
     src = LslStreamSource(stream_name=name, chunk_s=0.5, idle_timeout_s=3.0)
     live = RealtimeMonitor().run(src)
