@@ -1,0 +1,95 @@
+{
+ "errors": [],
+ "all": {
+  "n_children": 30,
+  "n_intervals": 816,
+  "kappa": 0.167,
+  "ci95": [
+   0.085,
+   0.255
+  ],
+  "accuracy": 0.381,
+  "per_class": {
+   "W": {
+    "n": 189,
+    "agree": 0.18
+   },
+   "N2": {
+    "n": 312,
+    "agree": 0.571
+   },
+   "N3": {
+    "n": 227,
+    "agree": 0.242
+   },
+   "REM": {
+    "n": 88,
+    "agree": 0.5
+   }
+  },
+  "pred_n1": 139
+ },
+ "age_lt6": {
+  "n_children": 14,
+  "n_intervals": 370,
+  "kappa": 0.093,
+  "ci95": [
+   0.004,
+   0.19
+  ],
+  "accuracy": 0.297,
+  "per_class": {
+   "W": {
+    "n": 77,
+    "agree": 0.221
+   },
+   "N2": {
+    "n": 125,
+    "agree": 0.448
+   },
+   "N3": {
+    "n": 117,
+    "agree": 0.171
+   },
+   "REM": {
+    "n": 51,
+    "agree": 0.333
+   }
+  },
+  "pred_n1": 73
+ },
+ "age_ge6": {
+  "n_children": 16,
+  "n_intervals": 446,
+  "kappa": 0.233,
+  "ci95": [
+   0.122,
+   0.351
+  ],
+  "accuracy": 0.451,
+  "per_class": {
+   "W": {
+    "n": 112,
+    "agree": 0.152
+   },
+   "N2": {
+    "n": 187,
+    "agree": 0.652
+   },
+   "N3": {
+    "n": 110,
+    "agree": 0.318
+   },
+   "REM": {
+    "n": 37,
+    "agree": 0.73
+   }
+  },
+  "pred_n1": 66
+ },
+ "derivations": [
+  "midline"
+ ],
+ "H1": false,
+ "decision": "keep_18"
+}
