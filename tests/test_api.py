@@ -12,12 +12,16 @@ from neurolens.api.deid import deidentify_result, hash_identifier
 from neurolens.feedback.log import FeedbackLogger
 
 
+KEY = "test-key-123"
+
+
 @pytest.fixture()
-def client_and_paths(configs, tmp_path):
+def client_and_paths(configs, tmp_path, demo_edf):
     audit = tmp_path / "audit.jsonl"
     fb = tmp_path / "feedback.jsonl"
-    app = create_app(config=configs, audit_path=audit, feedback_path=fb)
-    return TestClient(app), audit, fb
+    app = create_app(config=configs, audit_path=audit, feedback_path=fb, api_keys=[KEY],
+                     data_root=demo_edf.parent)
+    return TestClient(app, headers={"X-API-Key": KEY}), audit, fb
 
 
 def test_health_and_version(client_and_paths):
@@ -49,7 +53,8 @@ def test_analyze_path_deidentified(client_and_paths, demo_edf):
 
 def test_analyze_missing_file(client_and_paths):
     client, _, _ = client_and_paths
-    assert client.post("/analyze", json={"path": "/no/such.edf"}).status_code == 404
+    assert client.post("/analyze", json={"path": "/no/such.edf"}).status_code == 403   # outside the root
+    assert client.post("/analyze", json={"path": "no_such.edf"}).status_code == 404     # inside, missing
 
 
 def test_analyze_upload(client_and_paths, demo_edf):
@@ -194,3 +199,30 @@ def test_check_upload_zip_brainvision(client_and_paths):
     assert r.status_code == 422 and "one per request" in r.json()["detail"]
     r = client.post("/check/upload", files={"file": ("bad.zip", b"not a zip")})
     assert r.status_code == 422
+
+
+def test_security_auth_paths_and_limits(configs, tmp_path, demo_edf):
+    """D86: API key required, path endpoints confined to the data root, upload size capped."""
+    app = create_app(config=configs, audit_path=tmp_path / "a.jsonl", feedback_path=tmp_path / "f.jsonl",
+                     api_keys=[KEY], data_root=demo_edf.parent, max_upload_bytes=1024)
+    anon = TestClient(app)
+    assert anon.get("/health").status_code == 200                       # liveness stays open
+    assert anon.get("/version").status_code == 401
+    assert anon.post("/analyze", json={"path": str(demo_edf)}).status_code == 401
+    assert TestClient(app, headers={"X-API-Key": "wrong"}).get("/version").status_code == 401
+    c = TestClient(app, headers={"X-API-Key": KEY})
+    assert c.get("/version").status_code == 200
+    assert c.post("/analyze", json={"path": "../../etc/passwd"}).status_code == 403
+    assert c.get("/schemas/..%2F..%2Fsecret").status_code == 404
+    with open(demo_edf, "rb") as fh:                                      # far above 1 KB
+        assert c.post("/check/upload", files={"file": ("x.edf", fh)}).status_code == 413
+    # no keys configured: refused, unless explicitly allowed (local use)
+    nokeys = create_app(config=configs, audit_path=tmp_path / "b.jsonl", api_keys=[])
+    assert TestClient(nokeys).get("/version").status_code == 401
+    local = create_app(config=configs, audit_path=tmp_path / "c.jsonl", api_keys=[], allow_no_auth=True)
+    assert TestClient(local).get("/version").status_code == 200
+    # without a data root the path endpoints are off
+    noroot = create_app(config=configs, audit_path=tmp_path / "d.jsonl", api_keys=[KEY])
+    assert TestClient(noroot, headers={"X-API-Key": KEY}).post(
+        "/analyze", json={"path": str(demo_edf)}).status_code == 403
+

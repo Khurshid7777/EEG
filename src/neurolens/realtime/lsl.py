@@ -108,9 +108,10 @@ class LslStreamSource(StreamSource):
 
 
 def stream_recording(path: str | Path, name: str | None = None, chunk_s: float = 0.1,
-                     speed: float = 1.0, start_delay_s: float = 0.0) -> None:
+                     speed: float = 1.0, start_delay_s: float = 0.0, linger_s: float = 3.0) -> None:
     """Publish a recording (any supported format) as an LSL EEG stream in µV, paced to wall-clock
-    (``speed`` > 1 plays faster)."""
+    (``speed`` > 1 plays faster). The outlet stays open ``linger_s`` after the last sample so that
+    data still in transit reaches the inlets (destroying it at once lost the tail of the stream)."""
     from ..layer1_ingest.registry import ingest
 
     pylsl = _pylsl()
@@ -133,3 +134,4 @@ def stream_recording(path: str | Path, name: str | None = None, chunk_s: float =
         if (wait := due - time.monotonic()) > 0:
             time.sleep(wait)
         outlet.push_chunk(np.ascontiguousarray(x[:, start:start + step].T))
+    time.sleep(linger_s)

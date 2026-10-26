@@ -545,9 +545,20 @@ def _serve(args) -> int:
     except Exception:
         print("FastAPI/uvicorn not installed. Install with: pip install -e '.[api]'")
         return 1
-    from .api.app import create_app
+    import os
 
-    uvicorn.run(create_app(), host=args.host, port=args.port)
+    from .api.app import _keys, create_app
+
+    if not _keys(None) and not args.insecure_no_auth:
+        print("NEUROLENS_API_KEYS is not set: the API would refuse every request. Set one or more keys "
+              "(comma-separated), or for local use only pass --insecure-no-auth (D86).")
+        return 2
+    if args.insecure_no_auth and args.host not in ("127.0.0.1", "localhost", "::1"):
+        print("--insecure-no-auth is allowed only on a loopback host (127.0.0.1).")
+        return 2
+    if not os.environ.get("NEUROLENS_DATA_ROOT"):
+        print("NEUROLENS_DATA_ROOT not set: path-based /analyze and /monitor are disabled (uploads work).")
+    uvicorn.run(create_app(allow_no_auth=args.insecure_no_auth), host=args.host, port=args.port)
     return 0
 
 
@@ -905,6 +916,8 @@ def build_parser() -> argparse.ArgumentParser:
     sv = sub.add_parser("serve", help="Run the REST API (requires the 'api' extra).")
     sv.add_argument("--host", default="127.0.0.1")
     sv.add_argument("--port", type=int, default=8000)
+    sv.add_argument("--insecure-no-auth", action="store_true",
+                    help="Serve without API keys (loopback host only, for local testing).")
     sv.set_defaults(func=_serve)
 
     sc = sub.add_parser("scan-check", help="Check a scanned paper-EEG page against the scanning regulation.")

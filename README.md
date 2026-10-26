@@ -145,12 +145,19 @@ neurolens analyze data/synthetic/demo.edf --calibration configs/calibration.json
 
 ```bash
 python -m pip install -e ".[api]"          # fastapi + uvicorn + multipart
-neurolens serve --host 127.0.0.1 --port 8000
+export NEUROLENS_API_KEYS="длинный-случайный-ключ"   # обязательно; несколько — через запятую
+export NEUROLENS_DATA_ROOT=/data/eeg                 # необязательно: только для /analyze и /monitor по пути
+neurolens serve --host 127.0.0.1 --port 8000         # локально без ключей: --insecure-no-auth
+# заголовок каждого запроса (кроме /health): X-API-Key: <ключ>
 # GET  /health · /version · /config/montages · /schemas/{name}
-# POST /analyze {path,mode,montage,provider,age_years,...}   (или /analyze/upload — multipart)
+# POST /analyze {path,...} — путь внутри NEUROLENS_DATA_ROOT (или /analyze/upload — multipart)
 # POST /monitor {path,montage,window_s,step_s}
 # POST /feedback {recording_id,target_kind,target_ref,action,...}
 ```
+
+Безопасность (D86): без ключей API отклоняет запросы (401). Пути к файлам принимаются только
+внутри `NEUROLENS_DATA_ROOT`, без неё — только загрузка. Размер загрузки ограничен
+`NEUROLENS_MAX_UPLOAD_MB` (по умолчанию 1024). TLS — на обратном прокси (nginx и т. п.).
 
 Результаты **деидентифицированы** (имя файла → `subject_id`-хэш), каждый запрос — в
 аудит-лог (`NEUROLENS_AUDIT_LOG`); соль деида — `NEUROLENS_DEID_SALT`.

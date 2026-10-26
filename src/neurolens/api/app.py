@@ -13,16 +13,26 @@ Thin service over the pipeline and real-time monitor. Endpoints:
   POST /feedback               capture a neurophysiologist correction (TZ §13)
 
 Results are deidentified (§12) and every request is audit-logged.
+
+Security (D86): every endpoint except /health requires an API key (``X-API-Key``, keys from
+``api_keys`` or NEUROLENS_API_KEYS, comma-separated); without keys the API refuses requests unless
+it was explicitly created with ``allow_no_auth`` (local use). Path-based endpoints read only inside
+``data_root`` (NEUROLENS_DATA_ROOT) and are disabled without it. Uploads are read in chunks up to
+``max_upload_bytes`` (NEUROLENS_MAX_UPLOAD_MB, default 1024).
 """
 
 from __future__ import annotations
 
+import hmac
 import json
+import os
+import re
 import shutil
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi.responses import JSONResponse
 
 from .. import __version__
 from ..contracts.signal import PatientInfo
@@ -41,8 +51,38 @@ DISCLAIMER = (
 )
 
 
-def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
+OPEN_PATHS = {"/health"}
+_SCHEMA_NAME = re.compile(r"^[a-z0-9_]+$")
+_CHUNK = 1 << 20
+
+
+def _keys(api_keys) -> list[str]:
+    if api_keys is None:
+        api_keys = [k.strip() for k in os.environ.get("NEUROLENS_API_KEYS", "").split(",")]
+    return [k for k in api_keys if k]
+
+
+async def read_capped(file: UploadFile, limit: int) -> bytes:
+    """The whole upload, refusing it (413) as soon as it exceeds ``limit`` bytes."""
+    parts, n = [], 0
+    while chunk := await file.read(_CHUNK):
+        n += len(chunk)
+        if n > limit:
+            raise HTTPException(status_code=413, detail=f"upload larger than {limit >> 20} MB")
+        parts.append(chunk)
+    return b"".join(parts)
+
+
+def create_app(config=None, audit_path=None, feedback_path=None, *, api_keys: list[str] | None = None,
+               allow_no_auth: bool | None = None, data_root: str | Path | None = None,
+               max_upload_bytes: int | None = None) -> FastAPI:
     cfg = config or load_configs()
+    keys = _keys(api_keys)
+    if allow_no_auth is None:
+        allow_no_auth = os.environ.get("NEUROLENS_ALLOW_NO_AUTH") == "1"
+    root = data_root if data_root is not None else os.environ.get("NEUROLENS_DATA_ROOT")
+    root = Path(root).resolve() if root else None
+    limit = max_upload_bytes or int(os.environ.get("NEUROLENS_MAX_UPLOAD_MB", "1024")) << 20
     audit = AuditLogger(audit_path)
     feedback = FeedbackLogger(feedback_path or "feedback.jsonl")
 
@@ -51,6 +91,29 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
         version=__version__,
         description="EEG detection & interpretation service (decision-support). " + DISCLAIMER,
     )
+
+    @app.middleware("http")
+    async def require_key(request: Request, call_next):
+        if request.url.path in OPEN_PATHS or (allow_no_auth and not keys):
+            return await call_next(request)
+        if not keys:
+            return JSONResponse({"detail": "API keys are not configured (NEUROLENS_API_KEYS)"}, status_code=401)
+        given = request.headers.get("x-api-key", "")
+        if not any(hmac.compare_digest(given.encode(), k.encode()) for k in keys):
+            return JSONResponse({"detail": "missing or invalid X-API-Key"}, status_code=401)
+        return await call_next(request)
+
+    def server_path(p: str) -> Path:
+        """A path the client names, confined to the data root (path endpoints are off without it)."""
+        if root is None:
+            raise HTTPException(status_code=403, detail="path-based analysis is disabled (NEUROLENS_DATA_ROOT "
+                                                        "not set); use the /upload endpoints")
+        path = (root / p).resolve() if not Path(p).is_absolute() else Path(p).resolve()
+        if not path.is_relative_to(root):
+            raise HTTPException(status_code=403, detail="path outside the data root")
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="file not found in the data root")
+        return path
 
     @app.get("/health")
     def health() -> dict:
@@ -71,6 +134,8 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
 
     @app.get("/schemas/{name}")
     def get_schema(name: str) -> dict:
+        if not _SCHEMA_NAME.match(name):
+            raise HTTPException(status_code=404, detail="unknown schema")
         path = _SCHEMAS_DIR / f"{name}.schema.json"
         if not path.exists():
             raise HTTPException(status_code=404, detail=f"unknown schema {name!r}")
@@ -78,10 +143,9 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
 
     @app.post("/analyze")
     def analyze(req: AnalyzeRequest) -> dict:
-        if not Path(req.path).exists():
-            raise HTTPException(status_code=404, detail=f"file not found: {req.path}")
+        path = server_path(req.path)
         try:
-            return run_analyze(req.path, req, cfg, audit)
+            return run_analyze(path, req, cfg, audit)
         except Exception as exc:  # pragma: no cover - defensive
             raise HTTPException(status_code=400, detail=str(exc))
 
@@ -114,7 +178,7 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
         except ValueError as exc:  # pydantic ValidationError: invalid form value -> 422, not 500
             raise HTTPException(status_code=422, detail=str(exc))
         try:
-            tmp, tmpdir = materialize(await file.read(), file.filename)
+            tmp, tmpdir = materialize(await read_capped(file, limit), file.filename)
         except UploadError as exc:
             raise HTTPException(status_code=422, detail=str(exc))
         try:
@@ -138,7 +202,7 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
         except ValueError as exc:
             raise HTTPException(status_code=422, detail=str(exc))
         try:
-            tmp, tmpdir = materialize(await file.read(), file.filename)
+            tmp, tmpdir = materialize(await read_capped(file, limit), file.filename)
         except UploadError as exc:
             raise HTTPException(status_code=422, detail=str(exc))
         try:
@@ -152,9 +216,8 @@ def create_app(config=None, audit_path=None, feedback_path=None) -> FastAPI:
 
     @app.post("/monitor")
     def monitor(req: MonitorRequest) -> dict:
-        if not Path(req.path).exists():
-            raise HTTPException(status_code=404, detail=f"file not found: {req.path}")
-        return run_monitor(req.path, req.montage, req.window_s, req.step_s, cfg, audit,
+        path = server_path(req.path)
+        return run_monitor(path, req.montage, req.window_s, req.step_s, cfg, audit,
                            patient=PatientInfo(age_years=req.age_years,
                                                postmenstrual_age_weeks=req.postmenstrual_age_weeks))
 
