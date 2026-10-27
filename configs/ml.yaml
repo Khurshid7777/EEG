@@ -19,6 +19,12 @@ offline:
   threshold: 0.3
   min_epochs: 15
   calibration: configs/calibration.ml_offline_v2.json   # Platt, LOSO events of v2 (precision ~8.5% at point A)
+  # Increment 46 (docs/preregistration_increment46.md, rule T): the critical "status epilepticus"
+  # finding counts only runs of p >= 0.7 for >= 15 epochs; criteria met only by all point-A events
+  # give a "status criteria by candidates - review" finding. Test (46 records, 169 h): false critical
+  # status 7/45 -> 0/45; the one true status got the review finding.
+  status_threshold: 0.7
+  status_min_epochs: 15
 realtime:
   enabled: true
   model: configs/models/ictal_gbm_realtime_v2.json

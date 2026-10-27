@@ -73,6 +73,16 @@
       "title": "Max False Alarms Per Hour",
       "type": "number"
     },
+    "neonatal_background_alarms": {
+      "default": "critical",
+      "description": "Neonatal burst-suppression / inactive alarms: critical, or a warning for review (increment 28, decided by docs/preregistration_increment28.md).",
+      "enum": [
+        "critical",
+        "review"
+      ],
+      "title": "Neonatal Background Alarms",
+      "type": "string"
+    },
     "alarms": {
       "additionalProperties": {
         "$ref": "#/$defs/AlarmRule"

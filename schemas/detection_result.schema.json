@@ -285,6 +285,11 @@
           "default": false,
           "title": "Status Epilepticus Suspected",
           "type": "boolean"
+        },
+        "status_criteria_by_candidates": {
+          "default": false,
+          "title": "Status Criteria By Candidates",
+          "type": "boolean"
         }
       },
       "title": "SeizureBurden",

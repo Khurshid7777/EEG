@@ -1,0 +1,444 @@
+{
+ "n_records": 46,
+ "hours": 168.9,
+ "n_truth_ese": 1,
+ "truth_ese_records": [
+  "aubmc:p11/p11_Record4.edf"
+ ],
+ "non_ese": {
+  "n": 45,
+  "current_false_critical": 7,
+  "t_false_critical": 0,
+  "t_review_only": 7,
+  "seizure_free_n": 6,
+  "seizure_free_current_false": 0,
+  "seizure_free_t_false": 0
+ },
+ "ese": [
+  {
+   "record": "aubmc:p11/p11_Record4.edf",
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  }
+ ],
+ "H1": true,
+ "H2": true,
+ "decision": "enable_rule_t",
+ "records": [
+  {
+   "record": "chbmit:chb06/chb06_01.edf",
+   "hours": 4.01,
+   "n_seizures": 3,
+   "truth_ese": false,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "chbmit:chb06/chb06_02.edf",
+   "hours": 4.0,
+   "n_seizures": 0,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "chbmit:chb06/chb06_03.edf",
+   "hours": 4.0,
+   "n_seizures": 0,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "chbmit:chb06/chb06_04.edf",
+   "hours": 3.68,
+   "n_seizures": 2,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "chbmit:chb06/chb06_05.edf",
+   "hours": 4.0,
+   "n_seizures": 0,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "chbmit:chb06/chb06_09.edf",
+   "hours": 4.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "chbmit:chb06/chb06_10.edf",
+   "hours": 4.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "chbmit:chb06/chb06_13.edf",
+   "hours": 4.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "chbmit:chb06/chb06_18.edf",
+   "hours": 2.2,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "chbmit:chb06/chb06_24.edf",
+   "hours": 4.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN01/PN01-1.edf",
+   "hours": 13.49,
+   "n_seizures": 2,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN03/PN03-1.edf",
+   "hours": 12.95,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN03/PN03-2.edf",
+   "hours": 11.27,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN06/PN06-1.edf",
+   "hours": 2.67,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN06/PN06-2.edf",
+   "hours": 3.51,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN06/PN06-3.edf",
+   "hours": 2.27,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN06/PN06-4.edf",
+   "hours": 1.95,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN06/PN06-5.edf",
+   "hours": 1.67,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN10/PN10-1.edf",
+   "hours": 2.77,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN10/PN10-10.edf",
+   "hours": 2.38,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN10/PN10-2.edf",
+   "hours": 2.38,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN10/PN10-3.edf",
+   "hours": 2.42,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN10/PN10-4.5.6.edf",
+   "hours": 4.62,
+   "n_seizures": 3,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN10/PN10-7.8.9.edf",
+   "hours": 4.15,
+   "n_seizures": 3,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN14/PN14-1.edf",
+   "hours": 2.19,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "siena:PN14/PN14-2.edf",
+   "hours": 2.55,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "aubmc:p10/p10_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p10/p10_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "aubmc:p11/p11_Record1.edf",
+   "hours": 2.1,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p11/p11_Record2.edf",
+   "hours": 2.84,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p11/p11_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 4,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p11/p11_Record4.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "truth_ese": true,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "aubmc:p12/p12_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 2,
+   "truth_ese": false,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "aubmc:p12/p12_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p12/p12_Record3.edf",
+   "hours": 2.57,
+   "n_seizures": 3,
+   "truth_ese": false,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "aubmc:p13/p13_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 0,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p13/p13_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 0,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p13/p13_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 0,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p13/p13_Record4.edf",
+   "hours": 2.56,
+   "n_seizures": 2,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p14/p14_Record1.edf",
+   "hours": 2.75,
+   "n_seizures": 2,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p14/p14_Record2.edf",
+   "hours": 2.99,
+   "n_seizures": 2,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p14/p14_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 4,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p15/p15_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p15/p15_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": true,
+   "t_critical": false,
+   "t_review": true
+  },
+  {
+   "record": "aubmc:p15/p15_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  },
+  {
+   "record": "aubmc:p15/p15_Record4.edf",
+   "hours": 3.0,
+   "n_seizures": 2,
+   "truth_ese": false,
+   "current_critical": false,
+   "t_critical": false,
+   "t_review": false
+  }
+ ]
+}

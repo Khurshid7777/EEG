@@ -221,12 +221,32 @@
       "title": "Pd Ecg Freq Hz By Age",
       "type": "array"
     },
+    "spike_candidate_rank": {
+      "default": "confidence",
+      "description": "Order of heuristic spike candidates before the cap: saturated confidence (channel order on ties) or raw sharpness z (increment 21).",
+      "pattern": "^(confidence|sharpness)$",
+      "title": "Spike Candidate Rank",
+      "type": "string"
+    },
     "pdr_method": {
       "default": "whole",
       "description": "Posterior dominant rhythm estimate: whole-record spectral peak, or 'alert' - upper quartile of 10-s epoch peaks (increment 20).",
       "pattern": "^(whole|alert)$",
       "title": "Pdr Method",
       "type": "string"
+    },
+    "pdr_posterior_dominance_min": {
+      "default": 0.0,
+      "description": "Increment 37: the PDR peak counts only if its power over O1/O2 is at least this multiple of that over F3/F4 (a posterior dominant rhythm is posterior); 0 = off.",
+      "minimum": 0,
+      "title": "Pdr Posterior Dominance Min",
+      "type": "number"
+    },
+    "field_required": {
+      "default": false,
+      "description": "Increment 20: lateralized PDs/RDA whose channels contain no two neighbouring electrodes are 'no field' hypotheses (uncertain).",
+      "title": "Field Required",
+      "type": "boolean"
     },
     "ictal_ml_routine_uncertain": {
       "default": false,

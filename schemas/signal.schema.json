@@ -95,6 +95,30 @@
       "title": "ElectrodeSystem",
       "type": "string"
     },
+    "Marker": {
+      "description": "An event marker stored with the recording (EDF+ annotation, BrainVision .vmrk):\neyes open/closed, hyperventilation, photic stimulation, technician comments.",
+      "properties": {
+        "onset_s": {
+          "title": "Onset S",
+          "type": "number"
+        },
+        "duration_s": {
+          "default": 0.0,
+          "title": "Duration S",
+          "type": "number"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "onset_s",
+        "text"
+      ],
+      "title": "Marker",
+      "type": "object"
+    },
     "PatientInfo": {
       "additionalProperties": false,
       "description": "Patient descriptors. Age / postmenstrual age drive interpretation (TZ §1).",
@@ -285,6 +309,13 @@
     },
     "provenance": {
       "$ref": "#/$defs/Provenance"
+    },
+    "markers": {
+      "items": {
+        "$ref": "#/$defs/Marker"
+      },
+      "title": "Markers",
+      "type": "array"
     }
   },
   "required": [
