@@ -1,0 +1,282 @@
+[
+ {
+  "thr_off": 0.3,
+  "bridge_epochs": 0,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.95,
+  "coverage_all": 0.646,
+  "coverage_thirds_long": [
+   0.697,
+   0.81,
+   0.641
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.26
+ },
+ {
+  "thr_off": 0.3,
+  "bridge_epochs": 5,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.86,
+  "coverage_all": 0.661,
+  "coverage_thirds_long": [
+   0.712,
+   0.828,
+   0.643
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.48
+ },
+ {
+  "thr_off": 0.3,
+  "bridge_epochs": 15,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.33,
+  "coverage_all": 0.665,
+  "coverage_thirds_long": [
+   0.721,
+   0.847,
+   0.68
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.65
+ },
+ {
+  "thr_off": 0.3,
+  "bridge_epochs": 30,
+  "sensitivity": 0.913,
+  "fa_per_hour": 5.32,
+  "coverage_all": 0.674,
+  "coverage_thirds_long": [
+   0.721,
+   0.913,
+   0.705
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 5.04
+ },
+ {
+  "thr_off": 0.2,
+  "bridge_epochs": 0,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.74,
+  "coverage_all": 0.667,
+  "coverage_thirds_long": [
+   0.721,
+   0.83,
+   0.646
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.58
+ },
+ {
+  "thr_off": 0.2,
+  "bridge_epochs": 5,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.74,
+  "coverage_all": 0.668,
+  "coverage_thirds_long": [
+   0.721,
+   0.835,
+   0.646
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.64
+ },
+ {
+  "thr_off": 0.2,
+  "bridge_epochs": 15,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.22,
+  "coverage_all": 0.671,
+  "coverage_thirds_long": [
+   0.731,
+   0.87,
+   0.68
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.81
+ },
+ {
+  "thr_off": 0.2,
+  "bridge_epochs": 30,
+  "sensitivity": 0.913,
+  "fa_per_hour": 5.25,
+  "coverage_all": 0.681,
+  "coverage_thirds_long": [
+   0.731,
+   0.915,
+   0.705
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 5.18
+ },
+ {
+  "thr_off": 0.15,
+  "bridge_epochs": 0,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.56,
+  "coverage_all": 0.672,
+  "coverage_thirds_long": [
+   0.737,
+   0.83,
+   0.646
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.77
+ },
+ {
+  "thr_off": 0.15,
+  "bridge_epochs": 5,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.56,
+  "coverage_all": 0.673,
+  "coverage_thirds_long": [
+   0.737,
+   0.835,
+   0.646
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.83
+ },
+ {
+  "thr_off": 0.15,
+  "bridge_epochs": 15,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.07,
+  "coverage_all": 0.677,
+  "coverage_thirds_long": [
+   0.737,
+   0.87,
+   0.68
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 4.99
+ },
+ {
+  "thr_off": 0.15,
+  "bridge_epochs": 30,
+  "sensitivity": 0.913,
+  "fa_per_hour": 5.16,
+  "coverage_all": 0.686,
+  "coverage_thirds_long": [
+   0.737,
+   0.915,
+   0.705
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 5.34
+ },
+ {
+  "thr_off": 0.1,
+  "bridge_epochs": 0,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.2,
+  "coverage_all": 0.688,
+  "coverage_thirds_long": [
+   0.746,
+   0.856,
+   0.685
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 5.2
+ },
+ {
+  "thr_off": 0.1,
+  "bridge_epochs": 5,
+  "sensitivity": 0.913,
+  "fa_per_hour": 6.2,
+  "coverage_all": 0.689,
+  "coverage_thirds_long": [
+   0.746,
+   0.86,
+   0.688
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 5.25
+ },
+ {
+  "thr_off": 0.1,
+  "bridge_epochs": 15,
+  "sensitivity": 0.913,
+  "fa_per_hour": 5.77,
+  "coverage_all": 0.693,
+  "coverage_thirds_long": [
+   0.746,
+   0.884,
+   0.702
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 5.39
+ },
+ {
+  "thr_off": 0.1,
+  "bridge_epochs": 30,
+  "sensitivity": 0.913,
+  "fa_per_hour": 4.98,
+  "coverage_all": 0.7,
+  "coverage_thirds_long": [
+   0.746,
+   0.921,
+   0.744
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 5.7
+ },
+ {
+  "thr_off": 0.05,
+  "bridge_epochs": 0,
+  "sensitivity": 0.913,
+  "fa_per_hour": 5.51,
+  "coverage_all": 0.725,
+  "coverage_thirds_long": [
+   0.782,
+   0.887,
+   0.744
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 6.37
+ },
+ {
+  "thr_off": 0.05,
+  "bridge_epochs": 5,
+  "sensitivity": 0.913,
+  "fa_per_hour": 5.51,
+  "coverage_all": 0.726,
+  "coverage_thirds_long": [
+   0.782,
+   0.89,
+   0.754
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 6.42
+ },
+ {
+  "thr_off": 0.05,
+  "bridge_epochs": 15,
+  "sensitivity": 0.913,
+  "fa_per_hour": 5.18,
+  "coverage_all": 0.73,
+  "coverage_thirds_long": [
+   0.782,
+   0.913,
+   0.768
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 6.53
+ },
+ {
+  "thr_off": 0.05,
+  "bridge_epochs": 30,
+  "sensitivity": 0.913,
+  "fa_per_hour": 4.52,
+  "coverage_all": 0.737,
+  "coverage_thirds_long": [
+   0.782,
+   0.945,
+   0.793
+  ],
+  "n_long": 15,
+  "false_detected_min_per_h": 6.79
+ }
+]
