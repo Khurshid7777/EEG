@@ -42,3 +42,4 @@ data/*.log
 data/aubmc/
 data/pdr_dev/
 data/dev46/
+data/test46/

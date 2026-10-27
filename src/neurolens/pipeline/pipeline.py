@@ -207,7 +207,9 @@ class Pipeline:
 
             self._ml_detector = MLIctalDetector(
                 load_model(self.cfg.ml_model_path(ml_mode.model)),
-                MLDetectorConfig(threshold=ml_mode.threshold, min_epochs=ml_mode.min_epochs),
+                MLDetectorConfig(threshold=ml_mode.threshold, min_epochs=ml_mode.min_epochs,
+                                 status_threshold=ml_mode.status_threshold,
+                                 status_min_epochs=ml_mode.status_min_epochs),
             )
         self.provider_pref = provider_pref
         self.run_ica = run_ica
@@ -281,7 +283,9 @@ class Pipeline:
                 from ..layer4_detect.ml_ictal import MLDetectorConfig, MLIctalDetector, load_model
 
                 det = MLIctalDetector(load_model(self.cfg.ml_model_path(mode.model)),
-                                      MLDetectorConfig(threshold=mode.threshold, min_epochs=mode.min_epochs))
+                                      MLDetectorConfig(threshold=mode.threshold, min_epochs=mode.min_epochs,
+                                                       status_threshold=mode.status_threshold,
+                                                       status_min_epochs=mode.status_min_epochs))
                 if mode.calibration:
                     from ..calibration.calibrator import ConfidenceCalibrator
 

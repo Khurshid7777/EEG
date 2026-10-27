@@ -110,6 +110,8 @@ class SeizureBurden(BaseModel):
     seizures_per_hour: float = 0.0
     longest_seizure_s: float = 0.0
     status_epilepticus_suspected: bool = False
+    # increment 46: ACNS status criteria met only when all low-confidence candidate events count
+    status_criteria_by_candidates: bool = False
 
 
 class DetectionResult(BaseModel):

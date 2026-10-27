@@ -12,7 +12,7 @@ from __future__ import annotations
 from ..contracts.events import DetectionResult, Event
 from ..contracts.report import Bilingual, CriticalFinding
 
-from ..layer4_detect.status_criteria import status_epilepticus
+from ..layer4_detect.status_criteria import status_epilepticus, status_intervals
 
 
 def scan_critical_findings(detection: DetectionResult, neonate: bool = False) -> list[CriticalFinding]:
@@ -21,7 +21,28 @@ def scan_critical_findings(detection: DetectionResult, neonate: bool = False) ->
     # surfaced (must not miss), but not as "seizure activity registered"
     candidates = [e for e in detection.by_group("ictal") if e.metadata.get("review_candidate")]
     ictal = [e for e in detection.by_group("ictal") if not e.metadata.get("review_candidate")]
-    ese = status_epilepticus([(e.t_start, e.t_end) for e in ictal], neonate)
+    strict, every = status_intervals(ictal)
+    ese = status_epilepticus(strict, neonate)
+    ese_candidates = status_epilepticus(every, neonate)
+    if not ese["suspected"] and ese_candidates["suspected"]:
+        # increment 46 (rule T): the criteria are met only by accumulating low-confidence
+        # learned events (about 1 in 12 is a seizure at the offline operating point)
+        findings.append(
+            CriticalFinding(
+                code="status_criteria_by_candidates",
+                text=Bilingual(
+                    ru=(f"Суммарная длительность событий-кандидатов в приступ достигает критериев "
+                        f"статуса ACNS (до {ese_candidates['max_seizure_s_per_hour'] / 60:.0f} мин за 60 мин, "
+                        f"самое длинное ~{ese_candidates['longest_s']:.0f} с), но события низкой "
+                        "уверенности, среди них много ложных — просмотрите запись на эпилептический статус."),
+                    uz=(f"Tutqanoqqa nomzod hodisalarning umumiy davomiyligi ACNS status mezonlariga yetadi "
+                        f"(60 daqiqada {ese_candidates['max_seizure_s_per_hour'] / 60:.0f} daqiqagacha, eng uzuni "
+                        f"~{ese_candidates['longest_s']:.0f} s), lekin hodisalar ishonchi past, ko‘plari "
+                        "yolg‘on — yozuvni epileptik statusga ko‘rib chiqing."),
+                ),
+                grounding_refs=sorted({e.code for e in ictal}),
+            )
+        )
     if candidates:
         longest = max(e.duration_s for e in candidates)
         findings.append(
@@ -125,7 +146,8 @@ def scan_critical_findings(detection: DetectionResult, neonate: bool = False) ->
 
     # High seizure burden (TZ §7.3) — a strong cEEG signal even below status.
     sb = detection.seizure_burden
-    if sb and sb.n_seizures >= 2 and sb.seizure_fraction >= 0.1 and not sb.status_epilepticus_suspected:
+    if (sb and sb.n_seizures >= 2 and sb.seizure_fraction >= 0.1 and not sb.status_epilepticus_suspected
+            and not sb.status_criteria_by_candidates):
         findings.append(
             CriticalFinding(
                 code="high_seizure_burden",

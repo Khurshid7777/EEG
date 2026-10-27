@@ -549,6 +549,8 @@ def probability_runs(p: np.ndarray, threshold: float, min_epochs: int,
 class MLDetectorConfig:
     threshold: float = 0.9
     min_epochs: int = 5
+    status_threshold: float | None = None   # increment 46, rule T (None: previous behaviour)
+    status_min_epochs: int = 15
 
 
 class MLIctalDetector(Detector):
@@ -569,6 +571,8 @@ class MLIctalDetector(Detector):
         times = np.asarray(features.epoch_times, float)
         z_idx = FEATURE_NAMES.index("z_top3")
         out = []
+        high = (probability_runs(p, self.cfg.status_threshold, self.cfg.status_min_epochs)
+                if self.cfg.status_threshold is not None else None)
         for a, b, pm in probability_runs(p, self.cfg.threshold, self.cfg.min_epochs):
             rms = np.asarray(features.epoch_rms)[a:b]
             base = np.median(np.asarray(features.epoch_rms), axis=0) + 1e-9
@@ -585,6 +589,11 @@ class MLIctalDetector(Detector):
                     EventEvidence(feature="amplitude_vs_own_baseline_log", value=round(float(X[a:b, z_idx].mean()), 3),
                                   note="log RMS above the channel's 5-min baseline (top-3 channels)"),
                 ],
-                metadata={"model": self.model.meta.get("name", "ictal_lr"), "n_epochs": b - a},
+                metadata={"model": self.model.meta.get("name", "ictal_lr"), "n_epochs": b - a,
+                          # rule T: the high-confidence parts of this event (empty list: none) -
+                          # only these count toward the critical status finding
+                          **({"status_intervals": [[float(times[c]), float(times[d - 1])]
+                                                   for c, d, _ in high if c < b and d > a]}
+                             if high is not None else {})},
             ))
         return out

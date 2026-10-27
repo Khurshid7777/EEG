@@ -264,6 +264,13 @@ class LearnedDetectorMode(BaseModel):
         description="Calibration JSON (Platt/temperature for code ictal_ml), repo-relative. "
                     "Calibrated values are what reports and alarms show; detection itself is "
                     "gated only by threshold/min_epochs.")
+    status_threshold: Optional[float] = Field(
+        default=None, ge=0, le=1,
+        description="Increment 46 (rule T): the critical 'status epilepticus' finding counts only runs of "
+                    "smoothed probability >= this for >= status_min_epochs epochs; when the ACNS criteria "
+                    "are met only by all events, a 'status criteria by candidates' review finding is given. "
+                    "None: all events count (previous behaviour).")
+    status_min_epochs: int = Field(default=15, ge=1)
     channels: Optional[list[str]] = Field(
         default=None,
         description="Electrodes the monitor analyses when this detector drives it (increment 30: "

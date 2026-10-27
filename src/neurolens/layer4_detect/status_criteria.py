@@ -59,3 +59,19 @@ def status_epilepticus(intervals: list[tuple[float, float]], neonate: bool = Fal
         "hourly_threshold_s": frac * HOUR_S,
         "population": "neonate" if neonate else "adult_child",
     }
+
+
+def status_intervals(events) -> tuple[list[tuple[float, float]], list[tuple[float, float]]]:
+    """(intervals for the critical status finding, all event intervals). Increment 46 (rule T):
+    learned events carrying ``status_intervals`` contribute only those high-confidence parts to
+    the first list; other detectors' events contribute their whole span to both."""
+    strict, every = [], []
+    for e in events:
+        every.append((e.t_start, e.t_end))
+        hi = e.metadata.get("status_intervals") if e.metadata else None
+        if hi is None:
+            strict.append((e.t_start, e.t_end))
+        else:
+            strict += [(float(a), float(b)) for a, b in hi]
+    return strict, every
+
