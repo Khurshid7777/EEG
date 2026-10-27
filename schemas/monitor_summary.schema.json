@@ -281,6 +281,13 @@
       },
       "title": "Warnings",
       "type": "array"
+    },
+    "notes": {
+      "items": {
+        "$ref": "#/$defs/Bilingual"
+      },
+      "title": "Notes",
+      "type": "array"
     }
   },
   "required": [

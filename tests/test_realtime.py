@@ -167,3 +167,10 @@ def test_monitor_incomplete_electrode_set_warns(demo_edf, configs):
     s = mon.run(EdfReplaySource(demo_edf, chunk_s=configs.realtime.step_s))
     assert any(w.startswith("model_electrode_set_incomplete") for w in s.warnings)
     assert mon._names == list(EdfReplaySource(demo_edf).channel_names)
+
+
+def test_monitor_summary_states_status_alarm_limit(demo_edf, configs):
+    """Increment 47 (D89): the summary always states that a missing status alarm does not
+    exclude status epilepticus (adult/child criteria; neonates have their own)."""
+    s = RealtimeMonitor(config=configs).run(EdfReplaySource(demo_edf, chunk_s=configs.realtime.step_s))
+    assert any("не исключает" in n.ru for n in s.notes)

@@ -1,0 +1,221 @@
+{
+ "n_records": 216,
+ "variants": [
+  {
+   "thr_off": 0.7,
+   "bridge_epochs": 0,
+   "true_found": 0,
+   "true_longest_s": [
+    183.0
+   ],
+   "false_status": 0
+  },
+  {
+   "thr_off": 0.7,
+   "bridge_epochs": 5,
+   "true_found": 0,
+   "true_longest_s": [
+    315.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.7,
+   "bridge_epochs": 15,
+   "true_found": 0,
+   "true_longest_s": [
+    369.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.7,
+   "bridge_epochs": 30,
+   "true_found": 0,
+   "true_longest_s": [
+    369.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.5,
+   "bridge_epochs": 0,
+   "true_found": 0,
+   "true_longest_s": [
+    186.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.5,
+   "bridge_epochs": 5,
+   "true_found": 0,
+   "true_longest_s": [
+    318.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.5,
+   "bridge_epochs": 15,
+   "true_found": 0,
+   "true_longest_s": [
+    372.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.5,
+   "bridge_epochs": 30,
+   "true_found": 0,
+   "true_longest_s": [
+    372.0
+   ],
+   "false_status": 2
+  },
+  {
+   "thr_off": 0.4,
+   "bridge_epochs": 0,
+   "true_found": 0,
+   "true_longest_s": [
+    186.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.4,
+   "bridge_epochs": 5,
+   "true_found": 0,
+   "true_longest_s": [
+    322.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.4,
+   "bridge_epochs": 15,
+   "true_found": 0,
+   "true_longest_s": [
+    376.0
+   ],
+   "false_status": 1
+  },
+  {
+   "thr_off": 0.4,
+   "bridge_epochs": 30,
+   "true_found": 0,
+   "true_longest_s": [
+    376.0
+   ],
+   "false_status": 3
+  },
+  {
+   "thr_off": 0.3,
+   "bridge_epochs": 0,
+   "true_found": 0,
+   "true_longest_s": [
+    186.0
+   ],
+   "false_status": 3
+  },
+  {
+   "thr_off": 0.3,
+   "bridge_epochs": 5,
+   "true_found": 0,
+   "true_longest_s": [
+    322.0
+   ],
+   "false_status": 3
+  },
+  {
+   "thr_off": 0.3,
+   "bridge_epochs": 15,
+   "true_found": 0,
+   "true_longest_s": [
+    376.0
+   ],
+   "false_status": 3
+  },
+  {
+   "thr_off": 0.3,
+   "bridge_epochs": 30,
+   "true_found": 0,
+   "true_longest_s": [
+    376.0
+   ],
+   "false_status": 4
+  },
+  {
+   "thr_off": 0.2,
+   "bridge_epochs": 0,
+   "true_found": 0,
+   "true_longest_s": [
+    192.0
+   ],
+   "false_status": 5
+  },
+  {
+   "thr_off": 0.2,
+   "bridge_epochs": 5,
+   "true_found": 0,
+   "true_longest_s": [
+    322.0
+   ],
+   "false_status": 5
+  },
+  {
+   "thr_off": 0.2,
+   "bridge_epochs": 15,
+   "true_found": 0,
+   "true_longest_s": [
+    383.0
+   ],
+   "false_status": 5
+  },
+  {
+   "thr_off": 0.2,
+   "bridge_epochs": 30,
+   "true_found": 0,
+   "true_longest_s": [
+    383.0
+   ],
+   "false_status": 5
+  },
+  {
+   "thr_off": 0.1,
+   "bridge_epochs": 0,
+   "true_found": 0,
+   "true_longest_s": [
+    324.0
+   ],
+   "false_status": 7
+  },
+  {
+   "thr_off": 0.1,
+   "bridge_epochs": 5,
+   "true_found": 0,
+   "true_longest_s": [
+    392.0
+   ],
+   "false_status": 7
+  },
+  {
+   "thr_off": 0.1,
+   "bridge_epochs": 15,
+   "true_found": 0,
+   "true_longest_s": [
+    392.0
+   ],
+   "false_status": 9
+  },
+  {
+   "thr_off": 0.1,
+   "bridge_epochs": 30,
+   "true_found": 0,
+   "true_longest_s": [
+    392.0
+   ],
+   "false_status": 11
+  }
+ ]
+}

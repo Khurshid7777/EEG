@@ -146,6 +146,8 @@ def _monitor(args) -> int:
     print(f"Детектор приступов / Tutqanoq detektori: {summary.seizure_detector}")
     for w in summary.warnings:
         print(f"⚠ {w}")
+    for n in summary.notes:
+        print(f"ℹ {n.ru}")
     print(f"Тревоги/Alarms: {summary.n_alarms_raised} (подавлено/suppressed: {summary.n_alarms_suppressed})"
           f"  {summary.alarms_per_hour}/час (бюджет {summary.false_alarm_budget_per_hour})"
           f"  в пределах бюджета: {summary.within_budget}")

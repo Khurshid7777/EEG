@@ -54,6 +54,20 @@ _MSG = {
     ),
 }
 
+# Increment 47 (D89): the status alarm needs >= 10 min of continuously detected seizure activity
+# (or >= 12 min in an hour); the detector covers long seizures with gaps and missed both known
+# status records (chb11 in development, AUBMC p11 in the test) while raising no false status.
+STATUS_ALARM_NOTE = Bilingual(
+    ru="Тревога «эпилептический статус» требует ≥ 10 мин непрерывно распознанной судорожной "
+       "активности (или ≥ 12 мин за час). Длительный приступ детектор распознаёт с разрывами, "
+       "поэтому отсутствие тревоги о статусе статус не исключает: длительный приступ виден по "
+       "повторным тревогам «приступ».",
+    uz="“Epileptik status” signali ≥ 10 daqiqa uzluksiz aniqlangan tutqanoq faolligini (yoki "
+       "soatiga ≥ 12 daqiqa) talab qiladi. Uzoq tutqanoqni detektor uzilishlar bilan aniqlaydi, "
+       "shuning uchun status signalining yo‘qligi statusni istisno qilmaydi: uzoq tutqanoq "
+       "takroriy “tutqanoq” signallaridan ko‘rinadi.",
+)
+
 
 class RealtimeMonitor:
     def __init__(
@@ -303,6 +317,7 @@ class RealtimeMonitor:
         return MonitorSummary(
             seizure_detector=getattr(self, "_ml_name", None) or "threshold",
             warnings=warnings,
+            notes=[STATUS_ALARM_NOTE] if n_eeg >= MIN_EEG_CHANNELS and not self._neonate else [],  # adult/child criteria
             source=getattr(source, "source_name", "stream"),
             montage=self.montage_name,
             duration_s=round(duration_s, 1),

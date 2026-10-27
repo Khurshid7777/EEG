@@ -1,0 +1,272 @@
+{
+ "operating_point": {
+  "threshold": 0.7,
+  "min_epochs": 5
+ },
+ "n_records": 20,
+ "hours": 57.8,
+ "non_ese": {
+  "n": 19,
+  "monitor_false_status": 0,
+  "min15_false_status": 0
+ },
+ "ese": [
+  {
+   "record": "p11/p11_Record4.edf",
+   "truth_longest_s": 1358,
+   "monitor_status": false,
+   "monitor_longest_s": 120.0,
+   "monitor_max_s_per_hour": 341.0
+  }
+ ],
+ "H1": true,
+ "H2_found": [
+  false
+ ],
+ "decision": {
+  "status_rule": "unchanged",
+  "summary_note_and_R1": true
+ },
+ "records": [
+  {
+   "record": "p10/p10_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 445,
+   "monitor_status": false,
+   "monitor_longest_s": 65.0,
+   "monitor_max_s_per_hour": 231.0,
+   "min15_status": false
+  },
+  {
+   "record": "p10/p10_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 305,
+   "monitor_status": false,
+   "monitor_longest_s": 28.0,
+   "monitor_max_s_per_hour": 240.0,
+   "min15_status": false
+  },
+  {
+   "record": "p11/p11_Record1.edf",
+   "hours": 2.1,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 64,
+   "monitor_status": false,
+   "monitor_longest_s": 70.0,
+   "monitor_max_s_per_hour": 128.0,
+   "min15_status": false
+  },
+  {
+   "record": "p11/p11_Record2.edf",
+   "hours": 2.84,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 51,
+   "monitor_status": false,
+   "monitor_longest_s": 67.0,
+   "monitor_max_s_per_hour": 96.0,
+   "min15_status": false
+  },
+  {
+   "record": "p11/p11_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 4,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 91,
+   "monitor_status": false,
+   "monitor_longest_s": 30.0,
+   "monitor_max_s_per_hour": 71.0,
+   "min15_status": false
+  },
+  {
+   "record": "p11/p11_Record4.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": true,
+   "truth_longest_s": 1358,
+   "monitor_status": false,
+   "monitor_longest_s": 120.0,
+   "monitor_max_s_per_hour": 341.0,
+   "min15_status": false
+  },
+  {
+   "record": "p12/p12_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 2,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 104,
+   "monitor_status": false,
+   "monitor_longest_s": 96.0,
+   "monitor_max_s_per_hour": 373.0,
+   "min15_status": false
+  },
+  {
+   "record": "p12/p12_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "n_ambiguous": 1,
+   "truth_ese": false,
+   "truth_longest_s": 118,
+   "monitor_status": false,
+   "monitor_longest_s": 78.0,
+   "monitor_max_s_per_hour": 291.0,
+   "min15_status": false
+  },
+  {
+   "record": "p12/p12_Record3.edf",
+   "hours": 2.57,
+   "n_seizures": 3,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 164,
+   "monitor_status": false,
+   "monitor_longest_s": 155.0,
+   "monitor_max_s_per_hour": 310.0,
+   "min15_status": false
+  },
+  {
+   "record": "p13/p13_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 0,
+   "n_ambiguous": 1,
+   "truth_ese": false,
+   "truth_longest_s": 0.0,
+   "monitor_status": false,
+   "monitor_longest_s": 14.0,
+   "monitor_max_s_per_hour": 33.0,
+   "min15_status": false
+  },
+  {
+   "record": "p13/p13_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 0,
+   "n_ambiguous": 2,
+   "truth_ese": false,
+   "truth_longest_s": 0.0,
+   "monitor_status": false,
+   "monitor_longest_s": 6.0,
+   "monitor_max_s_per_hour": 14.0,
+   "min15_status": false
+  },
+  {
+   "record": "p13/p13_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 0,
+   "n_ambiguous": 1,
+   "truth_ese": false,
+   "truth_longest_s": 0.0,
+   "monitor_status": false,
+   "monitor_longest_s": 5.0,
+   "monitor_max_s_per_hour": 9.0,
+   "min15_status": false
+  },
+  {
+   "record": "p13/p13_Record4.edf",
+   "hours": 2.56,
+   "n_seizures": 2,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 30,
+   "monitor_status": false,
+   "monitor_longest_s": 21.0,
+   "monitor_max_s_per_hour": 106.0,
+   "min15_status": false
+  },
+  {
+   "record": "p14/p14_Record1.edf",
+   "hours": 2.75,
+   "n_seizures": 2,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 134,
+   "monitor_status": false,
+   "monitor_longest_s": 46.0,
+   "monitor_max_s_per_hour": 84.0,
+   "min15_status": false
+  },
+  {
+   "record": "p14/p14_Record2.edf",
+   "hours": 2.99,
+   "n_seizures": 2,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 32,
+   "monitor_status": false,
+   "monitor_longest_s": 57.0,
+   "monitor_max_s_per_hour": 151.0,
+   "min15_status": false
+  },
+  {
+   "record": "p14/p14_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 4,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 40,
+   "monitor_status": false,
+   "monitor_longest_s": 44.0,
+   "monitor_max_s_per_hour": 266.0,
+   "min15_status": false
+  },
+  {
+   "record": "p15/p15_Record1.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 50,
+   "monitor_status": false,
+   "monitor_longest_s": 51.0,
+   "monitor_max_s_per_hour": 204.0,
+   "min15_status": false
+  },
+  {
+   "record": "p15/p15_Record2.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 47,
+   "monitor_status": false,
+   "monitor_longest_s": 36.0,
+   "monitor_max_s_per_hour": 159.0,
+   "min15_status": false
+  },
+  {
+   "record": "p15/p15_Record3.edf",
+   "hours": 3.0,
+   "n_seizures": 1,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 13,
+   "monitor_status": false,
+   "monitor_longest_s": 36.0,
+   "monitor_max_s_per_hour": 155.0,
+   "min15_status": false
+  },
+  {
+   "record": "p15/p15_Record4.edf",
+   "hours": 3.0,
+   "n_seizures": 2,
+   "n_ambiguous": 0,
+   "truth_ese": false,
+   "truth_longest_s": 56,
+   "monitor_status": false,
+   "monitor_longest_s": 48.0,
+   "monitor_max_s_per_hour": 146.0,
+   "min15_status": false
+  }
+ ]
+}

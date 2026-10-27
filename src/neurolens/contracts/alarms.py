@@ -77,3 +77,4 @@ class MonitorSummary(BaseModel):
     realtime_feasible: bool = True  # per-window latency << step
     seizure_detector: str = "threshold"  # "threshold" or the learned model file used
     warnings: list[str] = Field(default_factory=list)  # e.g. too few EEG channels analysed
+    notes: list[Bilingual] = Field(default_factory=list)  # standing limits, e.g. of the status alarm (D89)
