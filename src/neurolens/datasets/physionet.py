@@ -22,6 +22,10 @@ from .chbmit import parse_chbmit_summary
 from .siena import parse_siena_seizure_list
 
 BASE_URL = "https://physionet.org/files"
+# Data files from PhysioNet's official open-data mirror on AWS (physionet.org throttles to ~50 KB/s
+# per connection); checksums and metadata still come from physionet.org, so every file is verified
+# against the original SHA256SUMS (D87). NEUROLENS_PHYSIONET_MIRROR="" disables the mirror.
+MIRROR_URL = os.environ.get("NEUROLENS_PHYSIONET_MIRROR", "https://physionet-open.s3.amazonaws.com")
 DEFAULT_CACHE = Path(os.environ.get("NEUROLENS_DATA", "data/physionet"))
 
 
@@ -220,6 +224,7 @@ class PhysioNetClient:
         self.name = database
         self.cache = Path(cache_dir or DEFAULT_CACHE) / database
         self.base = f"{base_url}/{self.db.root}"
+        self.mirror = f"{MIRROR_URL.rstrip('/')}/{self.db.root}" if MIRROR_URL else None
         self._fetch_text = fetch_text or (lambda url: _http_get(url))
         self._fetch_file = fetch_file or (lambda url, dest: _http_get(url, dest))
         self._sums: dict[str, str] | None = None
@@ -310,7 +315,13 @@ class PhysioNetClient:
             return dest
         dest.parent.mkdir(parents=True, exist_ok=True)
         part = dest.with_suffix(dest.suffix + ".part")
-        self._fetch_file(f"{self.base}/{rel}", part)
+        try:
+            self._fetch_file(f"{self.mirror or self.base}/{rel}", part)
+        except Exception:  # noqa: BLE001 - mirror missing the file or unreachable: the origin
+            if not self.mirror:
+                raise
+            part.unlink(missing_ok=True)
+            self._fetch_file(f"{self.base}/{rel}", part)
         if verify:
             expected = self.checksums().get(rel)
             if expected is None:
