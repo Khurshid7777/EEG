@@ -60,12 +60,12 @@ _MSG = {
 STATUS_ALARM_NOTE = Bilingual(
     ru="Тревога «эпилептический статус» требует ≥ 10 мин непрерывно распознанной судорожной "
        "активности (или ≥ 12 мин за час). Длительный приступ детектор распознаёт с разрывами, "
-       "поэтому отсутствие тревоги о статусе статус не исключает: длительный приступ виден по "
-       "повторным тревогам «приступ».",
+       "поэтому отсутствие тревоги о статусе статус не исключает: при подозрении на длительный "
+       "приступ просмотрите запись.",
     uz="“Epileptik status” signali ≥ 10 daqiqa uzluksiz aniqlangan tutqanoq faolligini (yoki "
        "soatiga ≥ 12 daqiqa) talab qiladi. Uzoq tutqanoqni detektor uzilishlar bilan aniqlaydi, "
-       "shuning uchun status signalining yo‘qligi statusni istisno qilmaydi: uzoq tutqanoq "
-       "takroriy “tutqanoq” signallaridan ko‘rinadi.",
+       "shuning uchun status signalining yo‘qligi statusni istisno qilmaydi: uzoq tutqanoqqa "
+       "shubha bo‘lsa, yozuvni ko‘zdan kechiring.",
 )
 
 
