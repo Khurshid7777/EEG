@@ -240,6 +240,11 @@ def test_aasm_montage_derivations_are_gated():
     assert np.allclose(d["eog"], data[6] - data[7])
     left = derivations(["F3", "C3", "O1"], data[[0, 2, 4]], aasm=True)
     assert np.allclose(left["parietal"], data[2] - data[4])
+    # AASM eye-electrode names (E1-M2, E2-M2): E1 - E2
+    aasm_names = [normalize_channel_name(c) for c in ("F4-M1", "C4-M1", "O2-M1", "E1-M2", "E2-M2")]
+    assert aasm_names == ["F4", "C4", "O2", "E1", "E2"]
+    d2 = derivations(aasm_names, data[:5], aasm=True)
+    assert np.allclose(d2["eog"], data[3] - data[4])
     # the parasagittal chain keeps priority when both are possible
     para = derivations(["Fp2", "F4", "C4", "P4", "O2"], data[:5], parasagittal_fallback=True, aasm=True)
     assert "aasm" not in para

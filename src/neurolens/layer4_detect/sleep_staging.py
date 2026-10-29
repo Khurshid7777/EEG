@@ -288,7 +288,7 @@ def derivations(names: list[str], data: np.ndarray, parasagittal_fallback: bool 
             frontal, parietal = f_ - c, c - o
     else:
         frontal, parietal = fpz - cz, pz - oz
-    pair = next(((r, l) for r, l in (("EOGR", "EOGL"), ("ROC", "LOC")) if r in idx and l in idx), None)
+    pair = next(((r, l) for r, l in (("EOGR", "EOGL"), ("ROC", "LOC"), ("E1", "E2")) if r in idx and l in idx), None)
     eog_name = next((n for n in names if n.upper().startswith("EOG") or n.upper().startswith("LOC")), None)
     if pair is not None:  # two referential eye electrodes: the horizontal bipolar derivation
         eog = data[idx[pair[0]]] - data[idx[pair[1]]]

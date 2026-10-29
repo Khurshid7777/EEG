@@ -5,6 +5,8 @@ AASM stager enabled for the test. Resumable: one JSON line per night.
 
     PYTHONPATH=src python scripts/run_boas_sleep.py run OUT.jsonl [--workers 2]
     PYTHONPATH=src python scripts/run_boas_sleep.py assess OUT.jsonl OUT.json
+    # increment 50 (second use of BOAS): --model v2
+    PYTHONPATH=src python scripts/run_boas_sleep.py run OUT.jsonl --model v2
 """
 
 import argparse
@@ -25,6 +27,9 @@ MODEL = "configs/models/sleep_stager_aasm_v1.json"
 MODEL_SHA256 = "fab0f2b3dea88586b75141e3f0c9d2e1725d460cf5bf53e7a932356ea509022e"
 HUMAN = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4}      # BOAS code -> STAGES index (W N1 N2 N3 REM); 8 = disconnection
 SEED, N_BOOT = 49, 2000
+MODELS = {"v1": (MODEL, MODEL_SHA256),
+          "v2": ("configs/models/sleep_stager_aasm_v2.json",
+                 "97d986b1c6a3e2f57e127591a05b8564aaf02872943ee7f280b5d4654c771d5a")}
 
 
 def _curl(url: str, out: Path | None = None) -> bytes:
@@ -42,7 +47,7 @@ def _events(sub: str) -> list[dict]:
 
 
 def _one(item) -> dict:
-    sub, age, pid = item
+    sub, age, pid, model = item
     from neurolens.contracts.signal import PatientInfo
     from neurolens.layer1_ingest.registry import ingest
     from neurolens.pipeline.pipeline import Pipeline
@@ -56,7 +61,7 @@ def _one(item) -> dict:
         age_y = None if age in (None, "", "n/a") else float(age)   # sub-16: age "n/a" in participants.tsv
         sig = sig.model_copy(update={"patient": PatientInfo(age_years=age_y)})
         pipe = Pipeline(provider_pref="template", run_ica=False)
-        pipe.cfg.sleep = pipe.cfg.sleep.model_copy(update={"aasm_model": MODEL})
+        pipe.cfg.sleep = pipe.cfg.sleep.model_copy(update={"aasm_model": model})
         st = pipe._sleep_staging(sig)
         if not st or st.get("skipped"):
             return {"subject": sub, "pid": pid, "error": f"not staged: {st}"}
@@ -134,6 +139,7 @@ def main() -> int:
     ap.add_argument("cmd", choices=["run", "assess"])
     ap.add_argument("paths", nargs="+")
     ap.add_argument("--workers", type=int, default=2)
+    ap.add_argument("--model", choices=sorted(MODELS), default="v1")
     a = ap.parse_args()
     out = Path(a.paths[0])
     if a.cmd == "assess":
@@ -142,9 +148,10 @@ def main() -> int:
         print(json.dumps({k: v for k, v in res.items() if k != "pooled"} | {"pooled_kappa": res["pooled"]["kappa"]},
                          indent=1, default=float))
         return 0
-    if hashlib.sha256(Path(MODEL).read_bytes()).hexdigest() != MODEL_SHA256:
-        raise RuntimeError(f"{MODEL} does not match the frozen sha256")
-    items = [(p["participant_id"], p["age"], p["pid"]) for p in participants()]
+    model, sha = MODELS[a.model]
+    if hashlib.sha256(Path(model).read_bytes()).hexdigest() != sha:
+        raise RuntimeError(f"{model} does not match the frozen sha256")
+    items = [(p["participant_id"], p["age"], p["pid"], model) for p in participants()]
     done = {r["subject"] for r in _load(out)} if out.exists() else set()
     todo = [it for it in items if it[0] not in done]
     print(f"{len(items)} nights, {len(todo)} to run", flush=True)
