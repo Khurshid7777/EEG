@@ -53,7 +53,8 @@ def _one(item) -> dict:
             p = Path(d) / f"{sub}.edf"
             _curl(f"{BASE}/{sub}/eeg/{sub}_task-Sleep_acq-psg_eeg.edf", p)
             sig = ingest(p)
-        sig = sig.model_copy(update={"patient": PatientInfo(age_years=float(age))})
+        age_y = None if age in (None, "", "n/a") else float(age)   # sub-16: age "n/a" in participants.tsv
+        sig = sig.model_copy(update={"patient": PatientInfo(age_years=age_y)})
         pipe = Pipeline(provider_pref="template", run_ica=False)
         pipe.cfg.sleep = pipe.cfg.sleep.model_copy(update={"aasm_model": MODEL})
         st = pipe._sleep_staging(sig)
@@ -67,7 +68,7 @@ def _one(item) -> dict:
             a = int(float(e["stage_ai"])) if e.get("stage_ai") not in (None, "", "n/a") else None
             human.append([k, HUMAN.get(h, -1) if h is not None else -1])
             ai.append([k, HUMAN.get(a, -1) if a is not None else -1])
-        return {"subject": sub, "pid": pid, "age": float(age), "duration_h": round(sig.duration_s / 3600, 2),
+        return {"subject": sub, "pid": pid, "age": age_y, "duration_h": round(sig.duration_s / 3600, 2),
                 "derivations": st["derivations"], "eog_source": st.get("eog_source"), "model": st.get("model"),
                 "hyp": hyp, "human": human, "authors_ai": ai}
     except Exception as exc:  # noqa: BLE001 - listed and excluded, as pre-registered

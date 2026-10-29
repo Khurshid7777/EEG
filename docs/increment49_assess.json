@@ -1,0 +1,73 @@
+{
+ "n_nights": 128,
+ "n_people": 100,
+ "errors": [],
+ "derivations": [
+  "aasm"
+ ],
+ "eog_source": [
+  "eog_channel"
+ ],
+ "pooled": {
+  "n_epochs": 119759,
+  "kappa": 0.4911,
+  "accuracy": 0.632,
+  "macro_f1": 0.5599,
+  "f1": {
+   "W": 0.7167,
+   "N1": 0.3335,
+   "N2": 0.6728,
+   "N3": 0.2982,
+   "REM": 0.7784
+  },
+  "confusion": [
+   [
+    15813,
+    895,
+    1113,
+    149,
+    1167
+   ],
+   [
+    1385,
+    1707,
+    925,
+    39,
+    406
+   ],
+   [
+    5321,
+    2562,
+    37976,
+    22700,
+    3622
+   ],
+   [
+    248,
+    0,
+    46,
+    4929,
+    2
+   ],
+   [
+    2225,
+    610,
+    641,
+    18,
+    15260
+   ]
+  ]
+ },
+ "kappa_ci95_by_person": [
+  0.467,
+  0.516
+ ],
+ "per_night_kappa_median": 0.491,
+ "authors_ai_vs_human": {
+  "accuracy": 0.8713,
+  "kappa": 0.7791,
+  "macro_f1": 0.7399
+ },
+ "H1": false,
+ "decision": "keep_off"
+}
