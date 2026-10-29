@@ -1,0 +1,96 @@
+{
+ "rows": [
+  {
+   "k_lost": 0,
+   "n_sets": 1,
+   "common_channels_left": 19,
+   "sensitivity_mean": 0.933,
+   "sensitivity_range": [
+    0.933,
+    0.933
+   ],
+   "fa_per_h_mean": 3.68,
+   "fa_per_h_range": [
+    3.68,
+    3.68
+   ]
+  },
+  {
+   "k_lost": 1,
+   "n_sets": 20,
+   "common_channels_left": 18,
+   "sensitivity_mean": 0.933,
+   "sensitivity_range": [
+    0.933,
+    0.933
+   ],
+   "fa_per_h_mean": 3.53,
+   "fa_per_h_range": [
+    3.3,
+    3.74
+   ]
+  },
+  {
+   "k_lost": 3,
+   "n_sets": 20,
+   "common_channels_left": 16,
+   "sensitivity_mean": 0.932,
+   "sensitivity_range": [
+    0.9,
+    0.933
+   ],
+   "fa_per_h_mean": 3.03,
+   "fa_per_h_range": [
+    2.35,
+    3.58
+   ]
+  },
+  {
+   "k_lost": 6,
+   "n_sets": 20,
+   "common_channels_left": 13,
+   "sensitivity_mean": 0.893,
+   "sensitivity_range": [
+    0.8,
+    0.933
+   ],
+   "fa_per_h_mean": 2.64,
+   "fa_per_h_range": [
+    1.97,
+    3.08
+   ]
+  },
+  {
+   "k_lost": 9,
+   "n_sets": 20,
+   "common_channels_left": 10,
+   "sensitivity_mean": 0.82,
+   "sensitivity_range": [
+    0.767,
+    0.933
+   ],
+   "fa_per_h_mean": 2.12,
+   "fa_per_h_range": [
+    1.66,
+    2.77
+   ]
+  },
+  {
+   "k_lost": 12,
+   "n_sets": 20,
+   "common_channels_left": 7,
+   "sensitivity_mean": 0.747,
+   "sensitivity_range": [
+    0.667,
+    0.867
+   ],
+   "fa_per_h_mean": 1.63,
+   "fa_per_h_range": [
+    1.25,
+    1.99
+   ]
+  }
+ ],
+ "H1_k1_ok": true,
+ "H2_largest_k_ok_contiguous": 6
+}
