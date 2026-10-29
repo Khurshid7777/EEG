@@ -1,0 +1,85 @@
+{
+ "n_nights": 78,
+ "n_people": 20,
+ "errors": [
+  [
+   "sub-011_ses-004",
+   "ValueError('cannot reshape array of size 77453750 into shape (25,17403870)')"
+  ],
+  [
+   "sub-013_ses-001",
+   "ValueError('cannot reshape array of size 227364810 into shape (25,14515050)')"
+  ]
+ ],
+ "derivations": [
+  "aasm"
+ ],
+ "eog_source": [
+  "eog_channel"
+ ],
+ "vs_scoring1": {
+  "n_epochs": 73780,
+  "kappa": 0.5586,
+  "accuracy": 0.6871,
+  "macro_f1": 0.6228,
+  "f1": {
+   "W": 0.6449,
+   "N1": 0.3411,
+   "N2": 0.7699,
+   "N3": 0.7446,
+   "REM": 0.6135
+  },
+  "confusion": [
+   [
+    5861,
+    1383,
+    2455,
+    287,
+    1098
+   ],
+   [
+    308,
+    2335,
+    2335,
+    68,
+    375
+   ],
+   [
+    369,
+    1647,
+    26811,
+    2100,
+    581
+   ],
+   [
+    195,
+    4,
+    3378,
+    8900,
+    20
+   ],
+   [
+    360,
+    2903,
+    3165,
+    52,
+    6790
+   ]
+  ]
+ },
+ "kappa_ci95_by_person": [
+  0.494,
+  0.614
+ ],
+ "vs_scoring2": {
+  "accuracy": 0.6791,
+  "kappa": 0.5528,
+  "macro_f1": 0.6152
+ },
+ "scorer2_vs_scorer1": {
+  "accuracy": 0.8821,
+  "kappa": 0.8388,
+  "macro_f1": 0.843
+ },
+ "H1": false
+}

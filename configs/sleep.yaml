@@ -15,6 +15,7 @@ parasagittal_model: configs/models/sleep_stager_clinical_v1.json
 # Standard AASM PSG montage (F4-C4 / C4-O2, no Fp/Cz/Pz/P4): not staged. Increment 49: the
 # CAP-trained stager (configs/models/sleep_stager_aasm_v1.json) gave kappa 0.49 < 0.60 on BOAS
 # (OpenNeuro ds005555, 128 nights) -> aasm_model stays unset (docs/increment49_report.md, D91).
+# Increment 50: v2 trained on AASM scoring (ds007181) - EESM19 0.56, BOAS 0.53 < 0.60 -> still unset (D92).
 provenance:
   preregistration: docs/preregistration_increment13.md
   report: docs/increment13_report.md
