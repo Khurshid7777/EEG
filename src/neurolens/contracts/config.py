@@ -295,6 +295,9 @@ class SleepStagingConfig(BaseModel):
     parasagittal_model: Optional[str] = Field(
         default=None, description="Stager trained on clinical derivations, used with the fallback "
                                   "(increment 14); None = the main model.")
+    aasm_model: Optional[str] = Field(
+        default=None, description="Stager for the standard AASM PSG montage F4-C4 / C4-O2 (no Fp, Cz, Pz, "
+                                  "P4; increment 49); None = such recordings are not staged.")
     provenance: dict = Field(default_factory=dict)
 
 

@@ -223,6 +223,28 @@ def test_parasagittal_fallback_is_gated():
     assert np.allclose(d["frontal"], data[0] - data[1]) and np.allclose(d["parietal"], data[2] - data[3])
 
 
+def test_aasm_montage_derivations_are_gated():
+    """Increment 49: F4/C4/O2 against a mastoid (AASM PSG) -> F4-C4 / C4-O2, only when enabled;
+    two referential eye electrodes give the horizontal bipolar EOG."""
+    from neurolens.layer1_ingest.electrodes import normalize_channel_name
+
+    raw = ["PSG_F3", "PSG_F4", "PSG_C3", "PSG_C4", "PSG_O1", "PSG_O2", "PSG_EOGR", "PSG_EOGL", "PSG_EMG"]
+    names = [normalize_channel_name(c) for c in raw]
+    assert names[:6] == ["F3", "F4", "C3", "C4", "O1", "O2"] and names[6:8] == ["EOGR", "EOGL"]
+    data = np.arange(len(names) * 10, dtype=float).reshape(len(names), 10) ** 1.5
+    assert derivations(names, data) is None
+    assert derivations(names, data, parasagittal_fallback=True) is None   # no Fp2 / P4
+    d = derivations(names, data, aasm=True)
+    assert d.pop("aasm") is True
+    assert np.allclose(d["frontal"], data[1] - data[3]) and np.allclose(d["parietal"], data[3] - data[5])
+    assert np.allclose(d["eog"], data[6] - data[7])
+    left = derivations(["F3", "C3", "O1"], data[[0, 2, 4]], aasm=True)
+    assert np.allclose(left["parietal"], data[2] - data[4])
+    # the parasagittal chain keeps priority when both are possible
+    para = derivations(["Fp2", "F4", "C4", "P4", "O2"], data[:5], parasagittal_fallback=True, aasm=True)
+    assert "aasm" not in para
+
+
 def test_prereg13b_decision_and_apply(tmp_path):
     import shutil
 

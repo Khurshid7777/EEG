@@ -260,12 +260,14 @@ class Pipeline:
             self._sleep_model = MulticlassTreeModel.load(self.cfg.ml_model_path(sc.model))
             self._sleep_para = (MulticlassTreeModel.load(self.cfg.ml_model_path(sc.parasagittal_model))
                                 if sc.parasagittal_model else None)
+            self._sleep_aasm = (MulticlassTreeModel.load(self.cfg.ml_model_path(sc.aasm_model))
+                                if sc.aasm_model else None)
         out = stage_signal(signal.channel_names, signal.signal, signal.sampling_rate_hz, self._sleep_model,
                            parasagittal_fallback=sc.parasagittal_fallback,
-                           parasagittal_model=self._sleep_para)
+                           parasagittal_model=self._sleep_para, aasm_model=self._sleep_aasm)
         if out is not None:
             out["model"] = (sc.parasagittal_model if out["derivations"] == "parasagittal" and sc.parasagittal_model
-                            else sc.model)
+                            else sc.aasm_model if out["derivations"] == "aasm" else sc.model)
             out["provenance"] = sc.provenance
         return out
 

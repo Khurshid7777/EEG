@@ -1,0 +1,21 @@
+{
+ "n_nights": 96,
+ "v1_zero_shot": {
+  "kappa": 0.5518,
+  "accuracy": 0.6599,
+  "macro_f1": 0.6285,
+  "per_night_kappa_median": 0.5669
+ },
+ "clinical_v1_zero_shot": {
+  "kappa": 0.7142,
+  "accuracy": 0.7886,
+  "macro_f1": 0.7423,
+  "per_night_kappa_median": 0.7532
+ },
+ "aasm_grouped_cv": {
+  "kappa": 0.7168,
+  "accuracy": 0.7885,
+  "macro_f1": 0.7408,
+  "per_night_kappa_median": 0.7466
+ }
+}

@@ -250,12 +250,15 @@ def hypnogram_summary(stages: np.ndarray) -> dict:
 MODEL_FS = 100.0  # Sleep-EDF EEG sampling rate the model was trained on
 
 
-def derivations(names: list[str], data: np.ndarray, parasagittal_fallback: bool = False) -> dict | None:
+def derivations(names: list[str], data: np.ndarray, parasagittal_fallback: bool = False,
+                aasm: bool = False) -> dict | None:
     """Sleep-EDF-like derivations from a 10-20 recording: Fpz-Cz (Fp1/Fp2 mean when
     Fpz is absent), Pz-Oz (O1/O2 mean when Oz is absent) and horizontal EOG (a
     dedicated EOG channel, else F7-F8). Without midline electrodes and with
     ``parasagittal_fallback``: Fp2-C4 / P4-O2 (left side if the right is missing),
-    as validated on clinical PSG in increment 13b. None when electrodes are missing."""
+    as validated on clinical PSG in increment 13b. With ``aasm`` and neither of those: the standard
+    AASM PSG montage, F4-C4 / C4-O2 (left if the right is missing; increment 49) - the result then
+    carries ``"aasm": True``. None when electrodes are missing."""
     idx = {n.upper(): i for i, n in enumerate(names)}
     if "FPZ-CZ" in idx and "PZ-OZ" in idx:
         # a PSG that already carries the training derivations (Sleep-EDF style)
@@ -273,20 +276,33 @@ def derivations(names: list[str], data: np.ndarray, parasagittal_fallback: bool 
     if fpz is None or oz is None or cz is None or pz is None:
         side = next((s for s in (("FP2", "C4", "P4", "O2"), ("FP1", "C3", "P3", "O1"))
                      if all(e in idx for e in s)), None) if parasagittal_fallback else None
-        if side is None:
+        aasm_side = next((s for s in (("F4", "C4", "O2"), ("F3", "C3", "O1"))
+                          if all(e in idx for e in s)), None) if aasm and side is None else None
+        if side is None and aasm_side is None:
             return None
-        fp, c, pp, o = (data[idx[e]] for e in side)
-        frontal, parietal = fp - c, pp - o
+        if side is not None:
+            fp, c, pp, o = (data[idx[e]] for e in side)
+            frontal, parietal = fp - c, pp - o
+        else:
+            f_, c, o = (data[idx[e]] for e in aasm_side)
+            frontal, parietal = f_ - c, c - o
     else:
         frontal, parietal = fpz - cz, pz - oz
+    pair = next(((r, l) for r, l in (("EOGR", "EOGL"), ("ROC", "LOC")) if r in idx and l in idx), None)
     eog_name = next((n for n in names if n.upper().startswith("EOG") or n.upper().startswith("LOC")), None)
-    if eog_name is not None:
+    if pair is not None:  # two referential eye electrodes: the horizontal bipolar derivation
+        eog = data[idx[pair[0]]] - data[idx[pair[1]]]
+    elif eog_name is not None:
         eog = data[names.index(eog_name)]
     elif "F7" in idx and "F8" in idx:
         eog = data[idx["F7"]] - data[idx["F8"]]
     else:
         eog = None
-    return {"frontal": frontal, "parietal": parietal, "eog": eog}
+    out = {"frontal": frontal, "parietal": parietal, "eog": eog}
+    if fpz is None or oz is None or cz is None or pz is None:
+        if side is None:
+            out["aasm"] = True
+    return out
 
 
 SLEEP_SMOOTH_EPOCHS = 10  # 5 min
@@ -334,17 +350,22 @@ def _stage_sleep_period(F: np.ndarray, names: list[str], model) -> tuple[np.ndar
 
 def stage_signal(names: list[str], data: np.ndarray, fs: float, model: MulticlassTreeModel,
                  parasagittal_fallback: bool = False,
-                 parasagittal_model: MulticlassTreeModel | None = None) -> dict | None:
+                 parasagittal_model: MulticlassTreeModel | None = None,
+                 aasm_model: MulticlassTreeModel | None = None) -> dict | None:
     """Hypnogram + sleep summary for a recording, or None if derivations are missing.
     ``parasagittal_model`` (a stager trained on clinical derivations) replaces ``model``
-    when the parasagittal fallback is used."""
+    when the parasagittal fallback is used; ``aasm_model`` (increment 49) enables the AASM
+    montage F4-C4 / C4-O2 and stages it."""
     from scipy.signal import resample_poly
 
     midline = derivations(names, data[:, :1]) is not None
-    der = derivations(names, data, parasagittal_fallback)
+    der = derivations(names, data, parasagittal_fallback, aasm=aasm_model is not None)
     if der is None:
         return None
-    if not midline and parasagittal_model is not None:
+    is_aasm = bool(der.pop("aasm", False))
+    if is_aasm:
+        model = aasm_model
+    elif not midline and parasagittal_model is not None:
         model = parasagittal_model
     if abs(fs - MODEL_FS) > 1e-6:
         from fractions import Fraction
@@ -366,7 +387,7 @@ def stage_signal(names: list[str], data: np.ndarray, fs: float, model: Multiclas
         "hypnogram": [STAGES[i] for i in stages],
         "summary": hypnogram_summary(stages),
         "mean_confidence": round(float(proba.max(axis=1).mean()), 3),
-        "derivations": "midline" if midline else "parasagittal",
+        "derivations": "midline" if midline else ("aasm" if is_aasm else "parasagittal"),
         "eog_source": "eog_channel" if any(n.upper().startswith(("EOG", "LOC")) for n in names)
                       else ("F7-F8" if der["eog"] is not None else "none"),
     }

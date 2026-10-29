@@ -44,6 +44,8 @@ def normalize_channel_name(raw: str, strip_cz: bool = True) -> str:
     # signal-type prefixes of Natus/Xltek ("E FP1-Ref" = EEG, "P EKG" = polygraphic) and
     # Nihon Kohden ("POL ECG") exports
     s = re.sub(r"^(?:[EP]|POL)\s+(?=\S)", "", s)
+    # PSG exports that tag the acquisition system ("PSG_F4", "PSG_EOG"; BIDS PSG, e.g. OpenNeuro ds005555)
+    s = re.sub(r"(?i)^psg[_\s]+(?=\S)", "", s)
     # Drop a trailing reference tag: "-Ref", "-REF", "-LE", "-A1", "-AVG"...
     tags = "ref|le|avg|average|a1|a2|m1|m2|linked.*" + ("|cz" if strip_cz else "")
     s = re.sub(rf"(?i)[-_ ]({tags})$", "", s)
