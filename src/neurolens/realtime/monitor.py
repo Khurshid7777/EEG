@@ -228,7 +228,9 @@ class RealtimeMonitor:
                     e.confidence = round(self._ml_cal.calibrate(e.code, e.confidence), 4)
             det.events.extend(ml_events)
 
-        self._baseline = (1 - self._baseline_alpha) * self._baseline + self._baseline_alpha * win_med
+        # a window 40 dB below the baseline (gap, disconnection) does not pull it down (increment 53)
+        upd = (1 - self._baseline_alpha) * self._baseline + self._baseline_alpha * win_med
+        self._baseline = np.where(win_med < self._baseline / 100.0, self._baseline, upd)
         return det, analysis
 
     # -- candidate generation --------------------------------------------

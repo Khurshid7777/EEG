@@ -72,8 +72,15 @@ def _lag(x: np.ndarray, k: int) -> np.ndarray:
     return out
 
 
+LOG_GAP = float(np.log(100.0))  # an epoch 40 dB below the running baseline: a gap / disconnection, not EEG
+
+
 def causal_baseline(log_rms: np.ndarray, init: Optional[np.ndarray] = None) -> np.ndarray:
-    """Per-channel EMA of log-RMS, value *before* each epoch's update."""
+    """Per-channel EMA of log-RMS, value *before* each epoch's update. An epoch more than 40 dB
+    below the baseline (signal gap filled with zeros, disconnected electrode) does not update it -
+    increment 53: a 10-s gap pulled the baseline down ~1.8x and the next minutes looked like
+    high-amplitude activity. Relative, so scale-free like the features; identical to the plain EMA
+    whenever no such epoch occurs."""
     a = 1.0 / EMA_TAU_EPOCHS
     if init is None:
         init = np.median(log_rms[: min(INIT_EPOCHS, len(log_rms))], axis=0)
@@ -82,7 +89,19 @@ def causal_baseline(log_rms: np.ndarray, init: Optional[np.ndarray] = None) -> n
     base = np.empty_like(log_rms)
     base[0] = init
     base[1:] = y[:-1]
+    if not np.any(log_rms < base - LOG_GAP):  # the first gap epoch is found exactly by the plain EMA
+        return base
+    ema = np.array(init, dtype=float)
+    for t in range(log_rms.shape[0]):
+        base[t] = ema
+        ema = np.where(log_rms[t] < ema - LOG_GAP, ema, (1.0 - a) * ema + a * log_rms[t])
     return base
+
+
+def ema_next(base_last: np.ndarray, x_last: np.ndarray) -> np.ndarray:
+    """The EMA after the last epoch of a chunk (streaming state)."""
+    a = 1.0 / EMA_TAU_EPOCHS
+    return np.where(x_last < base_last - LOG_GAP, base_last, (1.0 - a) * base_last + a * x_last)
 
 
 def causal_baseline_gated(log_rms: np.ndarray, init: Optional[np.ndarray] = None,
@@ -271,8 +290,7 @@ class StreamingFeaturizer:
         rms, conc, domf, rp = chunk
         log_rms = np.log(np.maximum(rms, 1e-6))
         base = causal_baseline(log_rms, init=self._ema)
-        a = 1.0 / EMA_TAU_EPOCHS
-        self._ema = (1.0 - a) * base[-1] + a * log_rms[-1]
+        self._ema = ema_next(base[-1], log_rms[-1])
         B_new = base_features(rms, conc, domf, rp, base)
         self._B = B_new if self._B is None else np.vstack([self._B, B_new])
         X = np.column_stack([self._B, context_features(self._B)])[-B_new.shape[0]:]
@@ -330,8 +348,7 @@ class StreamingFeaturizerV2:
             self._ema = [np.median(x[:INIT_EPOCHS], axis=0) for x in _morph_logs(*chunk)]
         logs = _morph_logs(*chunk)
         bases = [causal_baseline(x, init=e) for x, e in zip(logs, self._ema)]
-        a = 1.0 / EMA_TAU_EPOCHS
-        self._ema = [(1.0 - a) * b[-1] + a * x[-1] for b, x in zip(bases, logs)]
+        self._ema = [ema_next(b[-1], x[-1]) for b, x in zip(bases, logs)]
         M_new = morph_base(logs, bases)
         self._M = M_new if self._M is None else np.vstack([self._M, M_new])
         Mx = np.column_stack([self._M, morph_context(self._M)])[-M_new.shape[0]:]
