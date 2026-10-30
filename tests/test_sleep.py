@@ -249,6 +249,9 @@ def test_aasm_montage_derivations_are_gated():
     hmc = [normalize_channel_name(c) for c in ("EEG F4-M1", "EEG C4-M1", "EEG O2-M1", "EOG E1-M2", "EOG E2-M2")]
     d3 = derivations(hmc, data[:5], aasm=True)
     assert np.allclose(d3["eog"], data[3] - data[4])
+    # one eye electrode only (PhysioNet/CinC 2018: E1-M2): the referential channel itself (increment 52)
+    cinc = [normalize_channel_name(c) for c in ("F4-M1", "C4-M1", "O2-M1", "E1-M2")]
+    assert np.allclose(derivations(cinc, data[:4], aasm=True)["eog"], data[3])
     # the parasagittal chain keeps priority when both are possible
     para = derivations(["Fp2", "F4", "C4", "P4", "O2"], data[:5], parasagittal_fallback=True, aasm=True)
     assert "aasm" not in para

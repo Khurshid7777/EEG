@@ -1,0 +1,140 @@
+{
+ "n_nights": {
+  "ds007181": 59,
+  "boas": 128,
+  "eesm19": 78,
+  "hmc": 151
+ },
+ "abs_median_by_centre": {
+  "ds007181": {
+   "fc_logpow": 4.91,
+   "fc_log_sdelta": 4.23,
+   "fc_log_delta": 2.93,
+   "po_logpow": 5.89,
+   "po_log_sdelta": 5.19,
+   "po_log_delta": 3.91
+  },
+  "boas": {
+   "fc_logpow": 5.08,
+   "fc_log_sdelta": 4.53,
+   "fc_log_delta": 3.1,
+   "po_logpow": 5.6,
+   "po_log_sdelta": 4.86,
+   "po_log_delta": 3.74
+  },
+  "eesm19": {
+   "fc_logpow": NaN,
+   "fc_log_sdelta": NaN,
+   "fc_log_delta": NaN,
+   "po_logpow": NaN,
+   "po_log_sdelta": NaN,
+   "po_log_delta": NaN
+  },
+  "hmc": {
+   "fc_logpow": 5.31,
+   "fc_log_sdelta": 4.79,
+   "fc_log_delta": 3.25,
+   "po_logpow": 5.86,
+   "po_log_sdelta": 5.13,
+   "po_log_delta": 4.02
+  }
+ },
+ "A_held_out_ds007181": {
+  "kappa": 0.5917,
+  "accuracy": 0.6956,
+  "macro_f1": 0.6707,
+  "f1": {
+   "W": 0.7092,
+   "N1": 0.4567,
+   "N2": 0.7473,
+   "N3": 0.6512,
+   "REM": 0.7891
+  }
+ },
+ "A_held_out_boas": {
+  "kappa": 0.5234,
+  "accuracy": 0.656,
+  "macro_f1": 0.5987,
+  "f1": {
+   "W": 0.8102,
+   "N1": 0.3263,
+   "N2": 0.7041,
+   "N3": 0.3274,
+   "REM": 0.8254
+  }
+ },
+ "A_held_out_eesm19": {
+  "kappa": 0.6367,
+  "accuracy": 0.7483,
+  "macro_f1": 0.6874,
+  "f1": {
+   "W": 0.7903,
+   "N1": 0.4229,
+   "N2": 0.8054,
+   "N3": 0.6187,
+   "REM": 0.7998
+  }
+ },
+ "A_held_out_hmc": {
+  "kappa": 0.6008,
+  "accuracy": 0.7032,
+  "macro_f1": 0.6731,
+  "f1": {
+   "W": 0.7921,
+   "N1": 0.4417,
+   "N2": 0.742,
+   "N3": 0.5733,
+   "REM": 0.8163
+  }
+ },
+ "A_mean_kappa": 0.5881,
+ "B_held_out_ds007181": {
+  "kappa": 0.6095,
+  "accuracy": 0.7112,
+  "macro_f1": 0.6806,
+  "f1": {
+   "W": 0.7156,
+   "N1": 0.4459,
+   "N2": 0.7704,
+   "N3": 0.6857,
+   "REM": 0.7856
+  }
+ },
+ "B_held_out_boas": {
+  "kappa": 0.5409,
+  "accuracy": 0.6725,
+  "macro_f1": 0.6069,
+  "f1": {
+   "W": 0.8129,
+   "N1": 0.3154,
+   "N2": 0.7266,
+   "N3": 0.3544,
+   "REM": 0.825
+  }
+ },
+ "B_held_out_eesm19": {
+  "kappa": 0.6745,
+  "accuracy": 0.7687,
+  "macro_f1": 0.7155,
+  "f1": {
+   "W": 0.7999,
+   "N1": 0.4181,
+   "N2": 0.816,
+   "N3": 0.744,
+   "REM": 0.7997
+  }
+ },
+ "B_held_out_hmc": {
+  "kappa": 0.6134,
+  "accuracy": 0.7132,
+  "macro_f1": 0.6815,
+  "f1": {
+   "W": 0.7997,
+   "N1": 0.4387,
+   "N2": 0.7514,
+   "N3": 0.6026,
+   "REM": 0.8149
+  }
+ },
+ "B_mean_kappa": 0.6096
+}

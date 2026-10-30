@@ -310,6 +310,10 @@ def derivations(names: list[str], data: np.ndarray, parasagittal_fallback: bool 
         eog = data[eye[pair[0]]] - data[eye[pair[1]]]
     elif eog_name is not None:
         eog = data[names.index(eog_name)]
+    elif (single := next((e for e in ("E1", "E2", "ROC", "LOC", "EOGR", "EOGL") if e in eye), None)) is not None:
+        # one referential eye electrode (e.g. E1-M2 only): increment 52 on HMC - kappa 0.597 vs 0.546 with
+        # neutral EOG (0.613 with the E1-E2 pair)
+        eog = data[eye[single]]
     elif "F7" in idx and "F8" in idx:
         eog = data[idx["F7"]] - data[idx["F8"]]
     else:
@@ -323,9 +327,11 @@ def derivations(names: list[str], data: np.ndarray, parasagittal_fallback: bool 
 
 SLEEP_SMOOTH_EPOCHS = 10  # 5 min
 WINDOW_PAD_EPOCHS = int(30 * 60 / EPOCH_S)  # 30 min, as in training
+WINDOW_BRIDGE_EPOCHS = WINDOW_PAD_EPOCHS     # wake gaps shorter than this stay inside the sleep period
 
 
-def _stage_sleep_period(F: np.ndarray, names: list[str], model) -> tuple[np.ndarray, tuple[int, int]]:
+def _stage_sleep_period(F: np.ndarray, names: list[str], model,
+                        bridge_epochs: int | None = None) -> tuple[np.ndarray, tuple[int, int]]:
     """Two passes, matching the training preprocessing (features standardised over the
     sleep period +- 30 min): pass 1 on the whole recording finds the sleep period
     (5-min smoothed sleep probability > 0.5); pass 2 re-standardises and stages only
@@ -349,7 +355,7 @@ def _stage_sleep_period(F: np.ndarray, names: list[str], model) -> tuple[np.ndar
         return p1, (0, len(F))
     merged = [runs[0]]
     for r0, r1 in runs[1:]:
-        if r0 - merged[-1][1] < WINDOW_PAD_EPOCHS:
+        if r0 - merged[-1][1] < (WINDOW_BRIDGE_EPOCHS if bridge_epochs is None else bridge_epochs):
             merged[-1][1] = r1
         else:
             merged.append([r0, r1])
@@ -405,6 +411,7 @@ def stage_signal(names: list[str], data: np.ndarray, fs: float, model: Multiclas
         "summary": hypnogram_summary(stages),
         "mean_confidence": round(float(proba.max(axis=1).mean()), 3),
         "derivations": "midline" if midline else ("aasm" if is_aasm else "parasagittal"),
-        "eog_source": "eog_channel" if any(n.upper().startswith(("EOG", "LOC")) for n in names)
+        "eog_source": "eog_channel" if any(n.upper().startswith(("EOG", "LOC", "ROC")) or n.upper() in ("E1", "E2")
+                                           for n in names)
                       else ("F7-F8" if der["eog"] is not None else "none"),
     }

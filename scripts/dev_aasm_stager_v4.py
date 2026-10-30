@@ -11,7 +11,9 @@ increment 51) is now a fourth development centre.
 
     PYTHONPATH=src python scripts/dev_aasm_stager_v4.py build-hmc data/aasm3
     PYTHONPATH=src python scripts/dev_aasm_stager_v4.py loco data/aasm3
-    PYTHONPATH=src python scripts/dev_aasm_stager_v4.py eog data/aasm3
+    PYTHONPATH=src python scripts/dev_aasm_stager_v4.py eog data/aasm3 --design B
+    PYTHONPATH=src python scripts/dev_aasm_stager_v4.py window data/aasm3
+    PYTHONPATH=src python scripts/dev_aasm_stager_v4.py train data/aasm3
 """
 
 import argparse
@@ -147,9 +149,50 @@ def eog(out: Path, design_tag: str) -> dict:
     return res
 
 
+def window(out: Path) -> dict:
+    """The product's sleep-period step on held-out centres (variant B, LOCO models): wake gaps bridged
+    < 30 min (current), < 2 h, or no cropping (whole recording, one pass). HMC caches cover the whole
+    recording; the other centres' caches cover the scored window +- 30 min (approximation)."""
+    from neurolens.evaluation.sleep_eval import score
+    from neurolens.layer4_detect.sleep_staging import STAGES, _stage_sleep_period, fit_stager
+
+    c = centres(out)
+    rules = {"bridge_30min": 60, "bridge_2h": 240, "no_crop": None}
+    res = {}
+    for held in c:
+        X, y, names = _matrix([n for k, v in c.items() if k != held for n in v], design_b)
+        m = fit_stager(X, y, names)
+        for tag, br in rules.items():
+            preds = []
+            for n in c[held]:
+                if br is None:
+                    preds.append(m.predict_proba(design_b(n)[0]).argmax(axis=1))
+                else:
+                    preds.append(_stage_sleep_period(n.F, n.names, m, bridge_epochs=br)[0].argmax(axis=1))
+            s = score(c[held], preds)
+            res[f"{held}_{tag}"] = {"kappa": s["kappa"], "f1_W": s["f1"][STAGES[0]]}
+            print(held, tag, s["kappa"], flush=True)
+    for tag in rules:
+        res[f"mean_{tag}"] = round(float(np.mean([res[f"{h}_{tag}"]["kappa"] for h in c])), 4)
+    return res
+
+
+def train(out: Path) -> Path:
+    """Variant B on all four centres."""
+    from neurolens.layer4_detect.sleep_staging import fit_stager
+
+    c = centres(out)
+    X, y, names = _matrix([n for v in c.values() for n in v], design_b)
+    m = fit_stager(X, y, names, {"name": "sleep_stager_aasm_v4",
+                                 "training": {k: len(v) for k, v in c.items()},
+                                 "derivations": "F4-C4 / C4-O2 / horizontal EOG (product derivations)",
+                                 "absolute_features": list(ABS)})
+    return m.save("configs/models/sleep_stager_aasm_v4.json")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["build-hmc", "loco", "eog"])
+    ap.add_argument("cmd", choices=["build-hmc", "loco", "eog", "window", "train"])
     ap.add_argument("out")
     ap.add_argument("--design", default="A", choices=["A", "B"])
     a = ap.parse_args()
@@ -157,8 +200,11 @@ def main() -> int:
     if a.cmd == "build-hmc":
         build_hmc(out)
         return 0
-    res = loco(out) if a.cmd == "loco" else eog(out, a.design)
-    name = "loco_v4.json" if a.cmd == "loco" else f"eog_{a.design}.json"
+    if a.cmd == "train":
+        print(train(out))
+        return 0
+    res = {"loco": loco, "window": window}[a.cmd](out) if a.cmd != "eog" else eog(out, a.design)
+    name = {"loco": "loco_v4.json", "window": "window_v4.json"}.get(a.cmd, f"eog_{a.design}.json")
     (out / name).write_text(json.dumps(res, indent=1) + "\n")
     print(json.dumps({k: v for k, v in res.items() if "mean" in k or k in ("design",)}, indent=1))
     return 0
