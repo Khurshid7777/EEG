@@ -245,6 +245,10 @@ def test_aasm_montage_derivations_are_gated():
     assert aasm_names == ["F4", "C4", "O2", "E1", "E2"]
     d2 = derivations(aasm_names, data[:5], aasm=True)
     assert np.allclose(d2["eog"], data[3] - data[4])
+    # PhysioNet HMC labels ("EEG F4-M1", "EOG E1-M2")
+    hmc = [normalize_channel_name(c) for c in ("EEG F4-M1", "EEG C4-M1", "EEG O2-M1", "EOG E1-M2", "EOG E2-M2")]
+    d3 = derivations(hmc, data[:5], aasm=True)
+    assert np.allclose(d3["eog"], data[3] - data[4])
     # the parasagittal chain keeps priority when both are possible
     para = derivations(["Fp2", "F4", "C4", "P4", "O2"], data[:5], parasagittal_fallback=True, aasm=True)
     assert "aasm" not in para
