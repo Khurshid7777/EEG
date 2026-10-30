@@ -328,6 +328,9 @@ def derivations(names: list[str], data: np.ndarray, parasagittal_fallback: bool 
 SLEEP_SMOOTH_EPOCHS = 10  # 5 min
 WINDOW_PAD_EPOCHS = int(30 * 60 / EPOCH_S)  # 30 min, as in training
 WINDOW_BRIDGE_EPOCHS = WINDOW_PAD_EPOCHS     # wake gaps shorter than this stay inside the sleep period
+# AASM montage (clinical PSG, long night-time awakenings): gaps < 2 h bridged. Increment 52, LOCO on four
+# centres: mean kappa 0.592 (30 min) -> 0.610 (2 h; no cropping 0.610). Other paths keep 30 min (validated).
+AASM_BRIDGE_EPOCHS = int(2 * 3600 / EPOCH_S)
 
 
 def _stage_sleep_period(F: np.ndarray, names: list[str], model,
@@ -402,7 +405,7 @@ def stage_signal(names: list[str], data: np.ndarray, fs: float, model: Multiclas
     if der["eog"] is None:  # model expects EOG features: neutral (median) values
         F = np.column_stack([F, np.zeros((n_ep, 3))])
         names_f = names_f + ["eog_log_slow", "eog_log_fast", "eog_logvar"]
-    proba, window = _stage_sleep_period(F, names_f, model)
+    proba, window = _stage_sleep_period(F, names_f, model, AASM_BRIDGE_EPOCHS if is_aasm else None)
     stages = proba.argmax(axis=1)
     return {
         "analysis_window_epochs": list(window),

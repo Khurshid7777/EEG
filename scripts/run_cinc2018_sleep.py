@@ -24,8 +24,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_hmc_sleep as hmc  # noqa: E402  (scoring and bootstrap are shared)
 
 BASE = "https://physionet-open.s3.amazonaws.com/challenge-2018/1.0.0"
-MODEL = None                 # set in the pre-registration commit
-MODEL_SHA256 = None          # set in the pre-registration commit
+MODEL = "configs/models/sleep_stager_aasm_v4.json"
+MODEL_SHA256 = "3affd3b5bb9c996f56259fe85817065ddc6ee4fbe29a57fd3a81f985e7b102d7"
 N_SAMPLE, SEED, N_BOOT = 150, 52, 2000
 EXCLUDED = {"tr03-0005"}
 STAGE = {"W": 0, "N1": 1, "N2": 2, "N3": 3, "R": 4}

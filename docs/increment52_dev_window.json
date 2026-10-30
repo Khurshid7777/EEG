@@ -1,0 +1,53 @@
+{
+ "ds007181_bridge_30min": {
+  "kappa": 0.5955,
+  "f1_W": 0.6794
+ },
+ "ds007181_bridge_2h": {
+  "kappa": 0.6095,
+  "f1_W": 0.7154
+ },
+ "ds007181_no_crop": {
+  "kappa": 0.6095,
+  "f1_W": 0.7156
+ },
+ "boas_bridge_30min": {
+  "kappa": 0.5258,
+  "f1_W": 0.7541
+ },
+ "boas_bridge_2h": {
+  "kappa": 0.5409,
+  "f1_W": 0.8132
+ },
+ "boas_no_crop": {
+  "kappa": 0.5409,
+  "f1_W": 0.8129
+ },
+ "eesm19_bridge_30min": {
+  "kappa": 0.6606,
+  "f1_W": 0.7527
+ },
+ "eesm19_bridge_2h": {
+  "kappa": 0.6741,
+  "f1_W": 0.7999
+ },
+ "eesm19_no_crop": {
+  "kappa": 0.6745,
+  "f1_W": 0.7999
+ },
+ "hmc_bridge_30min": {
+  "kappa": 0.5867,
+  "f1_W": 0.7284
+ },
+ "hmc_bridge_2h": {
+  "kappa": 0.6136,
+  "f1_W": 0.7998
+ },
+ "hmc_no_crop": {
+  "kappa": 0.6134,
+  "f1_W": 0.7997
+ },
+ "mean_bridge_30min": 0.5922,
+ "mean_bridge_2h": 0.6095,
+ "mean_no_crop": 0.6096
+}

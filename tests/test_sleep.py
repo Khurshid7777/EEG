@@ -524,3 +524,24 @@ def test_standardise_ignores_missing_epochs_and_appends_absolute():
     assert np.isnan(X[7, 0]) and np.isfinite(np.delete(X[:, 0], 7)).all()
     assert np.allclose(X[:, 2], F[:, 1])
     assert absolute_features(names) == ("b",)
+
+
+def test_aasm_sleep_period_bridges_long_awakenings():
+    """Increment 52: a 42-min awakening must not cut the first half of a PSG night out of the sleep period."""
+    from neurolens.layer4_detect.sleep_staging import AASM_BRIDGE_EPOCHS, STAGES, _stage_sleep_period
+
+    class Gap:  # asleep except a 90-epoch (45-min) awakening in the middle and wake at both ends
+        feature_names = ["x@+0"]
+
+        def predict_proba(self, X):
+            p = np.zeros((len(X), len(STAGES)))
+            awake = X[:, 2] > 0.5  # the context-0 column of the single feature
+            p[awake, 0], p[~awake, 2] = 1.0, 1.0
+            return p
+
+    t = np.arange(900)
+    F = ((t < 30) | ((t >= 400) & (t < 490)) | (t >= 870)).astype(float)[:, None] * 10
+    _, w30 = _stage_sleep_period(F, ["x"], Gap())
+    _, w2h = _stage_sleep_period(F, ["x"], Gap(), AASM_BRIDGE_EPOCHS)
+    assert w30[0] > 300           # 30-min bridging keeps only one half of the night
+    assert w2h[0] < 30 and w2h[1] > 850
