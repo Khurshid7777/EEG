@@ -28,6 +28,7 @@
 | `ied_gbm_v1` | вероятность разряда у кандидатов | 2f9754f90be86e36 |
 | `record_gbm_v2` / `_noage` | заключение рутинной ЭЭГ | a75dafb950c424a3 / 25b0ef4589e401cb |
 | `sleep_stager_v1` / `clinical_v1` | стадирование сна | 7378512671fdefbb / c3bfcabe0c0f4a29 |
+| `sleep_stager_aasm_v4` | стадирование сна, монтаж AASM (D94) | 3affd3b5bb9c996f |
 
 * Изменение модели или порога по умолчанию:
   1. пре-регистрация гипотез и правил решения (`docs/preregistration_increment*.md`, коммит до
