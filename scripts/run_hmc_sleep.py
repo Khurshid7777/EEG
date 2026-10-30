@@ -19,7 +19,7 @@ import numpy as np
 
 BASE = "https://physionet-open.s3.amazonaws.com/hmc-sleep-staging/1.1"
 MODEL = "configs/models/sleep_stager_aasm_v3.json"
-MODEL_SHA256 = None          # set in the pre-registration commit
+MODEL_SHA256 = "8a7a55e0389bd1e9d68787e9915babc5c05f3d39d6042f76dac42c730b8b66a4"
 STAGE = {"Sleep stage W": 0, "Sleep stage N1": 1, "Sleep stage N2": 2, "Sleep stage N3": 3, "Sleep stage R": 4}
 SEED, N_BOOT = 51, 2000
 
