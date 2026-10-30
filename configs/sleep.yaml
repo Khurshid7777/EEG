@@ -12,12 +12,17 @@ min_duration_h: 2.0
 # clinical model kappa 0.708 vs v1 0.563 -> on (docs/increment14_report.md).
 parasagittal_fallback: true
 parasagittal_model: configs/models/sleep_stager_clinical_v1.json
-# Standard AASM PSG montage (F4-C4 / C4-O2, no Fp/Cz/Pz/P4): not staged. Increment 49: the
+# Standard AASM PSG montage (F4-C4 / C4-O2, no Fp/Cz/Pz/P4). Increment 49: the
 # CAP-trained stager (configs/models/sleep_stager_aasm_v1.json) gave kappa 0.49 < 0.60 on BOAS
 # (OpenNeuro ds005555, 128 nights) -> aasm_model stays unset (docs/increment49_report.md, D91).
 # Increment 50: v2 trained on AASM scoring (ds007181) - EESM19 0.56, BOAS 0.53 < 0.60 -> still unset (D92).
 # Increment 51: v3 trained on 3 centres (265 nights) - HMC 0.58 (CI 0.56-0.60) < 0.60 -> still unset (D93).
+# Increment 52: v4 (+ absolute slow-wave power, 4 centres / 416 nights; 2-h wake bridging) -
+# PhysioNet/CinC 2018 (MGH, 150 PSG, one eye channel): kappa 0.62 (CI 0.60-0.64) -> on
+# (docs/preregistration_increment52.md, docs/increment52_report.md, D94).
+aasm_model: configs/models/sleep_stager_aasm_v4.json
 provenance:
   preregistration: docs/preregistration_increment13.md
   report: docs/increment13_report.md
   clinical: docs/preregistration_increment14.md
+  aasm: docs/preregistration_increment52.md
