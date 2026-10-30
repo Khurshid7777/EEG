@@ -1,0 +1,2381 @@
+{
+"old": {
+"data/nmt/normal/0000007.edf": {
+"duration_s": 828.0,
+"as_is": {
+"ictal": [
+[
+2.0,
+16.0
+],
+[
+420.0,
+434.0
+],
+[
+444.0,
+522.0
+],
+[
+530.0,
+556.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.024,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+2.0,
+16.0
+],
+[
+263.0,
+280.0
+],
+[
+311.0,
+335.0
+],
+[
+389.0,
+501.0
+],
+[
+510.0,
+629.0
+],
+[
+634.0,
+667.0
+],
+[
+699.0,
+716.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.056,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000011.edf": {
+"duration_s": 773.0,
+"as_is": {
+"ictal": [
+[
+376.0,
+399.0
+],
+[
+466.0,
+484.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml",
+"lpds"
+],
+"record_probability": 0.046,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+295.0,
+316.0
+],
+[
+375.0,
+407.0
+],
+[
+476.0,
+560.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml",
+"lpds"
+],
+"record_probability": 0.158,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000014.edf": {
+"duration_s": 321.0,
+"as_is": {
+"ictal": [
+[
+82.0,
+99.0
+],
+[
+264.0,
+295.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.096,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+82.0,
+98.0
+],
+[
+107.0,
+136.0
+],
+[
+142.0,
+160.0
+],
+[
+166.0,
+194.0
+],
+[
+205.0,
+310.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.139,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000016.edf": {
+"duration_s": 964.0,
+"as_is": {
+"ictal": [
+[
+57.0,
+79.0
+],
+[
+321.0,
+425.0
+],
+[
+447.0,
+517.0
+],
+[
+556.0,
+601.0
+],
+[
+628.0,
+673.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.15,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+57.0,
+79.0
+],
+[
+317.0,
+440.0
+],
+[
+444.0,
+582.0
+],
+[
+592.0,
+685.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.178,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000021.edf": {
+"duration_s": 672.0,
+"as_is": {
+"ictal": [
+[
+1.0,
+25.0
+],
+[
+131.0,
+153.0
+],
+[
+229.0,
+250.0
+],
+[
+346.0,
+365.0
+],
+[
+431.0,
+484.0
+],
+[
+519.0,
+555.0
+],
+[
+563.0,
+577.0
+],
+[
+638.0,
+671.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.019,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+1.0,
+25.0
+],
+[
+131.0,
+153.0
+],
+[
+226.0,
+261.0
+],
+[
+346.0,
+394.0
+],
+[
+415.0,
+671.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.013,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000022.edf": {
+"duration_s": 731.0,
+"as_is": {
+"ictal": [
+[
+686.0,
+701.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.05,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+252.0,
+277.0
+],
+[
+298.0,
+316.0
+],
+[
+396.0,
+427.0
+],
+[
+460.0,
+498.0
+],
+[
+504.0,
+537.0
+],
+[
+578.0,
+605.0
+],
+[
+681.0,
+715.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.146,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000024.edf": {
+"duration_s": 672.0,
+"as_is": {
+"ictal": [
+[
+3.0,
+18.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.785,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+3.0,
+18.0
+],
+[
+237.0,
+290.0
+],
+[
+316.0,
+370.0
+],
+[
+376.0,
+395.0
+],
+[
+429.0,
+522.0
+],
+[
+524.0,
+556.0
+],
+[
+576.0,
+604.0
+],
+[
+612.0,
+640.0
+],
+[
+644.0,
+671.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.916,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000026.edf": {
+"duration_s": 676.0,
+"as_is": {
+"ictal": [
+[
+402.0,
+462.0
+],
+[
+493.0,
+512.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.011,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+255.0,
+275.0
+],
+[
+388.0,
+410.0
+],
+[
+418.0,
+566.0
+],
+[
+596.0,
+612.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.014,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000027.edf": {
+"duration_s": 704.0,
+"as_is": {
+"ictal": [
+[
+26.0,
+54.0
+],
+[
+126.0,
+255.0
+],
+[
+260.0,
+281.0
+],
+[
+287.0,
+304.0
+],
+[
+390.0,
+415.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml",
+"lrda"
+],
+"record_probability": 0.195,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+26.0,
+54.0
+],
+[
+126.0,
+214.0
+],
+[
+230.0,
+281.0
+],
+[
+285.0,
+306.0
+],
+[
+389.0,
+416.0
+],
+[
+448.0,
+462.0
+],
+[
+479.0,
+498.0
+],
+[
+541.0,
+561.0
+],
+[
+597.0,
+616.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml",
+"lrda"
+],
+"record_probability": 0.179,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000030.edf": {
+"duration_s": 721.0,
+"as_is": {
+"ictal": [
+[
+540.0,
+555.0
+],
+[
+636.0,
+652.0
+],
+[
+694.0,
+708.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.056,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+501.0,
+524.0
+],
+[
+526.0,
+566.0
+],
+[
+568.0,
+584.0
+],
+[
+590.0,
+609.0
+],
+[
+628.0,
+666.0
+],
+[
+693.0,
+720.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.271,
+"abnormal": true
+}
+},
+"data/openneuro/ds003775/sub-001/ses-t1/eeg/sub-001_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.032,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.021,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-002/ses-t1/eeg/sub-002_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.123,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.018,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-003/ses-t1/eeg/sub-003_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.04,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.008,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-004/ses-t1/eeg/sub-004_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"spike"
+],
+"record_probability": 0.241,
+"abnormal": true
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"spike"
+],
+"record_probability": 0.11,
+"abnormal": true
+}
+},
+"data/openneuro/ds003775/sub-005/ses-t1/eeg/sub-005_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [
+[
+18.0,
+33.0
+],
+[
+35.0,
+55.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.041,
+"abnormal": false
+},
+"gaps": {
+"ictal": [
+[
+18.0,
+33.0
+],
+[
+35.0,
+55.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-006/ses-t1/eeg/sub-006_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.012,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.007,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-007/ses-t1/eeg/sub-007_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [
+[
+66.0,
+83.0
+],
+[
+106.0,
+131.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.006,
+"abnormal": false
+},
+"gaps": {
+"ictal": [
+[
+111.0,
+127.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.009,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-008/ses-t1/eeg/sub-008_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.025,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-009/ses-t1/eeg/sub-009_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"focal_slowing",
+"spike"
+],
+"record_probability": 0.01,
+"abnormal": true
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-010/ses-t1/eeg/sub-010_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.018,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+}
+},
+"new": {
+"data/nmt/normal/0000007.edf": {
+"duration_s": 828.0,
+"as_is": {
+"ictal": [
+[
+2.0,
+16.0
+],
+[
+420.0,
+434.0
+],
+[
+444.0,
+522.0
+],
+[
+530.0,
+556.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.024,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+2.0,
+16.0
+],
+[
+419.0,
+501.0
+],
+[
+508.0,
+591.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.109,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000011.edf": {
+"duration_s": 773.0,
+"as_is": {
+"ictal": [
+[
+376.0,
+399.0
+],
+[
+466.0,
+484.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml",
+"lpds"
+],
+"record_probability": 0.046,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+377.0,
+399.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml",
+"lpds"
+],
+"record_probability": 0.046,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000014.edf": {
+"duration_s": 321.0,
+"as_is": {
+"ictal": [
+[
+82.0,
+99.0
+],
+[
+264.0,
+295.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.096,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+82.0,
+98.0
+],
+[
+264.0,
+296.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.097,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000016.edf": {
+"duration_s": 964.0,
+"as_is": {
+"ictal": [
+[
+57.0,
+79.0
+],
+[
+321.0,
+425.0
+],
+[
+447.0,
+517.0
+],
+[
+556.0,
+601.0
+],
+[
+628.0,
+673.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.15,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+57.0,
+79.0
+],
+[
+321.0,
+425.0
+],
+[
+447.0,
+537.0
+],
+[
+549.0,
+582.0
+],
+[
+627.0,
+673.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.171,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000021.edf": {
+"duration_s": 672.0,
+"as_is": {
+"ictal": [
+[
+1.0,
+25.0
+],
+[
+131.0,
+153.0
+],
+[
+229.0,
+250.0
+],
+[
+346.0,
+365.0
+],
+[
+431.0,
+484.0
+],
+[
+519.0,
+555.0
+],
+[
+563.0,
+577.0
+],
+[
+638.0,
+671.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.019,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+1.0,
+25.0
+],
+[
+131.0,
+153.0
+],
+[
+229.0,
+251.0
+],
+[
+346.0,
+378.0
+],
+[
+415.0,
+491.0
+],
+[
+495.0,
+559.0
+],
+[
+561.0,
+599.0
+],
+[
+638.0,
+671.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.017,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000022.edf": {
+"duration_s": 731.0,
+"as_is": {
+"ictal": [
+[
+686.0,
+701.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.05,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+402.0,
+418.0
+],
+[
+479.0,
+493.0
+],
+[
+508.0,
+523.0
+],
+[
+687.0,
+702.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.048,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000024.edf": {
+"duration_s": 672.0,
+"as_is": {
+"ictal": [
+[
+3.0,
+18.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.785,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+3.0,
+18.0
+],
+[
+505.0,
+521.0
+],
+[
+647.0,
+663.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.784,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000026.edf": {
+"duration_s": 676.0,
+"as_is": {
+"ictal": [
+[
+402.0,
+462.0
+],
+[
+493.0,
+512.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.011,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+394.0,
+410.0
+],
+[
+418.0,
+473.0
+],
+[
+493.0,
+512.0
+],
+[
+520.0,
+542.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.033,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000027.edf": {
+"duration_s": 704.0,
+"as_is": {
+"ictal": [
+[
+26.0,
+54.0
+],
+[
+126.0,
+255.0
+],
+[
+260.0,
+281.0
+],
+[
+287.0,
+304.0
+],
+[
+390.0,
+415.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml",
+"lrda"
+],
+"record_probability": 0.195,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+26.0,
+54.0
+],
+[
+126.0,
+214.0
+],
+[
+234.0,
+254.0
+],
+[
+259.0,
+281.0
+],
+[
+286.0,
+305.0
+],
+[
+390.0,
+415.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml",
+"lrda"
+],
+"record_probability": 0.162,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000030.edf": {
+"duration_s": 721.0,
+"as_is": {
+"ictal": [
+[
+540.0,
+555.0
+],
+[
+636.0,
+652.0
+],
+[
+694.0,
+708.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.056,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+506.0,
+520.0
+],
+[
+540.0,
+555.0
+],
+[
+636.0,
+652.0
+],
+[
+694.0,
+720.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.053,
+"abnormal": true
+}
+},
+"data/openneuro/ds003775/sub-001/ses-t1/eeg/sub-001_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.032,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.021,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-002/ses-t1/eeg/sub-002_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.123,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.018,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-003/ses-t1/eeg/sub-003_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.04,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.008,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-004/ses-t1/eeg/sub-004_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"spike"
+],
+"record_probability": 0.241,
+"abnormal": true
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"spike"
+],
+"record_probability": 0.11,
+"abnormal": true
+}
+},
+"data/openneuro/ds003775/sub-005/ses-t1/eeg/sub-005_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [
+[
+18.0,
+33.0
+],
+[
+35.0,
+55.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.041,
+"abnormal": false
+},
+"gaps": {
+"ictal": [
+[
+18.0,
+33.0
+],
+[
+35.0,
+55.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-006/ses-t1/eeg/sub-006_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.012,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.007,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-007/ses-t1/eeg/sub-007_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [
+[
+66.0,
+83.0
+],
+[
+106.0,
+131.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.006,
+"abnormal": false
+},
+"gaps": {
+"ictal": [
+[
+111.0,
+127.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.009,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-008/ses-t1/eeg/sub-008_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.025,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-009/ses-t1/eeg/sub-009_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"focal_slowing",
+"spike"
+],
+"record_probability": 0.01,
+"abnormal": true
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-010/ses-t1/eeg/sub-010_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.018,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.017,
+"abnormal": false
+}
+}
+},
+"new2": {
+"data/nmt/normal/0000007.edf": {
+"duration_s": 828.0,
+"as_is": {
+"ictal": [
+[
+2.0,
+16.0
+],
+[
+420.0,
+434.0
+],
+[
+444.0,
+522.0
+],
+[
+530.0,
+556.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.024,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+2.0,
+16.0
+],
+[
+420.0,
+500.0
+],
+[
+526.0,
+578.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.109,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000011.edf": {
+"duration_s": 773.0,
+"as_is": {
+"ictal": [
+[
+376.0,
+399.0
+],
+[
+466.0,
+484.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml",
+"lpds"
+],
+"record_probability": 0.046,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+377.0,
+399.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml",
+"lpds"
+],
+"record_probability": 0.046,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000014.edf": {
+"duration_s": 321.0,
+"as_is": {
+"ictal": [
+[
+82.0,
+99.0
+],
+[
+264.0,
+295.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.096,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+82.0,
+98.0
+],
+[
+264.0,
+295.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.082,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000016.edf": {
+"duration_s": 964.0,
+"as_is": {
+"ictal": [
+[
+57.0,
+79.0
+],
+[
+321.0,
+425.0
+],
+[
+447.0,
+517.0
+],
+[
+556.0,
+601.0
+],
+[
+628.0,
+673.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.15,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+57.0,
+79.0
+],
+[
+321.0,
+425.0
+],
+[
+447.0,
+537.0
+],
+[
+549.0,
+582.0
+],
+[
+628.0,
+673.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.181,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000021.edf": {
+"duration_s": 672.0,
+"as_is": {
+"ictal": [
+[
+1.0,
+25.0
+],
+[
+131.0,
+153.0
+],
+[
+229.0,
+250.0
+],
+[
+346.0,
+365.0
+],
+[
+431.0,
+484.0
+],
+[
+519.0,
+555.0
+],
+[
+563.0,
+577.0
+],
+[
+638.0,
+671.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.019,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+1.0,
+25.0
+],
+[
+131.0,
+153.0
+],
+[
+229.0,
+250.0
+],
+[
+346.0,
+378.0
+],
+[
+429.0,
+491.0
+],
+[
+495.0,
+559.0
+],
+[
+561.0,
+599.0
+],
+[
+638.0,
+671.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.019,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000022.edf": {
+"duration_s": 731.0,
+"as_is": {
+"ictal": [
+[
+686.0,
+701.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.05,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+402.0,
+418.0
+],
+[
+687.0,
+701.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.051,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000024.edf": {
+"duration_s": 672.0,
+"as_is": {
+"ictal": [
+[
+3.0,
+18.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.785,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+3.0,
+18.0
+],
+[
+505.0,
+521.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.773,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000026.edf": {
+"duration_s": 676.0,
+"as_is": {
+"ictal": [
+[
+402.0,
+462.0
+],
+[
+493.0,
+512.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.011,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+394.0,
+409.0
+],
+[
+428.0,
+472.0
+],
+[
+493.0,
+512.0
+]
+],
+"codes": [
+"burst_suppression",
+"ictal_ml"
+],
+"record_probability": 0.014,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000027.edf": {
+"duration_s": 704.0,
+"as_is": {
+"ictal": [
+[
+26.0,
+54.0
+],
+[
+126.0,
+255.0
+],
+[
+260.0,
+281.0
+],
+[
+287.0,
+304.0
+],
+[
+390.0,
+415.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml",
+"lrda"
+],
+"record_probability": 0.195,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+26.0,
+54.0
+],
+[
+126.0,
+214.0
+],
+[
+235.0,
+254.0
+],
+[
+259.0,
+281.0
+],
+[
+287.0,
+305.0
+],
+[
+390.0,
+415.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml",
+"lrda"
+],
+"record_probability": 0.125,
+"abnormal": true
+}
+},
+"data/nmt/normal/0000030.edf": {
+"duration_s": 721.0,
+"as_is": {
+"ictal": [
+[
+540.0,
+555.0
+],
+[
+636.0,
+652.0
+],
+[
+694.0,
+708.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.056,
+"abnormal": true
+},
+"gaps": {
+"ictal": [
+[
+540.0,
+555.0
+],
+[
+636.0,
+651.0
+],
+[
+694.0,
+708.0
+]
+],
+"codes": [
+"burst_suppression",
+"diffuse_slowing",
+"ictal_ml"
+],
+"record_probability": 0.054,
+"abnormal": true
+}
+},
+"data/openneuro/ds003775/sub-001/ses-t1/eeg/sub-001_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.032,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.032,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-002/ses-t1/eeg/sub-002_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.123,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.072,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-003/ses-t1/eeg/sub-003_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.04,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.041,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-004/ses-t1/eeg/sub-004_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"spike"
+],
+"record_probability": 0.241,
+"abnormal": true
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"spike"
+],
+"record_probability": 0.082,
+"abnormal": true
+}
+},
+"data/openneuro/ds003775/sub-005/ses-t1/eeg/sub-005_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [
+[
+18.0,
+33.0
+],
+[
+35.0,
+55.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.041,
+"abnormal": false
+},
+"gaps": {
+"ictal": [
+[
+18.0,
+33.0
+],
+[
+35.0,
+55.0
+],
+[
+95.0,
+114.0
+],
+[
+166.0,
+190.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.044,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-006/ses-t1/eeg/sub-006_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.012,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.012,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-007/ses-t1/eeg/sub-007_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [
+[
+66.0,
+83.0
+],
+[
+106.0,
+131.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.006,
+"abnormal": false
+},
+"gaps": {
+"ictal": [
+[
+107.0,
+131.0
+],
+[
+181.0,
+211.0
+]
+],
+"codes": [
+"ictal_ml",
+"spike"
+],
+"record_probability": 0.007,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-008/ses-t1/eeg/sub-008_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.025,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike"
+],
+"record_probability": 0.025,
+"abnormal": false
+}
+},
+"data/openneuro/ds003775/sub-009/ses-t1/eeg/sub-009_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"diffuse_slowing",
+"focal_slowing",
+"spike"
+],
+"record_probability": 0.01,
+"abnormal": true
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"focal_slowing",
+"spike"
+],
+"record_probability": 0.01,
+"abnormal": true
+}
+},
+"data/openneuro/ds003775/sub-010/ses-t1/eeg/sub-010_ses-t1_task-resteyesc_eeg.edf": {
+"duration_s": 240.0,
+"as_is": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.018,
+"abnormal": false
+},
+"gaps": {
+"ictal": [],
+"codes": [
+"spike",
+"wicket"
+],
+"record_probability": 0.018,
+"abnormal": false
+}
+}
+}
+}
