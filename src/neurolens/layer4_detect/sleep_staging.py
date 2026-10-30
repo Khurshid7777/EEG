@@ -13,6 +13,7 @@ kept as a reference.
 from __future__ import annotations
 
 import json
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -83,17 +84,31 @@ def epoch_features(frontal: np.ndarray, parietal: np.ndarray, eog: np.ndarray | 
     return np.column_stack(blocks), names
 
 
-def standardise_and_context(F: np.ndarray, names: list[str], context: int = CONTEXT) -> tuple[np.ndarray, list[str]]:
-    """Per-night robust z-score (median / IQR) + neighbouring epochs (edge-padded)."""
-    med = np.median(F, axis=0)
-    iqr = np.subtract(*np.percentile(F, [75, 25], axis=0))
-    Z = (F - med) / np.where(iqr > 1e-9, iqr, 1.0)
+def standardise_and_context(F: np.ndarray, names: list[str], context: int = CONTEXT,
+                            absolute: tuple[str, ...] = ()) -> tuple[np.ndarray, list[str]]:
+    """Per-night robust z-score (median / IQR) + neighbouring epochs (edge-padded). Epochs with
+    missing samples (NaN features, e.g. gaps in home PSG) are left out of the median / IQR and stay
+    missing for the trees (increment 52: one NaN epoch used to blank the column for the whole night).
+    ``absolute``: raw features appended un-standardised (``name@abs``; absolute amplitude, increment 52)."""
+    with warnings.catch_warnings(), np.errstate(all="ignore"):
+        warnings.simplefilter("ignore", RuntimeWarning)  # an all-NaN column stays missing
+        med = np.nanmedian(F, axis=0)
+        iqr = np.subtract(*np.nanpercentile(F, [75, 25], axis=0))
+        Z = (F - med) / np.where(iqr > 1e-9, iqr, 1.0)
     cols, out_names = [], []
     for k in range(-context, context + 1):
         idx = np.clip(np.arange(len(Z)) + k, 0, len(Z) - 1)
         cols.append(Z[idx])
         out_names += [f"{n}@{k:+d}" for n in names]
+    if absolute:
+        cols.append(F[:, [names.index(n) for n in absolute]])
+        out_names += [f"{n}@abs" for n in absolute]
     return np.hstack(cols), out_names
+
+
+def absolute_features(model_feature_names: list[str]) -> tuple[str, ...]:
+    """The raw features a model was trained with (``name@abs`` columns)."""
+    return tuple(n.removesuffix("@abs") for n in model_feature_names if n.endswith("@abs"))
 
 
 # ---------------------------------------------------------------------------
@@ -316,7 +331,8 @@ def _stage_sleep_period(F: np.ndarray, names: list[str], model) -> tuple[np.ndar
     (5-min smoothed sleep probability > 0.5); pass 2 re-standardises and stages only
     that window (the longest sleep block, gaps < 30 min bridged); epochs outside it are wake. Without the second pass a ~20-h recording
     with long daytime wake was standardised over the wrong distribution."""
-    X, _ = standardise_and_context(F, names)
+    ab = absolute_features(getattr(model, "feature_names", []))
+    X, _ = standardise_and_context(F, names, absolute=ab)
     p1 = model.predict_proba(X)
     sleep_p = 1.0 - p1[:, STAGES.index("W")]
     smooth = np.convolve(sleep_p, np.ones(SLEEP_SMOOTH_EPOCHS) / SLEEP_SMOOTH_EPOCHS, mode="same")
@@ -342,7 +358,7 @@ def _stage_sleep_period(F: np.ndarray, names: list[str], model) -> tuple[np.ndar
     b = min(len(F), s1 + WINDOW_PAD_EPOCHS)
     if b - a < 2 * CONTEXT + 1 or (a == 0 and b == len(F)):
         return p1, (a, b)
-    Xw, _ = standardise_and_context(F[a:b], names)
+    Xw, _ = standardise_and_context(F[a:b], names, absolute=ab)
     proba = np.zeros_like(p1)
     proba[:, STAGES.index("W")] = 1.0
     proba[a:b] = model.predict_proba(Xw)

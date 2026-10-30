@@ -78,9 +78,7 @@ def centres(out: Path) -> dict:
 def design_b(night):
     from neurolens.layer4_detect.sleep_staging import standardise_and_context
 
-    X, names = standardise_and_context(night.F, night.names)
-    sel = [night.names.index(n) for n in ABS]
-    return np.hstack([X, night.F[:, sel]]), names + [f"{n}@abs" for n in ABS]
+    return standardise_and_context(night.F, night.names, absolute=ABS)
 
 
 def _matrix(nights, design):

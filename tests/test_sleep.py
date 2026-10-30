@@ -507,3 +507,17 @@ def test_monitor_reports_detector_and_warns_on_few_eeg_channels(tmp_path, demo_e
     assert not ok.warnings and ok.seizure_detector.endswith("realtime_v2.json")
     neo = RealtimeMonitor(config=configs, patient=PatientInfo(postmenstrual_age_weeks=40))
     assert neo._ml_name.endswith("realtime_neo3.json") and neo.channels  # increment 30
+
+
+def test_standardise_ignores_missing_epochs_and_appends_absolute():
+    """Increment 52: one NaN epoch must not blank a feature for the whole night; raw columns on request."""
+    from neurolens.layer4_detect.sleep_staging import absolute_features, standardise_and_context
+
+    rng = np.random.default_rng(0)
+    F = rng.normal(size=(50, 2))
+    F[7, 0] = np.nan
+    X, names = standardise_and_context(F, ["a", "b"], context=0, absolute=("b",))
+    assert names == ["a@+0", "b@+0", "b@abs"]
+    assert np.isnan(X[7, 0]) and np.isfinite(np.delete(X[:, 0], 7)).all()
+    assert np.allclose(X[:, 2], F[:, 1])
+    assert absolute_features(names) == ("b",)
