@@ -30,3 +30,22 @@ def test_gap_epochs_hold_the_baseline():
     assert np.abs(bg[211:, 0] - b[211:, 0]).max() < 0.05
     # streaming state: a gap epoch at the end of a chunk does not move the EMA
     assert np.allclose(ema_next(np.array([3.0]), np.array([np.log(1e-6)])), [3.0])
+
+
+def test_filters_keep_gaps_zero_and_do_not_smear_them():
+    from neurolens.contracts.config import FilterConfig
+    from neurolens.contracts.signal import UnifiedSignal
+    from neurolens.layer2_preprocess.filters import apply_filters
+
+    fs = 200.0
+    x = np.random.default_rng(2).normal(0, 20, (2, int(120 * fs)))
+    g = x.copy()
+    g[0, int(60 * fs):int(70 * fs)] = np.nan
+    mk = lambda d: UnifiedSignal(signal=d.astype(np.float32), sampling_rate_hz=fs, channel_names=["C3", "C4"])
+    cfg = FilterConfig()
+    fx, fg = apply_filters(mk(x), cfg).signal, apply_filters(mk(g), cfg).signal
+    assert np.allclose(fg[1], fx[1], atol=1e-3)                    # untouched channel: as before
+    assert np.all(fg[0, int(60 * fs):int(70 * fs)] == 0)           # the gap stays empty
+    # no step smeared into the signal a few seconds before the gap
+    seg = slice(int(50 * fs), int(57 * fs))
+    assert np.abs(fg[0, seg] - fx[0, seg]).max() < 0.05 * np.abs(fx[0, seg]).max()

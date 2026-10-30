@@ -22,22 +22,41 @@ def _sos_filtfilt_bandpass(
     return filtfilt(b, a, data, axis=-1)
 
 
+def _filter_segments(raw: np.ndarray, finite: np.ndarray, run, min_len: int) -> np.ndarray:
+    """Signal gaps (NaN): each channel's finite stretches are filtered separately and the gaps stay
+    zero (increment 53). Filtering through a zero-filled gap smeared a step over the neighbouring
+    seconds, which shifted the detectors' running baselines. Stretches shorter than ``min_len`` are
+    zeroed (too short to filter)."""
+    out = np.zeros_like(raw)
+    for c in range(raw.shape[0]):
+        m = np.concatenate([[False], finite[c], [False]])
+        edges = np.flatnonzero(m[1:] != m[:-1])
+        for a, b in zip(edges[::2], edges[1::2]):
+            if b - a >= min_len:
+                out[c, a:b] = run(raw[c:c + 1, a:b])[0]
+    return out
+
+
 def apply_filters(sig: UnifiedSignal, cfg: FilterConfig) -> UnifiedSignal:
     """Return a copy of ``sig`` with band-pass + optional notch applied.
 
     Non-finite samples are zeroed before filtering to keep filtfilt stable.
     """
     fs = sig.sampling_rate_hz
-    data = np.nan_to_num(sig.signal.astype(np.float64), copy=True)
+    raw = sig.signal.astype(np.float64)
 
-    data = _sos_filtfilt_bandpass(
-        data, fs, cfg.highpass_hz, cfg.lowpass_hz, cfg.filter_order
-    )
+    def run(x: np.ndarray) -> np.ndarray:
+        x = _sos_filtfilt_bandpass(x, fs, cfg.highpass_hz, cfg.lowpass_hz, cfg.filter_order)
+        if cfg.notch_enabled and cfg.notch_hz < fs / 2.0:
+            b, a = iirnotch(cfg.notch_hz / (fs / 2.0), Q=30.0)
+            x = filtfilt(b, a, x, axis=-1)
+        return x
 
-    if cfg.notch_enabled and cfg.notch_hz < fs / 2.0:
-        w0 = cfg.notch_hz / (fs / 2.0)
-        b, a = iirnotch(w0, Q=30.0)
-        data = filtfilt(b, a, data, axis=-1)
+    finite = np.isfinite(raw)
+    if finite.all():
+        data = run(raw)
+    else:
+        data = _filter_segments(raw, finite, run, min_len=int(2 * fs))
 
     flags = list(sig.quality.flags)
     flags.append(
