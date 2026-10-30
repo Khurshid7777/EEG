@@ -61,3 +61,35 @@ class WfdbIngestor(Ingestor):
             provenance=Provenance(digitized=False, confidence=1.0, source_file=path.name,
                                   pipeline_version="0.1.0"),
         )
+
+
+def read_annotations(path: str | Path) -> list[tuple[int, int, str]]:
+    """WFDB annotation file in MIT format -> [(sample, type code, aux string)] (increment 52; e.g. the
+    sleep-stage notes of the PhysioNet/CinC Challenge 2018 ``.arousal`` files). 16-bit little-endian
+    words: high 6 bits the code, low 10 bits the sample interval; codes 59 (SKIP: 32-bit interval
+    follows), 60-62 (NUM / SUB / CHN modifiers) and 63 (AUX: string of the given length follows)
+    attach to the current annotation."""
+    b = Path(path).read_bytes()
+    out, t, i = [], 0, 0
+    while i + 1 < len(b):
+        w = b[i] | (b[i + 1] << 8)
+        i += 2
+        code, val = w >> 10, w & 0x3FF
+        if code == 0 and val == 0:
+            break
+        if code == 59:  # SKIP: PDP-11 long (high word first)
+            hi = b[i] | (b[i + 1] << 8)
+            lo = b[i + 2] | (b[i + 3] << 8)
+            skip = (hi << 16) | lo
+            t += skip - (1 << 32) if skip >= 1 << 31 else skip
+            i += 4
+        elif code == 63:  # AUX
+            if out:
+                out[-1] = (out[-1][0], out[-1][1], b[i:i + val].split(b"\0")[0].decode("latin-1"))
+            i += val + (val & 1)
+        elif code in (60, 61, 62):
+            continue
+        else:
+            t += val
+            out.append((t, code, ""))
+    return out
