@@ -16,6 +16,7 @@ parasagittal_model: configs/models/sleep_stager_clinical_v1.json
 # CAP-trained stager (configs/models/sleep_stager_aasm_v1.json) gave kappa 0.49 < 0.60 on BOAS
 # (OpenNeuro ds005555, 128 nights) -> aasm_model stays unset (docs/increment49_report.md, D91).
 # Increment 50: v2 trained on AASM scoring (ds007181) - EESM19 0.56, BOAS 0.53 < 0.60 -> still unset (D92).
+# Increment 51: v3 trained on 3 centres (265 nights) - HMC 0.58 (CI 0.56-0.60) < 0.60 -> still unset (D93).
 provenance:
   preregistration: docs/preregistration_increment13.md
   report: docs/increment13_report.md
