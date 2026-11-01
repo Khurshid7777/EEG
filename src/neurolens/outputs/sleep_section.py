@@ -28,6 +28,13 @@ _VALIDATION = {
            "при нарушении поведения в фазе REM точность ниже",
         uz="klinik hosilalar modeli uyqu buzilishi bo‘lgan bemorlarda tekshirilgan (kappa 0.71); "
            "REM fazasidagi xulq buzilishida aniqlik pastroq"),
+    # increment 52 (D94): clinical PSG of another centre; increment 54: the N2/N3 boundary differs between
+    # scoring centres (BOAS: kappa 0.54 -> 0.70 with N2 and N3 merged)
+    "aasm": Bilingual(
+        ru="модель для стандартного монтажа ПСГ проверена на клинических ПСГ другого центра (каппа 0.62 "
+           "с экспертами); доля N3 зависит от школы разметки — граница N2/N3 у разных центров различается",
+        uz="standart PSG montaji modeli boshqa markazning klinik PSG’larida tekshirilgan (ekspertlar bilan "
+           "kappa 0.62); N3 ulushi baholash maktabiga bog‘liq — N2/N3 chegarasi markazlarda farq qiladi"),
 }
 _ORDER = ("W", "REM", "N1", "N2", "N3")  # hypnogram rows, top to bottom
 _LEVEL = {s: i for i, s in enumerate(_ORDER)}

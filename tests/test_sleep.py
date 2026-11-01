@@ -370,6 +370,10 @@ def test_sleep_section_text_protocol_and_hypnogram(tmp_path):
     assert "каппа 0.71" in txt.ru and "N1" in txt.ru  # validation basis + N1 caveat stated
     p = plot_hypnogram(sl, tmp_path / "h.png")
     assert p.exists() and p.stat().st_size > 1000
+    # AASM montage (D94): its own validation basis, not the healthy-adult midline kappa (increment 54)
+    aasm = sleep_text({**sl, "derivations": "aasm"})
+    assert "каппа 0.62" in aasm.ru and "каппа 0.71" not in aasm.ru and "N2/N3" in aasm.ru
+    assert "kappa 0.62" in aasm.uz
 
 
 def test_pipeline_outputs_include_sleep(demo_edf, configs, tmp_path, monkeypatch):
