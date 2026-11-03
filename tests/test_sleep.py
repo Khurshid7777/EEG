@@ -373,7 +373,9 @@ def test_sleep_section_text_protocol_and_hypnogram(tmp_path):
     # AASM montage (D94): its own validation basis, not the healthy-adult midline kappa (increment 54)
     aasm = sleep_text({**sl, "derivations": "aasm"})
     assert "каппа 0.62" in aasm.ru and "каппа 0.71" not in aasm.ru and "N2/N3" in aasm.ru
-    assert "kappa 0.62" in aasm.uz
+    assert "kappa 0.62" in aasm.uz and "сглажена" not in aasm.ru
+    smoothed = sleep_text({**sl, "derivations": "aasm", "hypnogram_unsmoothed": sl["hypnogram"]})
+    assert "сглажена" in smoothed.ru and "фрагментация" in smoothed.ru and "tekislangan" in smoothed.uz
 
 
 def test_pipeline_outputs_include_sleep(demo_edf, configs, tmp_path, monkeypatch):

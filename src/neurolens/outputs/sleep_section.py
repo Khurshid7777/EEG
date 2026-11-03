@@ -52,6 +52,12 @@ def sleep_text(sleep: dict) -> Bilingual:
     eff_s = "—" if eff is None else f"{100 * float(eff):.0f}%"
     stages_ru = ", ".join(f"{k} {float(pct.get(k, 0)):.0f}%" for k in ("N1", "N2", "N3", "REM"))
     val = _VALIDATION.get(sleep.get("derivations", "midline"), _VALIDATION["midline"])
+    if "hypnogram_unsmoothed" in sleep:  # increment 55: transition-smoothed AASM hypnogram
+        val = Bilingual(
+            ru=val.ru + "; гипнограмма сглажена по переходам между стадиями (каппа 0.63): кратковременные "
+                        "пробуждения и фрагментация сна могут быть скрыты — при подозрении на них смотрите запись",
+            uz=val.uz + "; gipnogramma bosqichlar o‘tishi bo‘yicha tekislangan (kappa 0.63): qisqa uyg‘onishlar "
+                        "va uyqu fragmentatsiyasi yashirilishi mumkin — shubha bo‘lsa yozuvni ko‘ring")
     ru = (f"Автоматическое стадирование сна (AASM, эпохи {int(sleep['epoch_s'])} с): время в записи "
           f"{_fmt(s['time_in_bed_min'], ' мин')}, сон {_fmt(s['total_sleep_min'], ' мин')}, эффективность {eff_s}, "
           f"латентность сна {_fmt(s['sleep_latency_min'], ' мин')}, латентность REM {_fmt(s['rem_latency_min'], ' мин')} (до первого REM ≥ 1.5 мин); "

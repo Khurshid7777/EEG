@@ -1,0 +1,39 @@
+{
+ "n_recordings": 150,
+ "errors": [],
+ "kappa_unsmoothed": 0.6129,
+ "kappa_smoothed": 0.6297,
+ "gain": 0.0168,
+ "gain_ci95_by_recording": [
+  0.012,
+  0.0216
+ ],
+ "f1_unsmoothed": {
+  "W": 0.758,
+  "N1": 0.4555,
+  "N2": 0.7734,
+  "N3": 0.7171,
+  "REM": 0.777
+ },
+ "f1_smoothed": {
+  "W": 0.7685,
+  "N1": 0.4298,
+  "N2": 0.7901,
+  "N3": 0.7256,
+  "REM": 0.8069
+ },
+ "f1_drop": {
+  "W": -0.0105,
+  "N1": 0.0257,
+  "N2": -0.0167,
+  "N3": -0.0085,
+  "REM": -0.0299
+ },
+ "stage_changes_per_epoch": {
+  "unsmoothed": 0.1901,
+  "smoothed": 0.065
+ },
+ "H1": true,
+ "guard_ok": true,
+ "decision": "enable_aasm_smoothing"
+}

@@ -21,8 +21,12 @@ parasagittal_model: configs/models/sleep_stager_clinical_v1.json
 # PhysioNet/CinC 2018 (MGH, 150 PSG, one eye channel): kappa 0.62 (CI 0.60-0.64) -> on
 # (docs/preregistration_increment52.md, docs/increment52_report.md, D94).
 aasm_model: configs/models/sleep_stager_aasm_v4.json
+# Increment 55: Viterbi smoothing of the AASM hypnogram by stage transitions of real nights - paired test on
+# 150 fresh CinC 2018 records: kappa 0.613 -> 0.630 (gain 0.017, CI 0.012-0.022) -> on (D97).
+aasm_smoothing: configs/models/sleep_smoothing_aasm_v1.json
 provenance:
   preregistration: docs/preregistration_increment13.md
   report: docs/increment13_report.md
   clinical: docs/preregistration_increment14.md
   aasm: docs/preregistration_increment52.md
+  aasm_smoothing: docs/preregistration_increment55.md
