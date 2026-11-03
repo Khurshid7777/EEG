@@ -29,6 +29,7 @@
 | `record_gbm_v2` / `_noage` | заключение рутинной ЭЭГ | a75dafb950c424a3 / 25b0ef4589e401cb |
 | `sleep_stager_v1` / `clinical_v1` | стадирование сна | 7378512671fdefbb / c3bfcabe0c0f4a29 |
 | `sleep_stager_aasm_v4` | стадирование сна, монтаж AASM (D94) | 3affd3b5bb9c996f |
+| `sleep_smoothing_aasm_v1` | сглаживание гипнограммы AASM по переходам (D97) | be614d1c8c957097 |
 
 * Изменение модели или порога по умолчанию:
   1. пре-регистрация гипотез и правил решения (`docs/preregistration_increment*.md`, коммит до
