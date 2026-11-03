@@ -549,3 +549,48 @@ def test_aasm_sleep_period_bridges_long_awakenings():
     _, w2h = _stage_sleep_period(F, ["x"], Gap(), AASM_BRIDGE_EPOCHS)
     assert w30[0] > 300           # 30-min bridging keeps only one half of the night
     assert w2h[0] < 30 and w2h[1] > 850
+
+
+def test_viterbi_smooth_removes_isolated_flips_and_respects_confident_changes():
+    """Increment 55: transition smoothing."""
+    from neurolens.layer4_detect.sleep_staging import load_smoothing, viterbi_smooth
+
+    sm = load_smoothing("configs/models/sleep_smoothing_aasm_v1.json")
+    A, w = sm["transitions"], sm["weight"]
+    assert np.allclose(A.sum(axis=1), 1.0, atol=1e-4) and A.shape == (5, 5) and w == 0.5
+    n = 60
+    p = np.full((n, 5), 0.02)
+    p[:, 2] = 0.92                                  # N2 throughout, with a weak N1 dip at epoch 30
+    p[30] = [0.05, 0.50, 0.40, 0.03, 0.02]
+    plain = p.argmax(axis=1)
+    assert plain[30] == 1                           # the plain argmax flips
+    assert (viterbi_smooth(p, A, w) == 2).all()     # the transition prior removes it
+    q = p.copy()                                    # a confident, sustained change to N3 is kept
+    q[30:] = [0.01, 0.01, 0.05, 0.92, 0.01]
+    path = viterbi_smooth(q, A, w)
+    assert (path[:28] == 2).all() and (path[32:] == 3).all()
+    assert (viterbi_smooth(p, A, 0.0) == plain).all()   # weight 0 = argmax
+
+
+def test_stage_signal_smoothing_only_on_aasm_path():
+    from neurolens.layer4_detect.sleep_staging import MulticlassTreeModel, load_smoothing, stage_signal
+
+    class Flip:
+        feature_names = ["x@+0"]
+
+        def predict_proba(self, X):
+            p = np.full((len(X), 5), 0.02)
+            p[:, 2] = 0.9
+            p[::7] = [0.05, 0.5, 0.4, 0.03, 0.02]     # periodic weak N1 dips
+            return p
+
+    sm = load_smoothing("configs/models/sleep_smoothing_aasm_v1.json")
+    fs, n = 100.0, 100 * 30 * 200
+    rng = np.random.default_rng(3)
+    names = ["F4", "C4", "O2", "E1", "E2"]
+    data = rng.normal(0, 20, (5, n))
+    out = stage_signal(names, data, fs, Flip(), aasm_model=Flip(), aasm_smoothing=sm)
+    assert out["derivations"] == "aasm" and "hypnogram_unsmoothed" in out
+    assert out["hypnogram_unsmoothed"].count("N1") > out["hypnogram"].count("N1")
+    mid = stage_signal(["Fpz-Cz", "Pz-Oz", "EOG"], rng.normal(0, 20, (3, n)), fs, Flip(), aasm_smoothing=sm)
+    assert "hypnogram_unsmoothed" not in mid        # other montages are unchanged

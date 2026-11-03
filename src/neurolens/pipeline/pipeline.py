@@ -254,7 +254,7 @@ class Pipeline:
             return {"skipped": True,
                     "reason": {"ru": "стадирование сна не применяется: модели проверены только у взрослых",
                                "uz": "uyqu bosqichlash qo‘llanilmaydi: modellar faqat kattalarda tekshirilgan"}}
-        from ..layer4_detect.sleep_staging import MulticlassTreeModel, stage_signal
+        from ..layer4_detect.sleep_staging import MulticlassTreeModel, load_smoothing, stage_signal
 
         if getattr(self, "_sleep_model", None) is None:
             self._sleep_model = MulticlassTreeModel.load(self.cfg.ml_model_path(sc.model))
@@ -262,9 +262,12 @@ class Pipeline:
                                 if sc.parasagittal_model else None)
             self._sleep_aasm = (MulticlassTreeModel.load(self.cfg.ml_model_path(sc.aasm_model))
                                 if sc.aasm_model else None)
+            self._sleep_smooth = (load_smoothing(self.cfg.ml_model_path(sc.aasm_smoothing))
+                                  if sc.aasm_smoothing else None)
         out = stage_signal(signal.channel_names, signal.signal, signal.sampling_rate_hz, self._sleep_model,
                            parasagittal_fallback=sc.parasagittal_fallback,
-                           parasagittal_model=self._sleep_para, aasm_model=self._sleep_aasm)
+                           parasagittal_model=self._sleep_para, aasm_model=self._sleep_aasm,
+                           aasm_smoothing=self._sleep_smooth)
         if out is not None:
             out["model"] = (sc.parasagittal_model if out["derivations"] == "parasagittal" and sc.parasagittal_model
                             else sc.aasm_model if out["derivations"] == "aasm" else sc.model)

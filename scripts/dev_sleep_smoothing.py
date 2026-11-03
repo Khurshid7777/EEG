@@ -6,6 +6,7 @@ The transition matrix of a fold comes from that fold's training centres only.
 
     PYTHONPATH=src python scripts/dev_sleep_smoothing.py fit data/aasm3     # fold models -> probabilities
     PYTHONPATH=src python scripts/dev_sleep_smoothing.py smooth data/aasm3  # weights, per-centre kappa
+    PYTHONPATH=src python scripts/dev_sleep_smoothing.py freeze data/aasm3  # weight 0.5 + transitions of all nights
 """
 
 import argparse
@@ -32,23 +33,6 @@ def transitions(nights) -> np.ndarray:
     return A / A.sum(axis=1, keepdims=True)
 
 
-def viterbi(proba: np.ndarray, A: np.ndarray, beta: float) -> np.ndarray:
-    """argmax_path sum_t log p_t(s_t) + beta * sum_t log A(s_{t-1}, s_t)."""
-    lp, la = np.log(np.maximum(proba, 1e-9)), beta * np.log(A)
-    n = len(lp)
-    score, back = np.empty_like(lp), np.zeros((n, 5), int)
-    score[0] = lp[0]
-    for t in range(1, n):
-        cand = score[t - 1][:, None] + la
-        back[t] = cand.argmax(axis=0)
-        score[t] = lp[t] + cand.max(axis=0)
-    path = np.empty(n, int)
-    path[-1] = score[-1].argmax()
-    for t in range(n - 1, 0, -1):
-        path[t - 1] = back[t, path[t]]
-    return path
-
-
 def fit(out: Path) -> None:
     from neurolens.layer4_detect.sleep_staging import fit_stager
 
@@ -65,6 +49,7 @@ def fit(out: Path) -> None:
 
 def smooth(out: Path) -> dict:
     from neurolens.evaluation.sleep_eval import score
+    from neurolens.layer4_detect.sleep_staging import viterbi_smooth
 
     c = v4.centres(out)
     # local cache written by fit() above
@@ -72,7 +57,7 @@ def smooth(out: Path) -> dict:
     res = {}
     for beta in BETAS:
         for held, f in folds.items():
-            preds = [p.argmax(axis=1) if beta == 0 else viterbi(p, f["A"], beta) for p in f["proba"]]
+            preds = [p.argmax(axis=1) if beta == 0 else viterbi_smooth(p, f["A"], beta) for p in f["proba"]]
             s = score(c[held], preds)
             res[f"beta{beta}_{held}"] = {"kappa": s["kappa"], "f1": s["f1"]}
         res[f"beta{beta}_mean"] = round(float(np.mean([res[f"beta{beta}_{h}"]["kappa"] for h in folds])), 4)
@@ -80,14 +65,28 @@ def smooth(out: Path) -> dict:
     return res
 
 
+def freeze(out: Path, weight: float = 0.5) -> Path:
+    c = v4.centres(out)
+    A = transitions([n for v in c.values() for n in v])
+    path = Path("configs/models/sleep_smoothing_aasm_v1.json")
+    path.write_text(json.dumps({
+        "weight": weight, "stages": ["W", "N1", "N2", "N3", "REM"], "transitions": A.round(6).tolist(),
+        "meta": {"name": "sleep_smoothing_aasm_v1", "nights": {k: len(v) for k, v in c.items()},
+                 "selection": "docs/increment55_dev_smoothing.json: weight 0.5 = best mean leave-one-centre-out kappa "
+                              "(0.610 -> 0.627), gain on every centre"}}, indent=1) + "\n")
+    return path
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["fit", "smooth"])
+    ap.add_argument("cmd", choices=["fit", "smooth", "freeze"])
     ap.add_argument("out")
     a = ap.parse_args()
     out = Path(a.out)
     if a.cmd == "fit":
         fit(out)
+    elif a.cmd == "freeze":
+        print(freeze(out))
     else:
         res = smooth(out)
         (out / "smoothing.json").write_text(json.dumps(res, indent=1) + "\n")

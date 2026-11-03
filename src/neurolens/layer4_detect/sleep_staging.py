@@ -333,6 +333,30 @@ WINDOW_BRIDGE_EPOCHS = WINDOW_PAD_EPOCHS     # wake gaps shorter than this stay 
 AASM_BRIDGE_EPOCHS = int(2 * 3600 / EPOCH_S)
 
 
+def viterbi_smooth(proba: np.ndarray, transitions: np.ndarray, weight: float) -> np.ndarray:
+    """Most probable stage path: argmax sum_t log p_t(s_t) + weight * sum_t log A(s_{t-1}, s_t)
+    (increment 55). ``transitions``: row-stochastic matrix of consecutive epochs from scored nights."""
+    lp = np.log(np.maximum(proba, 1e-9))
+    la = weight * np.log(np.maximum(transitions, 1e-9))
+    n, k = lp.shape
+    score, back = np.empty_like(lp), np.zeros((n, k), dtype=int)
+    score[0] = lp[0]
+    for t in range(1, n):
+        cand = score[t - 1][:, None] + la
+        back[t] = cand.argmax(axis=0)
+        score[t] = lp[t] + cand.max(axis=0)
+    path = np.empty(n, dtype=int)
+    path[-1] = score[-1].argmax()
+    for t in range(n - 1, 0, -1):
+        path[t - 1] = back[t, path[t]]
+    return path
+
+
+def load_smoothing(path: str | Path) -> dict:
+    d = json.loads(Path(path).read_text(encoding="utf-8"))
+    return {"weight": float(d["weight"]), "transitions": np.asarray(d["transitions"], float), "meta": d.get("meta", {})}
+
+
 def _stage_sleep_period(F: np.ndarray, names: list[str], model,
                         bridge_epochs: int | None = None) -> tuple[np.ndarray, tuple[int, int]]:
     """Two passes, matching the training preprocessing (features standardised over the
@@ -377,7 +401,8 @@ def _stage_sleep_period(F: np.ndarray, names: list[str], model,
 def stage_signal(names: list[str], data: np.ndarray, fs: float, model: MulticlassTreeModel,
                  parasagittal_fallback: bool = False,
                  parasagittal_model: MulticlassTreeModel | None = None,
-                 aasm_model: MulticlassTreeModel | None = None) -> dict | None:
+                 aasm_model: MulticlassTreeModel | None = None,
+                 aasm_smoothing: dict | None = None) -> dict | None:
     """Hypnogram + sleep summary for a recording, or None if derivations are missing.
     ``parasagittal_model`` (a stager trained on clinical derivations) replaces ``model``
     when the parasagittal fallback is used; ``aasm_model`` (increment 49) enables the AASM
@@ -407,10 +432,15 @@ def stage_signal(names: list[str], data: np.ndarray, fs: float, model: Multiclas
         names_f = names_f + ["eog_log_slow", "eog_log_fast", "eog_logvar"]
     proba, window = _stage_sleep_period(F, names_f, model, AASM_BRIDGE_EPOCHS if is_aasm else None)
     stages = proba.argmax(axis=1)
+    raw = None
+    if is_aasm and aasm_smoothing is not None:  # increment 55: transitions of real nights, AASM path only
+        raw = stages
+        stages = viterbi_smooth(proba, aasm_smoothing["transitions"], aasm_smoothing["weight"])
     return {
         "analysis_window_epochs": list(window),
         "epoch_s": EPOCH_S,
         "hypnogram": [STAGES[i] for i in stages],
+        **({"hypnogram_unsmoothed": [STAGES[i] for i in raw]} if raw is not None else {}),
         "summary": hypnogram_summary(stages),
         "mean_confidence": round(float(proba.max(axis=1).mean()), 3),
         "derivations": "midline" if midline else ("aasm" if is_aasm else "parasagittal"),

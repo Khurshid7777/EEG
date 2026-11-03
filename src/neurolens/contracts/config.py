@@ -298,6 +298,10 @@ class SleepStagingConfig(BaseModel):
     aasm_model: Optional[str] = Field(
         default=None, description="Stager for the standard AASM PSG montage F4-C4 / C4-O2 (no Fp, Cz, Pz, "
                                   "P4; increment 49); None = such recordings are not staged.")
+    aasm_smoothing: Optional[str] = Field(
+        default=None, description="Stage-transition smoothing (Viterbi) of the AASM-montage hypnogram "
+                                  "(increment 55): JSON with `weight` and a 5x5 `transitions` matrix; "
+                                  "None = the plain per-epoch argmax.")
     provenance: dict = Field(default_factory=dict)
 
 
