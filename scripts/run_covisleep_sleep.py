@@ -36,8 +36,8 @@ MODEL_SHA256 = "3affd3b5bb9c996f56259fe85817065ddc6ee4fbe29a57fd3a81f985e7b102d7
 SMOOTHING = "configs/models/sleep_smoothing_aasm_v1.json"
 SMOOTHING_SHA256 = "be614d1c8c95709734df5bb14d396c08fbd88eff98713f853f4f2fb7841a851f"
 EXCLUDED = {"T1_29"}      # opened before the pre-registration (reader and units check)
-SEED, N_BOOT, WORKERS = 56, 2000, 3
-MAX_OFFSET_S, MAX_MISALIGN_S = 45.0, 1800.0
+SEED, N_BOOT, WORKERS = 56, 2000, 4
+MAX_OFFSET_S, MIN_INSIDE = 45.0, 0.90
 STAGE = {"Wake": 0, "N1": 1, "N2": 2, "N3": 3, "REM": 4}
 STAGES = ["W", "N1", "N2", "N3", "REM"]
 
@@ -69,18 +69,29 @@ def _clock(text: str) -> dt.datetime:
     return dt.datetime.strptime(text.strip(), "%Y-%m-%d %H:%M:%S" if len(text.strip()) > 10 else "%H:%M:%S")
 
 
+def _stage(name: str):
+    n = name.strip()
+    if n in STAGE:
+        return STAGE[n]
+    return 0 if n.lower().endswith("veil") else None   # 'Éveil' (French 'wake'), encoding of the accent varies
+
+
 def parse_hypnogram(text: str) -> tuple[list[tuple[int, int]], dt.datetime]:
-    """[(0-based epoch, stage)] and the wall-clock time of epoch 0. Some files start at a later epoch ID (the
-    first rows have no stage); epoch 0 is therefore the time of any row minus (epoch ID - 1) x 30 s."""
-    rows = list(csv.reader(text.splitlines()))[1:]
+    """[(0-based epoch, stage)] and the wall-clock time of epoch 0. Columns are read by header name. Some files
+    start at a later epoch ID (the first rows have no stage), one file has no 'Epoch ID' column (row order is used):
+    epoch 0 is therefore the time of any row minus (epoch number - 1) x 30 s."""
+    rows = list(csv.reader(text.splitlines()))
+    col = {h.strip(): i for i, h in enumerate(rows[0])}
     lab, t0 = [], None
-    for r in rows:
-        if len(r) < 3:
+    for n, r in enumerate(rows[1:], start=1):
+        if len(r) <= col["Time"]:
             continue
+        k = int(r[col["Epoch ID"]]) if "Epoch ID" in col else n
         if t0 is None:
-            t0 = _clock(r[1]) - dt.timedelta(seconds=30 * (int(r[2]) - 1))
-        if len(r) >= 4 and r[3] in STAGE:
-            lab.append((int(r[2]) - 1, STAGE[r[3]]))
+            t0 = _clock(r[col["Time"]]) - dt.timedelta(seconds=30 * (k - 1))
+        st = _stage(r[col["Sleep Stage"]]) if len(r) > col["Sleep Stage"] else None
+        if st is not None:
+            lab.append((k - 1, st))
     return lab, t0
 
 
@@ -102,7 +113,8 @@ def _one(args) -> dict:
 
     try:
         ann = zipfile.ZipFile(io.BytesIO(ann_bytes))
-        lab, first = parse_hypnogram(ann.read(f"cleaned_csv/{rec}_Hypnogramme.csv").decode("utf-8", "replace"))
+        member = next(n for n in ann.namelist() if n.endswith(f"/{rec}_Hypnogramme.csv") and "checkpoint" not in n)
+        lab, first = parse_hypnogram(ann.read(member).decode("utf-8", "replace"))
         d = tempfile.mkdtemp(prefix="covisleep_")
         try:
             z = _zip(*files["raw_edfs.zip"])
@@ -114,10 +126,11 @@ def _one(args) -> dict:
         finally:
             shutil.rmtree(d, ignore_errors=True)
         dur_ep = sig.duration_s / 30.0
-        if abs(off) > MAX_MISALIGN_S:
-            return {"record": rec, "error": f"annotation start differs from recording start by {off:.0f} s"}
         shift = 0 if abs(off) <= MAX_OFFSET_S else int(round(off / 30.0))
         lab = [(k + shift, c) for k, c in lab]
+        inside = float(np.mean([0 <= k < int(dur_ep) for k, _ in lab])) if lab else 0.0
+        if inside < MIN_INSIDE:
+            return {"record": rec, "error": f"only {inside:.0%} of labelled epochs fall inside the recording (shift {shift})"}
         pipe = Pipeline(provider_pref="template", run_ica=False)
         pipe.cfg.sleep = pipe.cfg.sleep.model_copy(update={"aasm_model": MODEL, "aasm_smoothing": SMOOTHING})
         st = pipe._sleep_staging(sig)

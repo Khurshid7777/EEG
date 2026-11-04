@@ -22,23 +22,41 @@ SPEC_PASS, SPEC_FAIL = 0.72, 0.65
 AGE_BANDS = ((0.0, 2.0), (2.0, 12.0), (12.0, 18.0), (18.0, 60.0), (60.0, 200.0))
 
 
+_STATE: dict = {}
+
+
+def _client():
+    """One NMT client (and its zip directory) per worker process; only the EDF is deleted after each record."""
+    import atexit
+
+    if "c" not in _STATE:
+        from neurolens.datasets.nmt import NMTClient
+
+        _STATE["dir"] = tempfile.mkdtemp(prefix="nmtfresh_")
+        atexit.register(shutil.rmtree, _STATE["dir"], True)
+        c = NMTClient(_STATE["dir"])
+        _STATE["c"], _STATE["recs"] = c, {r.record_id: r for r in c.labels()}
+    return _STATE["c"], _STATE["recs"]
+
+
 def _one(rid: int) -> dict:
-    from neurolens.datasets.nmt import NMTClient
     from neurolens.evaluation.routine_eval import run_record
 
-    cache = tempfile.mkdtemp(prefix="nmtfresh_")
+    path = None
     try:
-        c = NMTClient(cache)
-        rec = next(r for r in c.labels() if r.record_id == rid)
+        c, recs = _client()
+        rec = recs[rid]
         if rec.abnormal:
             return {"record_id": rid, "error": "abnormal record in the fresh list"}
-        row = run_record(c.fetch(c.member_of(rec)), rec)
+        path = c.fetch(c.member_of(rec))
+        row = run_record(path, rec)
         row["age_years"] = rec.age_years
         return row
     except Exception as exc:  # noqa: BLE001 - listed and excluded, as pre-registered
         return {"record_id": rid, "error": repr(exc)}
     finally:
-        shutil.rmtree(cache, ignore_errors=True)
+        if path is not None:
+            Path(path).unlink(missing_ok=True)
 
 
 def _cp(k: int, n: int, alpha: float = 0.05) -> list[float]:
