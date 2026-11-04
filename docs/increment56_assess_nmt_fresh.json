@@ -1,0 +1,56 @@
+{
+ "n_records": 997,
+ "errors": [],
+ "specificity": 0.7192,
+ "ci95": [
+  0.6901,
+  0.7469
+ ],
+ "false_abnormal": 280,
+ "specificity_rules_only": 0.7352,
+ "specificity_model_only": 0.7192,
+ "borderline_rate": 0.4082,
+ "by_age_band": {
+  "0-2": {
+   "n": 91,
+   "specificity": 0.6703,
+   "ci95": [
+    0.5639,
+    0.7653
+   ]
+  },
+  "2-12": {
+   "n": 193,
+   "specificity": 0.7513,
+   "ci95": [
+    0.6841,
+    0.8106
+   ]
+  },
+  "12-18": {
+   "n": 108,
+   "specificity": 0.6759,
+   "ci95": [
+    0.5791,
+    0.7628
+   ]
+  },
+  "18-60": {
+   "n": 521,
+   "specificity": 0.7217,
+   "ci95": [
+    0.6811,
+    0.7598
+   ]
+  },
+  "60-200": {
+   "n": 84,
+   "specificity": 0.7381,
+   "ci95": [
+    0.6307,
+    0.828
+   ]
+  }
+ },
+ "decision": "below_target_kept"
+}

@@ -162,12 +162,12 @@ def _impression_with_validation(imp, icfg, decided_by_record_model: bool | None 
             ind_ru = f" На независимых центрах специфичность {a:.2f}–{b:.2f}."
             ind_uz = f" Mustaqil markazlarda o‘ziga xoslik {a:.2f}–{b:.2f}."
         ru = (f" (Разделение «норма/отклонения» на рутинной ЭЭГ: на {icfg.fresh_n} ранее не использовавшихся нормальных "
-              f"записях того же центра (NMT) специфичность {icfg.fresh_specificity:.2f} "
+              f"записях того же центра (NMT) специфичность {icfg.fresh_specificity:.3f} "
               f"(95% ДИ {lo:.2f}–{hi:.2f}){low_ru}; на оценочной части NMT {icfg.specificity:.2f} / "
               f"{icfg.sensitivity:.2f} — пороги подбирались по этим данным, оценка оптимистична."
               f"{ind_ru} Чувствительность вне NMT не измерена.)")
         uz = (f" (Rutin EEGda «norma/og‘ish» ajratilishi: shu markazning (NMT) avval ishlatilmagan {icfg.fresh_n} ta "
-              f"normal yozuvida o‘ziga xoslik {icfg.fresh_specificity:.2f} "
+              f"normal yozuvida o‘ziga xoslik {icfg.fresh_specificity:.3f} "
               f"(95% CI {lo:.2f}–{hi:.2f}){low_uz}; NMT baholash qismida {icfg.specificity:.2f} / "
               f"{icfg.sensitivity:.2f} — bo‘sag‘alar shu ma'lumotlarga moslangan, baho optimistik."
               f"{ind_uz} NMT dan tashqarida sezgirlik o‘lchanmagan.)")

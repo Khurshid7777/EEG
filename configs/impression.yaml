@@ -8,6 +8,14 @@
 routine_validated: true
 specificity: 0.789  # record_gbm_v2, age-band thresholds, evaluation split, post-hoc (pre-registered v1 single threshold: 0.758)
 sensitivity: 0.800  # (pre-registered v1 single threshold: 0.867)
+# increment 56 (D99, docs/preregistration_increment56.md): pre-registered test on 997 NMT normal records that no
+# earlier increment had opened (same centre). 0.7192 < 0.72 -> "below target", the verdict stays (rule 0.65-0.72).
+# Sensitivity could not be re-tested (no unopened abnormal records) and is not measured outside NMT.
+fresh_specificity: 0.7192
+fresh_ci95: [0.6901, 0.7469]
+fresh_n: 997
+fresh_below_target: true
+independent_specificity: [0.96, 1.00]   # healthy adults, other centres/recorders (increments 20-21, 36)
 # the rules' numbers on the same split (reported when the rules decide: long-term monitoring,
 # neonates excluded, or the record model unavailable) - increment 22, same run
 rule_specificity: 0.768

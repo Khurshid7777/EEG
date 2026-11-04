@@ -598,7 +598,7 @@ def test_fresh_specificity_leads_the_validation_text():
     new = ImpressionConfig(**base, fresh_specificity=0.8, fresh_ci95=(0.77, 0.83), fresh_n=900,
                            independent_specificity=(0.96, 1.0))
     v = _impression_with_validation(imp, new)
-    assert "900" in v.ru and "0.80 (95% ДИ 0.77–0.83)" in v.ru and "оптимистична" in v.ru
+    assert "900" in v.ru and "0.800 (95% ДИ 0.77–0.83)" in v.ru and "оптимистична" in v.ru
     assert "0.96–1.00" in v.ru and "Чувствительность вне NMT не измерена" in v.ru
     assert "avval ishlatilmagan 900" in v.uz and "optimistik" in v.uz
     assert "ниже целевых" not in v.ru
