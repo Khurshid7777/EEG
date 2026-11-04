@@ -342,6 +342,15 @@ class ImpressionConfig(BaseModel):
     routine_validated: bool = False
     specificity: Optional[float] = None
     sensitivity: Optional[float] = None
+    # increment 56 (D99): specificity on NMT normal records no earlier increment had opened
+    # (docs/preregistration_increment56.md); when set, the report text leads with it and marks the
+    # evaluation-split numbers above as post-hoc
+    fresh_specificity: Optional[float] = Field(default=None, ge=0, le=1)
+    fresh_ci95: Optional[tuple[float, float]] = None
+    fresh_n: Optional[int] = Field(default=None, ge=1)
+    fresh_below_target: bool = False
+    # specificity range on independent centres (healthy adults, other recorders); sensitivity there is not measured
+    independent_specificity: Optional[tuple[float, float]] = None
     provenance: dict = Field(default_factory=dict)
     # rules' own numbers on routine EEG, reported when the rules (not the record model) decided
     rule_specificity: Optional[float] = None

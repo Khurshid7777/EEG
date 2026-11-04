@@ -151,7 +151,27 @@ def _impression_with_validation(imp, icfg, decided_by_record_model: bool | None 
         uz = (f" (Xulosa qoidalar asosida; rutin EEGda ularning ko‘rsatkichlari: "
               f"o‘ziga xoslik {icfg.rule_specificity:.2f}, sezgirlik {icfg.rule_sensitivity:.2f}.)")
         return Bilingual(ru=imp.ru + ru, uz=imp.uz + uz)
-    if icfg.routine_validated and icfg.specificity is not None and icfg.sensitivity is not None:
+    if (icfg.routine_validated and icfg.specificity is not None and icfg.sensitivity is not None
+            and icfg.fresh_specificity is not None and icfg.fresh_ci95 is not None and icfg.fresh_n):
+        lo, hi = icfg.fresh_ci95
+        low_ru = " — ниже целевых 0.72" if icfg.fresh_below_target else ""
+        low_uz = " — 0.72 maqsaddan past" if icfg.fresh_below_target else ""
+        ind_ru = ind_uz = ""
+        if icfg.independent_specificity is not None:
+            a, b = icfg.independent_specificity
+            ind_ru = f" На независимых центрах специфичность {a:.2f}–{b:.2f}."
+            ind_uz = f" Mustaqil markazlarda o‘ziga xoslik {a:.2f}–{b:.2f}."
+        ru = (f" (Разделение «норма/отклонения» на рутинной ЭЭГ: на {icfg.fresh_n} ранее не использовавшихся нормальных "
+              f"записях того же центра (NMT) специфичность {icfg.fresh_specificity:.2f} "
+              f"(95% ДИ {lo:.2f}–{hi:.2f}){low_ru}; на оценочной части NMT {icfg.specificity:.2f} / "
+              f"{icfg.sensitivity:.2f} — пороги подбирались по этим данным, оценка оптимистична."
+              f"{ind_ru} Чувствительность вне NMT не измерена.)")
+        uz = (f" (Rutin EEGda «norma/og‘ish» ajratilishi: shu markazning (NMT) avval ishlatilmagan {icfg.fresh_n} ta "
+              f"normal yozuvida o‘ziga xoslik {icfg.fresh_specificity:.2f} "
+              f"(95% CI {lo:.2f}–{hi:.2f}){low_uz}; NMT baholash qismida {icfg.specificity:.2f} / "
+              f"{icfg.sensitivity:.2f} — bo‘sag‘alar shu ma'lumotlarga moslangan, baho optimistik."
+              f"{ind_uz} NMT dan tashqarida sezgirlik o‘lchanmagan.)")
+    elif icfg.routine_validated and icfg.specificity is not None and icfg.sensitivity is not None:
         ru = (f" (Разделение «норма/отклонения» на рутинной ЭЭГ проверено на внешних данных: "
               f"специфичность {icfg.specificity:.2f}, чувствительность {icfg.sensitivity:.2f}.)")
         uz = (f" (Rutin EEGda «norma/og‘ish» ajratilishi tashqi ma'lumotlarda tekshirilgan: "

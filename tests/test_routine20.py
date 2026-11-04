@@ -582,3 +582,25 @@ def test_aubmc_offsets_and_prereg39():
     a = assess(metrics, {"p1/p1_Record1.edf": [(100, 200)]})
     assert a["fa_per_hour_excluding_ambiguous"]["offline-ml-A"] == 0.0
     assert all(a["hypotheses"].values()) and a["decision"] == {"offline_default": "learned_v2", "realtime_default": "learned_v2"}
+
+
+def test_fresh_specificity_leads_the_validation_text():
+    """Increment 56: with a fresh-record test configured, the text leads with it, marks the evaluation-split
+    numbers as post-hoc, and says sensitivity outside NMT is not measured; without it the old wording stays."""
+    from neurolens.contracts.config import ImpressionConfig
+    from neurolens.contracts.report import Bilingual
+    from neurolens.pipeline.pipeline import _impression_with_validation
+
+    imp = Bilingual(ru="Заключение: x.", uz="Xulosa: x.")
+    base = dict(routine_validated=True, specificity=0.79, sensitivity=0.80)
+    old = _impression_with_validation(imp, ImpressionConfig(**base)).ru
+    assert "проверено на внешних данных" in old and "ранее не использовавшихся" not in old
+    new = ImpressionConfig(**base, fresh_specificity=0.8, fresh_ci95=(0.77, 0.83), fresh_n=900,
+                           independent_specificity=(0.96, 1.0))
+    v = _impression_with_validation(imp, new)
+    assert "900" in v.ru and "0.80 (95% ДИ 0.77–0.83)" in v.ru and "оптимистична" in v.ru
+    assert "0.96–1.00" in v.ru and "Чувствительность вне NMT не измерена" in v.ru
+    assert "avval ishlatilmagan 900" in v.uz and "optimistik" in v.uz
+    assert "ниже целевых" not in v.ru
+    low = _impression_with_validation(imp, new.model_copy(update={"fresh_below_target": True}))
+    assert "ниже целевых 0.72" in low.ru and "0.72 maqsaddan past" in low.uz
