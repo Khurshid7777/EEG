@@ -200,11 +200,12 @@ def main() -> int:
         print({k: r[k] for k in ("offset_s", "shift_epochs", "n_ann", "duration_epochs", "derivations")})
         return 0
     out = Path(a.args[0])
+    workers = int(a.args[1]) if len(a.args) > 1 else WORKERS   # a 800 MB EDF needs ~6.5 GB: four workers ran out of memory
     recs = records()
     done = {r["record"] for r in hmc._load(out)} if out.exists() else set()
     todo = [r for r in recs if r not in done]
     print(f"{len(recs)} recordings, {len(todo)} to run", flush=True)
-    with out.open("a") as f, ProcessPoolExecutor(WORKERS) as ex:
+    with out.open("a") as f, ProcessPoolExecutor(workers) as ex:
         for r in ex.map(_one, [(t, files, ann) for t in todo]):
             f.write(json.dumps(r, default=float) + "\n")
             f.flush()
