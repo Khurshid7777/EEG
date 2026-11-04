@@ -10,7 +10,7 @@ resampling is a v2 option).
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 import numpy as np
 import pyedflib
@@ -52,7 +52,11 @@ class EdfIngestor(Ingestor):
         *,
         patient: PatientInfo | None = None,
         context: ClinicalContext | None = None,
+        include: Callable[[str], bool] | None = None,
     ) -> UnifiedSignal:
+        """``include``: optional filter on the normalised channel name; channels it rejects are never read
+        (an 80-channel polysomnogram with 25 slow channels resampled to the EEG rate needs ~10x the memory of
+        its EEG). Default: all channels, as before."""
         path = Path(path)
         # pyedflib rejects e.g. EDF+ headers without the annotation signal (Helsinki
         # eeg50.edf) or a record count beyond the data (CAP brux1.edf): plain EDF then
@@ -62,12 +66,15 @@ class EdfIngestor(Ingestor):
             labels = reader.getSignalLabels()
             sample_rates = [reader.getSampleFrequency(i) for i in range(n)]
             dims = [reader.getPhysicalDimension(i) for i in range(n)]
-            target_fs = float(max(sample_rates))
-
             strip_cz = cz_is_reference(labels)
+            keep = [i for i in range(n)
+                    if include is None or include(normalize_channel_name(labels[i], strip_cz=strip_cz))]
+            if not keep:
+                raise ValueError("EDF: the channel filter rejected every channel")
+            target_fs = float(max(sample_rates[i] for i in keep))
             channel_names: list[str] = []
             channels: list[np.ndarray] = []
-            for i in range(n):
+            for i in keep:
                 raw = reader.readSignal(i)
                 sig_uv = _to_microvolts(np.asarray(raw, dtype=np.float64), dims[i])
                 if sample_rates[i] != target_fs:
@@ -80,6 +87,7 @@ class EdfIngestor(Ingestor):
             flags: list[str] = []
             reference = _guess_reference(labels)
 
+            labels = [labels[i] for i in keep]      # aligned with the rows of ``signal``
             if is_bipolar_recording(labels):
                 signal, channel_names, flags = _from_bipolar(signal, labels)
                 reference = "average_from_bipolar"

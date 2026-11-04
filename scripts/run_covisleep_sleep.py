@@ -40,6 +40,7 @@ SEED, N_BOOT, WORKERS = 56, 2000, 4
 MAX_OFFSET_S, MIN_INSIDE = 45.0, 0.90
 STAGE = {"Wake": 0, "N1": 1, "N2": 2, "N3": 3, "REM": 4}
 STAGES = ["W", "N1", "N2", "N3", "REM"]
+KEEP = {"F3", "F4", "C3", "C4", "O1", "O2", "E1", "E2", "M1", "M2"}   # normalised names; results identical to the full read (checked on T1_29)
 
 
 def _files() -> dict:
@@ -108,7 +109,7 @@ def offset_seconds(first: dt.datetime, start: dt.time) -> float:
 
 def _one(args) -> dict:
     rec, files, ann_bytes = args
-    from neurolens.layer1_ingest.registry import ingest
+    from neurolens.layer1_ingest.edf import EdfIngestor
     from neurolens.pipeline.pipeline import Pipeline
 
     try:
@@ -122,7 +123,7 @@ def _one(args) -> dict:
             with z.open(f"edfs/{rec}_PSG.edf") as src, p.open("wb") as dst:
                 shutil.copyfileobj(src, dst, 1 << 20)
             off = offset_seconds(first, edf_start(p))
-            sig = ingest(p)
+            sig = EdfIngestor().read(p, include=lambda n: n in KEEP)   # EEG/EOG only: the 80-channel files need ~10x the memory
         finally:
             shutil.rmtree(d, ignore_errors=True)
         dur_ep = sig.duration_s / 30.0

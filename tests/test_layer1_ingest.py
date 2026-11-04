@@ -121,3 +121,20 @@ def test_edf_plus_annotations_become_markers(tmp_path):
     assert [(round(m.onset_s), m.text) for m in s.markers] == [(5, "Eyes closed"), (30, "HV")]
     ann = {c.name: c for c in check_recording(p).checks}["annotations"]
     assert ann.status == "ok" and "глаза" in ann.value and "ГВ" in ann.value
+
+
+def test_edf_include_filter_reads_only_selected_channels(demo_edf):
+    """Increment 56: ``include`` skips channels before they are read (memory of 80-channel polysomnograms)."""
+    from neurolens.layer1_ingest.edf import EdfIngestor
+
+    full = EdfIngestor().read(demo_edf)
+    keep = set(full.channel_names[:3])
+    part = EdfIngestor().read(demo_edf, include=lambda n: n in keep)
+    assert part.channel_names == [n for n in full.channel_names if n in keep]
+    idx = [full.channel_names.index(n) for n in part.channel_names]
+    assert part.signal.shape[0] == len(idx) and (part.signal == full.signal[idx]).all()
+    assert part.sampling_rate_hz == full.sampling_rate_hz
+    import pytest
+
+    with pytest.raises(ValueError):
+        EdfIngestor().read(demo_edf, include=lambda n: False)
