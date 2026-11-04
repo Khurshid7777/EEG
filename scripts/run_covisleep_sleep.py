@@ -54,7 +54,7 @@ def _http(url: str) -> bytes:
 def _zip(url: str, size: int) -> zipfile.ZipFile:
     from neurolens.datasets.nmt_events import HttpRangeFile
 
-    return zipfile.ZipFile(io.BufferedReader(HttpRangeFile(url, size), buffer_size=1 << 20))
+    return zipfile.ZipFile(io.BufferedReader(HttpRangeFile(url, size), buffer_size=32 << 20))
 
 
 def records() -> list[str]:
