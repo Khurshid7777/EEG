@@ -64,15 +64,24 @@ def records() -> list[str]:
     return [n for n in names if n not in EXCLUDED]
 
 
+def _clock(text: str) -> dt.datetime:
+    """'YYYY-MM-DD HH:MM:SS' (60 files) or 'HH:MM:SS' (39 files; the date is irrelevant, only the time of day is used)."""
+    return dt.datetime.strptime(text.strip(), "%Y-%m-%d %H:%M:%S" if len(text.strip()) > 10 else "%H:%M:%S")
+
+
 def parse_hypnogram(text: str) -> tuple[list[tuple[int, int]], dt.datetime]:
+    """[(0-based epoch, stage)] and the wall-clock time of epoch 0. Some files start at a later epoch ID (the
+    first rows have no stage); epoch 0 is therefore the time of any row minus (epoch ID - 1) x 30 s."""
     rows = list(csv.reader(text.splitlines()))[1:]
-    lab, first = [], None
+    lab, t0 = [], None
     for r in rows:
-        if len(r) < 4 or r[3] not in STAGE:
+        if len(r) < 3:
             continue
-        first = first or dt.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S")
-        lab.append((int(r[2]) - 1, STAGE[r[3]]))
-    return lab, first
+        if t0 is None:
+            t0 = _clock(r[1]) - dt.timedelta(seconds=30 * (int(r[2]) - 1))
+        if len(r) >= 4 and r[3] in STAGE:
+            lab.append((int(r[2]) - 1, STAGE[r[3]]))
+    return lab, t0
 
 
 def edf_start(path: Path) -> dt.time:
