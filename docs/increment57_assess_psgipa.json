@@ -1,0 +1,62 @@
+{
+ "n_nights": 5,
+ "n_scorers": 12,
+ "pairwise_manual_median_kappa": 0.772,
+ "pairwise_manual_ci95_by_night": [
+  0.721,
+  0.807
+ ],
+ "pairwise_manual_range": [
+  0.609,
+  0.84
+ ],
+ "scorer_vs_consensus_of_other_11": {
+  "1": 0.807,
+  "2": 0.873,
+  "3": 0.869,
+  "4": 0.813,
+  "5": 0.842,
+  "6": 0.846,
+  "7": 0.81,
+  "8": 0.862,
+  "9": 0.727,
+  "10": 0.811,
+  "11": 0.877,
+  "12": 0.836
+ },
+ "scorer_vs_consensus_median": 0.839,
+ "scorer_vs_consensus_median_by_night": {
+  "1": 0.836,
+  "2": 0.761,
+  "3": 0.82,
+  "4": 0.841,
+  "5": 0.87
+ },
+ "f1_median_by_stage": {
+  "W": 0.958,
+  "N1": 0.592,
+  "N2": 0.893,
+  "N3": 0.882,
+  "R": 0.913
+ },
+ "semiauto_and_auto": {
+  "semiauto": {
+   "median_kappa_vs_consensus_all12": 0.875,
+   "range": [
+    0.778,
+    0.891
+   ]
+  },
+  "auto": {
+   "median_kappa_vs_consensus_all12": 0.85,
+   "range": [
+    0.85,
+    0.85
+   ]
+  }
+ },
+ "model_reference_kappa": 0.635,
+ "H1_pairwise_in_0.65_0.85": true,
+ "H2_ceiling_above_model": true,
+ "H3_n1_lowest_below_0.60_and_W_R_above_0.80": true
+}
