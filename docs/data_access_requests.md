@@ -75,3 +75,26 @@ PhysioNet I-CARE, vepiset). Следующие проверки требуют �
   Kaggle, принятие правил конкурса и API-токен как секрет среды, а также разрешение kaggle.com в
   сети.
 
+## Состояние на 2026-11-06 (проверено запросами из сессии) и что нужно от вас
+
+| Источник | Сеть сессии | Как получить доступ (по публичным страницам) | Что готово у меня |
+|---|---|---|---|
+| **NMT-4K** (Zenodo 21405022) | zenodo.org открыт; список файлов закрыт (restricted) | На странице записи нажать «Request access» под вашей учётной записью Zenodo, указать цель (текст ниже) | Пре-регистрация `docs/preregistration_increment59.md` (зафиксирована до доступа); после одобрения нужен токен Zenodo — его я запрошу защищённой формой, не в чате |
+| **TUH** (TUAB/TUSZ/TUEV) | `isip.piconepress.com` открыт | Заполнить и подписать PDF-форму со страницы TUH EEG Corpus и отправить на help@nedcdata.org (тема «Download The TUH EEG Corpus»); после регистрации ключей SSH загрузка по rsync — **на вашем компьютере**, затем подключить папку через Remote Control | Клиент `datasets/tuab.py`, `scripts/run_tuab_eval.py`, пре-регистрация инкремента 32 |
+| **NCH Sleep DataBank** (3 984 детских ПСГ) | physionet.org открыт, файлы отдают 403 | Аккредитация PhysioNet (CITI-курс + соглашение), затем «credentialed access» к проекту `nch-sleep` | Пока ничего: нужна новая модель сна у детей (старая даёт каппу 0.17), пре-регистрация и разработка — после доступа |
+| **BDSP** (GROND, IIIC, Pediatric SleepNet, Sleep Commons) | `bdsp.io` открыт; AWS-домены доступа не проверялись | Аккредитация BDSP (соглашение + курс); ключи AWS я не использую и не запрашиваю без вашего прямого «да» | Метки IIIC/SPaRCNet и план проверки периодических паттернов (раздел 5) |
+| **Kaggle HMS** | `www.kaggle.com` закрыт (код 000) | Учётная запись Kaggle, правила соревнования, токен | Нужно открыть `www.kaggle.com`, `storage.googleapis.com` |
+| **NSRR** (SHHS и др.) | `sleepdata.org` закрыт (код 000) | Соглашение NSRR на ваше имя | Нужно открыть `sleepdata.org` |
+
+Текст запроса для NMT-4K (поле «purpose»):
+
+> Independent external validation of an open-source EEG decision-support pipeline (NeuroLens).
+> The record-level normal/abnormal model was developed on the NMT Scalp EEG dataset; we will evaluate it, frozen and
+> pre-registered, on the evaluation split of NMT-4K-EEG only (1,000 previously unreleased recordings) to measure
+> sensitivity and specificity on new recordings. Non-commercial research; no attempt at re-identification; data will
+> not be redistributed.
+
+Порядок по пользе: **1) NMT-4K** (одно нажатие, закрывает находку F1 по чувствительности); **2) TUH** (другая
+больница; форма + SSH-ключи); **3) аккредитации PhysioNet и BDSP** (долго, закрывают сон у детей и периодические
+паттерны); **4) Kaggle и NSRR** — только если вы готовы открыть домены.
+
