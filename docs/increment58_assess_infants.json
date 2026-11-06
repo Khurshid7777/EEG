@@ -1,0 +1,46 @@
+{
+ "n_records": 102,
+ "errors": [],
+ "specificity": 0.8824,
+ "ci95": [
+  0.8035,
+  0.9377
+ ],
+ "false_abnormal": 12,
+ "specificity_rules_only": 0.8824,
+ "specificity_model_only": 0.8922,
+ "borderline_rate": 0.4706,
+ "detectors_in_false_abnormal": {
+  "diffuse_slowing": 12,
+  "spike": 12,
+  "ictal_ml": 2,
+  "burst_suppression": 1
+ },
+ "by_age": {
+  "0-0.25": {
+   "n": 34,
+   "specificity": 0.8824,
+   "ci95": [
+    0.7255,
+    0.967
+   ]
+  },
+  "0.25-0.5": {
+   "n": 40,
+   "specificity": 0.95,
+   "ci95": [
+    0.8308,
+    0.9939
+   ]
+  },
+  "0.5-2": {
+   "n": 28,
+   "specificity": 0.7857,
+   "ci95": [
+    0.5905,
+    0.917
+   ]
+  }
+ },
+ "decision": "validated"
+}
