@@ -1,0 +1,178 @@
+{
+ "n_excerpts": 20,
+ "errors": [],
+ "prevalence": 0.155,
+ "ours": {
+  "sensitivity": 0.093,
+  "specificity": 0.994,
+  "f1": 0.165,
+  "sensitivity_ci95": [
+   0.055,
+   0.172
+  ],
+  "specificity_ci95": [
+   0.988,
+   0.997
+  ],
+  "f1_ci95": [
+   0.102,
+   0.274
+  ]
+ },
+ "authors_algorithm": {
+  "sensitivity": 0.922,
+  "specificity": 0.498,
+  "f1": 0.396
+ },
+ "f1_difference_ours_minus_authors": -0.23,
+ "f1_difference_ci95": [
+  -0.464,
+  0.041
+ ],
+ "by_type_recall": {
+  "mvtE": {
+   "excerpts": 18,
+   "truth_seconds": 499,
+   "recall_pooled": 0.192
+  },
+  "transE": {
+   "excerpts": 12,
+   "truth_seconds": 48,
+   "recall_pooled": 0.167
+  },
+  "ondE": {
+   "excerpts": 12,
+   "truth_seconds": 1987,
+   "recall_pooled": 0.033
+  },
+  "highE": {
+   "excerpts": 18,
+   "truth_seconds": 654,
+   "recall_pooled": 0.098
+  }
+ },
+ "per_excerpt": [
+  {
+   "excerpt": 1,
+   "fs": 50.0,
+   "prevalence": 0.9755555555555555,
+   "pred_fraction": 0.027777777777777776
+  },
+  {
+   "excerpt": 2,
+   "fs": 50.0,
+   "prevalence": 0.5377777777777778,
+   "pred_fraction": 0.04777777777777778
+  },
+  {
+   "excerpt": 3,
+   "fs": 100.0,
+   "prevalence": 0.11333333333333333,
+   "pred_fraction": 0.0811111111111111
+  },
+  {
+   "excerpt": 4,
+   "fs": 100.0,
+   "prevalence": 0.13333333333333333,
+   "pred_fraction": 0.0044444444444444444
+  },
+  {
+   "excerpt": 5,
+   "fs": 200.0,
+   "prevalence": 0.044444444444444446,
+   "pred_fraction": 0.0033333333333333335
+  },
+  {
+   "excerpt": 6,
+   "fs": 100.0,
+   "prevalence": 0.027777777777777776,
+   "pred_fraction": 0.0033333333333333335
+  },
+  {
+   "excerpt": 7,
+   "fs": 50.0,
+   "prevalence": 0.07666666666666666,
+   "pred_fraction": 0.014444444444444444
+  },
+  {
+   "excerpt": 8,
+   "fs": 200.0,
+   "prevalence": 0.23777777777777778,
+   "pred_fraction": 0.02666666666666667
+  },
+  {
+   "excerpt": 9,
+   "fs": 50.0,
+   "prevalence": 0.10111111111111111,
+   "pred_fraction": 0.034444444444444444
+  },
+  {
+   "excerpt": 10,
+   "fs": 200.0,
+   "prevalence": 0.03666666666666667,
+   "pred_fraction": 0.0011111111111111111
+  },
+  {
+   "excerpt": 11,
+   "fs": 200.0,
+   "prevalence": 0.008888888888888889,
+   "pred_fraction": 0.012222222222222223
+  },
+  {
+   "excerpt": 12,
+   "fs": 200.0,
+   "prevalence": 0.14333333333333334,
+   "pred_fraction": 0.05
+  },
+  {
+   "excerpt": 13,
+   "fs": 200.0,
+   "prevalence": 0.03888888888888889,
+   "pred_fraction": 0.011111111111111112
+  },
+  {
+   "excerpt": 14,
+   "fs": 200.0,
+   "prevalence": 0.03333333333333333,
+   "pred_fraction": 0.011111111111111112
+  },
+  {
+   "excerpt": 15,
+   "fs": 200.0,
+   "prevalence": 0.05444444444444444,
+   "pred_fraction": 0.034444444444444444
+  },
+  {
+   "excerpt": 16,
+   "fs": 200.0,
+   "prevalence": 0.35555555555555557,
+   "pred_fraction": 0.017777777777777778
+  },
+  {
+   "excerpt": 17,
+   "fs": 200.0,
+   "prevalence": 0.03333333333333333,
+   "pred_fraction": 0.008888888888888889
+  },
+  {
+   "excerpt": 18,
+   "fs": 200.0,
+   "prevalence": 0.006666666666666667,
+   "pred_fraction": 0.0022222222222222222
+  },
+  {
+   "excerpt": 19,
+   "fs": 200.0,
+   "prevalence": 0.09333333333333334,
+   "pred_fraction": 0.0033333333333333335
+  },
+  {
+   "excerpt": 20,
+   "fs": 200.0,
+   "prevalence": 0.04555555555555556,
+   "pred_fraction": 0.0022222222222222222
+  }
+ ],
+ "H1": "failed",
+ "H2_f1_not_below_authors_minus_0.05": false
+}
