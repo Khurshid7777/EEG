@@ -133,6 +133,11 @@ class Thresholds(BaseModel):
         description="Increment 20: learned seizure events on routine-length EEG (shorter than "
                     "routine_max_duration_s, not neonatal) are candidates for review - the model was "
                     "validated on long-term monitoring only.")
+    ictal_candidate_critical_min_probability: Optional[float] = Field(
+        default=None, ge=0, le=1,
+        description="Increment 63: review-candidate seizure events with mean model probability below this "
+                    "stay in the event list but are left out of the critical finding (None: all candidates, "
+                    "the previous behaviour). Pre-registered check at 0.6 did not confirm (D103).")
     routine_max_duration_s: float = Field(
         default=2700.0, gt=0, description="Recordings shorter than this (45 min) are routine EEG.")
     pd_min_duration_s: float = Field(default=10.0, gt=0, description="ACNS: < 10 s = very brief.")

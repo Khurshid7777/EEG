@@ -604,3 +604,21 @@ def test_fresh_specificity_leads_the_validation_text():
     assert "ниже целевых" not in v.ru
     low = _impression_with_validation(imp, new.model_copy(update={"fresh_below_target": True}))
     assert "ниже целевых 0.72" in low.ru and "0.72 maqsaddan past" in low.uz
+
+
+def test_candidate_probability_threshold_is_off_by_default_and_filters_critical_finding():
+    """Increment 63: low-probability review candidates leave the critical finding (not the event list) when a threshold is set."""
+    from neurolens.contracts.events import DetectionResult, Event, EventEvidence
+    from neurolens.critical.safety import scan_critical_findings
+
+    def cand(p, t0):
+        return Event(code="ictal_ml", label_ru="x", label_uz="x", group="ictal", t_start=t0, t_end=t0 + 40, confidence=0.9,
+                     evidence=[EventEvidence(feature="ml_probability", value=p)], metadata={"review_candidate": "routine_eeg_unvalidated"})
+
+    det = DetectionResult(events=[cand(0.35, 0), cand(0.8, 100)])
+    both = [f for f in scan_critical_findings(det) if f.code == "seizure_candidate"][0]
+    assert "(2," in both.text.ru and "Ещё" not in both.text.ru
+    one = [f for f in scan_critical_findings(det, candidate_min_probability=0.6) if f.code == "seizure_candidate"][0]
+    assert "(1," in one.text.ru and "Ещё 1 событий" in one.text.ru
+    assert not [f for f in scan_critical_findings(DetectionResult(events=[cand(0.35, 0)]), candidate_min_probability=0.6)
+                if f.code == "seizure_candidate"]

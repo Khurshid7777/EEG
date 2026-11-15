@@ -15,11 +15,22 @@ from ..contracts.report import Bilingual, CriticalFinding
 from ..layer4_detect.status_criteria import status_epilepticus, status_intervals
 
 
-def scan_critical_findings(detection: DetectionResult, neonate: bool = False) -> list[CriticalFinding]:
+def scan_critical_findings(detection: DetectionResult, neonate: bool = False,
+                           candidate_min_probability: float | None = None) -> list[CriticalFinding]:
     findings: list[CriticalFinding] = []
     # increment 20: learned seizure events on routine EEG are review candidates - still
     # surfaced (must not miss), but not as "seizure activity registered"
     candidates = [e for e in detection.by_group("ictal") if e.metadata.get("review_candidate")]
+    below = 0
+    if candidate_min_probability is not None:   # increment 63 (off by default): low-probability candidates stay in the event list only
+        def _prob(e):
+            for ev in e.evidence:
+                if ev.feature == "ml_probability":
+                    return float(ev.value)
+            return float(e.confidence)
+
+        kept = [e for e in candidates if _prob(e) >= candidate_min_probability]
+        below, candidates = len(candidates) - len(kept), kept
     ictal = [e for e in detection.by_group("ictal") if not e.metadata.get("review_candidate")]
     strict, every = status_intervals(ictal)
     ese = status_epilepticus(strict, neonate)
@@ -51,10 +62,12 @@ def scan_critical_findings(detection: DetectionResult, neonate: bool = False) ->
                 text=Bilingual(
                     ru=(f"Кандидаты в судорожную активность ({len(candidates)}, самый длинный "
                         f"~{longest:.0f} с): модель приступов проверена только на длительном "
-                        "мониторинге, на рутинной ЭЭГ не подтверждена — требуется просмотр врачом."),
+                        "мониторинге, на рутинной ЭЭГ не подтверждена — требуется просмотр врачом."
+                        + (f" Ещё {below} событий с меньшей вероятностью — в списке событий." if below else "")),
                     uz=(f"Tutqanoq faolligiga nomzodlar ({len(candidates)}, eng uzuni ~{longest:.0f} s): "
                         "tutqanoq modeli faqat uzoq monitoringda tekshirilgan, rutin EEGda "
-                        "tasdiqlanmagan — shifokor ko‘rigi zarur."),
+                        "tasdiqlanmagan — shifokor ko‘rigi zarur."
+                        + (f" Yana {below} ta ehtimoli pastroq hodisa — hodisalar ro‘yxatida." if below else "")),
                 ),
                 grounding_refs=sorted({e.code for e in candidates}),
             )

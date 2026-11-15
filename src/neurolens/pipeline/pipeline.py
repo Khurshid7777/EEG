@@ -434,7 +434,8 @@ class Pipeline:
         )
 
         # --- Critical findings (independent of LLM/mode) ---
-        critical = scan_critical_findings(detection, neonate=analysis.patient.postmenstrual_age_weeks is not None)
+        critical = scan_critical_findings(detection, neonate=analysis.patient.postmenstrual_age_weeks is not None,
+                                          candidate_min_probability=cfg.thresholds.ictal_candidate_critical_min_probability)
 
         # --- Mode gate (B) ---
         gate = evaluate_mode_b_gate(
