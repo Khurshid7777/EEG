@@ -44,6 +44,10 @@ pd_ecg_isi_cv_max: 0.10
 # increment 20: the learned seizure detector was validated on long-term monitoring only; on
 # routine-length EEG its events are candidates for review. Set by prereg20.apply_decision.
 ictal_ml_routine_uncertain: true
+# increment 63 (D103/D104): on routine EEG the critical finding 'seizure_candidate' lists only candidates with mean
+# model probability >= 0.5 (the rest stay in the event list). Chosen by the owner: no seizure lost on either test
+# set (28/30, 29/33), false alarms -28% (AUBMC) and -35% (chb06+Siena). The pre-registered 0.6 was not confirmed.
+ictal_candidate_critical_min_probability: 0.5
 # increment 20: LPDs/BIPDs/LRDA need a field (>= 2 neighbouring electrodes). Set by prereg20.
 field_required: true
 # increment 21 (development, not pre-registered): ranking candidates by raw sharpness instead of
