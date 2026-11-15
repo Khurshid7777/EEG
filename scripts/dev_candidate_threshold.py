@@ -50,7 +50,7 @@ def main() -> int:
     else:
         raise SystemExit("unknown set")
     rules = ScoringRules()
-    recs = prepare_records(items, cfg, None, workers=a.workers)
+    recs = prepare_records(items, cfg, f"data/inc63/features_{a.set}", workers=a.workers)
     ds = Dataset.build(recs, rules)
     model = load_model(frozen["offline"]["model"]["path"])
     mins = frozen["offline"]["A_replacement"]["params"]["min_epochs"]
@@ -63,7 +63,7 @@ def main() -> int:
             scores.append(score_record(rec.annotation.file, rec.annotation.seizures, dets, rec.duration_s,
                                        rules.pre_s, rules.post_s, rules.merge_gap_s))
         agg = aggregate(scores)
-        res[str(thr)] = {k: agg[k] for k in ("n_records", "hours", "n_seizures", "tp", "fn", "fp", "sensitivity", "fa_per_hour")}
+        res[str(thr)] = {k: getattr(agg, k) for k in ("n_records", "hours", "n_seizures", "tp", "fn", "fp", "sensitivity", "fa_per_hour")}
         print(thr, res[str(thr)], flush=True)
     Path(a.out).write_text(json.dumps(res, indent=1) + "\n")
     return 0
