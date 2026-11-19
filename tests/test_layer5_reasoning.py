@@ -101,3 +101,15 @@ def test_extreme_delta_brush_is_gated_by_postmenstrual_age(configs):
     assert not g.has_critical()
     adult = build_causal_graph(det, ClinicalContext(), PatientInfo(age_years=25), configs.rule_base, eng)
     assert [n for n in adult.nodes if n.id == "mech:edb_specific"][0].physiology == PhysiologyLabel.PATHOLOGIC
+
+
+def test_every_rule_trigger_code_is_emitted_by_a_detector(configs):
+    """Increment 64: a rule whose trigger event no detector emits can never fire (audit finding: drowsiness_slowing)."""
+    import glob
+    import re
+
+    src = "".join(open(f, encoding="utf-8").read() for f in glob.glob("src/neurolens/layer4_detect/*.py")
+                 if not f.endswith("base.py"))
+    for chain in configs.rule_base.chains:
+        for code in list(chain.when.any_event) + list(chain.when.all_events):
+            assert re.search(r'"%s"' % re.escape(code), src), f"{chain.id}: no detector emits {code}"

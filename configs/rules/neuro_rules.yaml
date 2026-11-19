@@ -249,16 +249,5 @@ chains:
   # (Wicket benign-variant resolution of spikes is handled by the plausibility
   #  engine + Layer 5 variant resolution, not a generic chain — see rules_engine.)
 
-  # 8) Physiologic response: slowing on hyperventilation/drowsiness is NOT pathology
-  - id: physiologic_slowing_activation
-    description_ru: >-
-      Замедление при гипервентиляции/сонливости — физиологический ответ,
-      а не патология (если не выходит за возрастные нормы).
-    when:
-      any_event: [drowsiness_slowing]
-    cause_ru: Замедление при гипервентиляции/сонливости
-    cause_uz: Giperventilyatsiya/uyquchanlikdagi sekinlashuv
-    effect_ru: Физиологический ответ (норма для активационной пробы/сонливости)
-    effect_uz: Fiziologik javob (aktivatsion sinov/uyquchanlik uchun norma)
-    physiology: physiologic
-    confidence: 0.6
+  # (Rule 8 "physiologic slowing on activation/drowsiness" was removed in increment 64: no detector emits `drowsiness_slowing`.
+  #  Re-add it together with a validated drowsiness/activation detector.)
