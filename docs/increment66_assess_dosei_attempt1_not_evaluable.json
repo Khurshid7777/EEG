@@ -1,0 +1,20 @@
+{
+ "n_records": 170,
+ "errors": [],
+ "n_paired": 0,
+ "diffuse_slowing_awake": NaN,
+ "diffuse_slowing_deep": NaN,
+ "difference": NaN,
+ "difference_ci95": [
+  NaN,
+  NaN
+ ],
+ "mcnemar_p": 1.0,
+ "slow_epoch_fraction_median": {
+  "awake": NaN,
+  "deep": NaN
+ },
+ "burst_suppression_awake": NaN,
+ "burst_suppression_deep": NaN,
+ "H1": "not_confirmed"
+}
