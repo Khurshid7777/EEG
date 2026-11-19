@@ -22,7 +22,7 @@ import numpy as np
 API = "https://zenodo.org/api/records/22145442"
 CHECK = "10-154"
 FS = 125.0
-SEG_S, MIN_S, LOC_SKIP_S = 300.0, 120.0, 60.0
+SEG_S, MIN_S, MIN_AWAKE_S, LOC_SKIP_S = 300.0, 120.0, 60.0, 60.0   # amendment 1: awake = after ROC, min 60 s
 SEED, N_BOOT = 66, 2000
 ART_ZIP = Path("data/inc66/dosei/artifacts.zip")
 
@@ -82,13 +82,15 @@ def segments(ev):
         v = [m for tt, m in moaas if tt <= t]
         return v[-1] if v else None
 
+    # amendment 1 (docs/preregistration_increment66.md): AWAKE = after the last ROC (+30 s) and >= 120 s after the last dose, MOAA/S >= 4
     awake = None
-    if props:
-        end = props[0]
-        a = max(0.0, end - SEG_S)
-        pts = [tt for tt, m in moaas if a <= tt < end and m >= 4]
-        if pts:
-            awake = (max(a, pts[0]), end)
+    if rocs:
+        a = rocs[-1] + 30.0
+        a = max(a, max([p for p in props if p < a] or [0.0]) + 120.0)
+        end = a + SEG_S
+        pts = [m for tt, m in moaas if a <= tt <= end]
+        if not pts or min(pts) >= 4:
+            awake = (a, end)
     deep = None
     if locs:
         a = locs[0] + LOC_SKIP_S
@@ -100,7 +102,7 @@ def segments(ev):
     return awake, deep
 
 
-def analyse(sig_arr, times, win, art):
+def analyse(sig_arr, times, win, art, min_s=MIN_S):
     from neurolens.contracts.signal import UnifiedSignal
     from neurolens.layer3_features.feature_set import compute_features
     from neurolens.layer4_detect.background_abn import DiffuseSlowingDetector
@@ -112,7 +114,7 @@ def analyse(sig_arr, times, win, art):
     sec = np.clip(times[m].astype(int), 0, len(art) - 1)
     ok = ~art[sec]
     x = sig_arr[:, m][:, ok]
-    if x.shape[1] / FS < MIN_S:
+    if x.shape[1] / FS < min_s:
         return None
     sig = UnifiedSignal(signal=x, sampling_rate_hz=FS, channel_names=["F7", "F8"], duration_s=x.shape[1] / FS)
     cfg = load_configs()
@@ -132,7 +134,7 @@ def _one(rid: str) -> dict:
         awake, deep = segments(ev)
         t0_abs = _t(_first_time(z, rid))
         art = artifact_epochs(rid, t0_abs, t[-1])
-        return {"record": rid, "awake": analyse(x, t, awake, art) if awake else None,
+        return {"record": rid, "awake": analyse(x, t, awake, art, MIN_AWAKE_S) if awake else None,
                 "deep": analyse(x, t, deep, art) if deep else None,
                 "amp_uv_std": [round(float(v), 1) for v in x.std(axis=1)]}
     except Exception as exc:  # noqa: BLE001 - listed and excluded, as pre-registered
