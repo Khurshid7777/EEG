@@ -169,7 +169,8 @@ class RulesEngine:
             if context.sedatives or (context.temperature_c is not None and context.temperature_c < 34):
                 note = "контекст: седация/гипотермия — вероятна обратимая причина"
             else:
-                note = "контекст: седативы/гипотермия не указаны — приоритет тяжёлого повреждения"
+                note = ("контекст не указан (седативы, температура) — причину определить нельзя: тяжёлое повреждение "
+                        "или обратимая причина (седация/анестезия, гипотермия, метаболическая/токсическая)")
 
         if not any(n.id == mech_id for n in nodes):
             nodes.append(
@@ -300,6 +301,14 @@ class RulesEngine:
             )
 
 
+# increment 64: symptoms may be written in English, Russian or Uzbek
+_CONTEXT_STEMS = {
+    "hepatic_failure": ("hepat", "liver", "печен", "jigar"),
+    "renal_failure": ("renal", "kidney", "uremi", "почеч", "уреми", "buyrak"),
+    "metabolic": ("metabol", "метабол"),
+}
+
+
 def _context_has(context: ClinicalContext, token: str) -> bool:
     token = token.lower()
     if token in ("sedatives", "sedation"):
@@ -311,7 +320,8 @@ def _context_has(context: ClinicalContext, token: str) -> bool:
     if token in ("fever", "hyperthermia"):
         return context.temperature_c is not None and context.temperature_c > 38.0
     if token in ("hepatic_failure", "renal_failure", "metabolic"):
-        return any(token.split("_")[0] in s.lower() for s in context.symptoms)
+        stems = _CONTEXT_STEMS.get(token, (token.split("_")[0],))
+        return any(stem in s.lower().replace("ё", "е") for s in context.symptoms for stem in stems)
     # generic: match against symptoms text
     return any(token in s.lower() for s in context.symptoms)
 

@@ -52,3 +52,35 @@ def test_burst_suppression_is_critical(configs):
     graph = build_causal_graph(det, ClinicalContext(sedatives=["propofol"]),
                                PatientInfo(age_years=50), configs.rule_base, _engine(configs))
     assert graph.has_critical()
+
+
+# --- increment 64: context conditions and hedged conclusions (docs/rule_base_audit_2026-11-19.md) -------------------
+def _rules(configs, code, group, **ctx):
+    det = DetectionResult(events=[_event(code, group)])
+    g = build_causal_graph(det, ClinicalContext(**ctx), PatientInfo(age_years=60), configs.rule_base, _engine(configs))
+    return g, {e.rule_id for e in g.edges}
+
+
+def test_triphasic_waves_conclusion_depends_on_hepatic_or_renal_context(configs):
+    _, none = _rules(configs, "triphasic_waves", "special")
+    assert "triphasic_nonspecific" in none and not {"triphasic_metabolic_hepatic", "triphasic_metabolic_renal"} & none
+    _, hep = _rules(configs, "triphasic_waves", "special", symptoms=["печёночная недостаточность"])
+    assert "triphasic_metabolic_hepatic" in hep and "triphasic_nonspecific" not in hep
+    _, ren = _rules(configs, "triphasic_waves", "special", symptoms=["chronic kidney disease, uremia"])
+    assert "triphasic_metabolic_renal" in ren and "triphasic_nonspecific" not in ren
+    _, both = _rules(configs, "triphasic_waves", "special", symptoms=["liver failure", "renal failure"])
+    assert {"triphasic_metabolic_hepatic", "triphasic_metabolic_renal"} <= both and "triphasic_nonspecific" not in both
+
+
+def test_burst_suppression_without_context_is_not_called_severe_injury(configs):
+    g, _ = _rules(configs, "burst_suppression", "suppression")
+    text = " ".join(n.label_ru for n in g.nodes if n.id == "mech:burst_suppression_context")
+    assert "контекст не указан" in text and "приоритет тяжёлого повреждения" not in text
+    g2, _ = _rules(configs, "burst_suppression", "suppression", sedatives=["propofol"])
+    assert "седация/гипотермия" in " ".join(n.label_ru for n in g2.nodes if n.id == "mech:burst_suppression_context")
+
+
+def test_no_rule_claims_raised_icp_as_a_conclusion(configs):
+    for chain in configs.rule_base.chains:
+        assert "повышение ВЧД" not in chain.effect_ru.replace("не доказана", "") or "не доказана" in chain.effect_ru
+        assert "ВЧД" not in chain.effect_ru, chain.id

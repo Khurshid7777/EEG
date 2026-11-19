@@ -4,47 +4,79 @@
 # Each chain maps a condition (events present/absent + clinical context) to a
 # cause -> effect edge with a physiology label and confidence. Artifact-vs-real
 # discrimination is expressed as a chain that "resolves_artifact_for" an event.
-version: "0.1.0"
+# Increment 64 (docs/rule_base_audit_2026-11-19.md): conclusions rewritten as probabilities with a differential, context
+# conditions (context_present / context_absent) used for triphasic waves; `confidence` values are hand-set and NOT calibrated.
+version: "0.2.0"
 chains:
   # 1) Diffuse slowing -> encephalopathy (with metabolic/toxic/hypoxic differential)
   - id: diffuse_slowing_encephalopathy
     description_ru: >-
       Диффузное замедление фона указывает на энцефалопатию; дифференциал —
-      метаболическая/токсическая/гипоксическая (уточняется контекстом).
+      метаболическая/токсическая/гипоксическая (уточняется контекстом); учитывать возраст, сонливость и препараты.
     when:
       any_event: [diffuse_slowing]
     cause_ru: Диффузное замедление фоновой активности
     cause_uz: Fon faolligining diffuz sekinlashuvi
-    effect_ru: Энцефалопатия (метаболическая/токсическая/гипоксическая — по контексту)
-    effect_uz: Ensefalopatiya (kontekstga ko‘ra metabolik/toksik/gipoksik)
+    effect_ru: Возможна энцефалопатия (метаболическая/токсическая/гипоксическая — по контексту; учесть возраст, сонливость, препараты)
+    effect_uz: Ensefalopatiya mumkin (kontekstga ko‘ra metabolik/toksik/gipoksik; yosh, uyquchanlik, dorilarni hisobga oling)
     physiology: pathologic
     confidence: 0.7
 
-  # 2) Triphasic waves + hepatic/renal failure -> metabolic encephalopathy
-  - id: triphasic_metabolic
+  # 2) Triphasic waves are NONSPECIFIC; the metabolic conclusion needs hepatic/renal context (increment 64)
+  - id: triphasic_metabolic_hepatic
     description_ru: >-
-      Трифазные волны на фоне печёночной/почечной недостаточности —
-      метаболическая (часто печёночная) энцефалопатия.
+      Трифазные волны при указанной печёночной недостаточности — согласуются с печёночной энцефалопатией
+      (паттерн неспецифичен; клиническая корреляция обязательна).
     when:
       any_event: [triphasic_waves]
+      context_present: [hepatic_failure]
+    cause_ru: "Трифазные волны (контекст: печёночная недостаточность)"
+    cause_uz: "Uch fazali to‘lqinlar (kontekst: jigar yetishmovchiligi)"
+    effect_ru: Согласуется с печёночной энцефалопатией (паттерн неспецифичен)
+    effect_uz: Jigar ensefalopatiyasiga mos keladi (pattern nospetsifik)
+    physiology: pathologic
+    confidence: 0.65
+
+  - id: triphasic_metabolic_renal
+    description_ru: >-
+      Трифазные волны при указанной почечной недостаточности — согласуются с уремической/метаболической энцефалопатией
+      (паттерн неспецифичен; клиническая корреляция обязательна).
+    when:
+      any_event: [triphasic_waves]
+      context_present: [renal_failure]
+    cause_ru: "Трифазные волны (контекст: почечная недостаточность)"
+    cause_uz: "Uch fazali to‘lqinlar (kontekst: buyrak yetishmovchiligi)"
+    effect_ru: Согласуется с уремической/метаболической энцефалопатией (паттерн неспецифичен)
+    effect_uz: Uremik/metabolik ensefalopatiyaga mos keladi (pattern nospetsifik)
+    physiology: pathologic
+    confidence: 0.65
+
+  - id: triphasic_nonspecific
+    description_ru: >-
+      Трифазные волны без указанной печёночной/почечной недостаточности: паттерн неспецифичен, дифференциал —
+      метаболическая (печёночная, почечная), токсическая, гипоксическая, септическая энцефалопатия и др.;
+      визуально может напоминать GPDs.
+    when:
+      any_event: [triphasic_waves]
+      context_absent: [hepatic_failure, renal_failure]
     cause_ru: Трифазные волны
     cause_uz: Uch fazali to‘lqinlar
-    effect_ru: Метаболическая энцефалопатия (напр. печёночная/почечная)
-    effect_uz: Metabolik ensefalopatiya (masalan, jigar/buyrak)
+    effect_ru: "Неспецифично: энцефалопатия разной природы (метаболическая, токсическая, гипоксическая и др.); нужен клинический контекст"
+    effect_uz: "Nospetsifik: turli xil ensefalopatiya (metabolik, toksik, gipoksik va b.); klinik kontekst kerak"
     physiology: pathologic
-    confidence: 0.6
+    confidence: 0.5
 
   # 3) LPDs -> acute structural process (on the IIC)
   - id: lpds_structural
     description_ru: >-
-      Латерализованные периодические разряды (LPDs) — острый структурный
-      процесс (инсульт, герпетический энцефалит) на фоне ИИК.
+      Латерализованные периодические разряды (LPDs) — очаговый процесс разной природы (острый или хронический:
+      инсульт, опухоль, инфекция, в т.ч. герпетический энцефалит; постиктальное состояние); возможен ИИК.
     when:
       any_event: [lpds]
     cause_ru: Латерализованные периодические разряды (LPDs)
     cause_uz: Lateralizatsiyalangan davriy razryadlar (LPDs)
-    effect_ru: Острый структурный очаг; положение на иктально-интериктальном континууме
-    effect_uz: O‘tkir strukturaviy o‘choq; iktal-interiktal kontinuumdagi holat
+    effect_ru: Вероятен очаговый (структурный) процесс — острый или хронический; ИИК определяется отдельно (частота, +F)
+    effect_uz: O‘choqli (strukturaviy) jarayon ehtimoli — o‘tkir yoki surunkali; IIC alohida baholanadi (chastota, +F)
     physiology: pathologic
     confidence: 0.65
     critical: true
@@ -67,18 +99,18 @@ chains:
   # 5) Burst-suppression: severe injury vs deep sedation/hypothermia (context split)
   - id: burst_suppression_context
     description_ru: >-
-      Burst-suppression разводится по контексту: тяжёлое повреждение против
-      глубокой седации/гипотермии (учёт препаратов и температуры).
+      Burst-suppression разводится по контексту: тяжёлое повреждение против обратимых причин
+      (седация/анестезия, гипотермия, метаболическая/токсическая); при неуказанном контексте причина не определяется.
     when:
       any_event: [burst_suppression]
     cause_ru: Паттерн «вспышка-подавление» (burst-suppression)
     cause_uz: “Portlash-bostirish” patterni (burst-suppression)
     effect_ru: >-
-      Тяжёлое диффузное повреждение ИЛИ глубокая седация/гипотермия
-      (разводится по контексту: седативы, температура)
+      Тяжёлое диффузное повреждение ИЛИ обратимая причина (седация/анестезия, гипотермия, метаболическая/токсическая)
+      — разводится по контексту: седативы, температура
     effect_uz: >-
-      Og‘ir diffuz shikast YOKI chuqur sedatsiya/gipotermiya
-      (kontekst bo‘yicha: sedativlar, harorat)
+      Og‘ir diffuz shikast YOKI qaytar sabab (sedatsiya/anesteziya, gipotermiya, metabolik/toksik)
+      — kontekst bo‘yicha: sedativlar, harorat
     physiology: pathologic
     confidence: 0.6
     critical: true
@@ -86,14 +118,14 @@ chains:
   # 6) Focal slowing / asymmetry -> lateralized structural lesion
   - id: focal_slowing_structural
     description_ru: >-
-      Очаговое замедление / устойчивая асимметрия указывают на структурный
-      очаг в соответствующей области с латерализацией поражения.
+      Очаговое замедление / устойчивая асимметрия указывают на возможный структурный очаг в соответствующей области;
+      дифференциал — постиктальное замедление, мигрень, эффект препаратов, технические причины.
     when:
       any_event: [focal_slowing]
     cause_ru: Очаговое замедление / межполушарная асимметрия
     cause_uz: O‘choqli sekinlashuv / yarim sharlararo assimetriya
-    effect_ru: Структурный очаг в соответствующей области (латерализация поражения)
-    effect_uz: Tegishli sohada strukturaviy o‘choq (shikast lateralizatsiyasi)
+    effect_ru: Возможен структурный очаг в соответствующей области (латерализация); дифференциал — постиктальное, мигрень, препараты
+    effect_uz: Tegishli sohada strukturaviy o‘choq mumkin (lateralizatsiya); differensial — postiktal, migren, dorilar
     physiology: pathologic
     confidence: 0.6
 
@@ -129,14 +161,14 @@ chains:
   # 7c) GRDA -> nonspecific encephalopathy / increased ICP
   - id: grda_nonspecific
     description_ru: >-
-      Генерализованная ритмическая дельта (GRDA) — неспецифический признак
-      энцефалопатии/повышенного ВЧД.
+      Генерализованная ритмическая дельта (GRDA) — неспецифический признак диффузной (часто метаболической)
+      дисфункции; связь с повышением ВЧД не доказана.
     when:
       any_event: [grda]
     cause_ru: Генерализованная ритмическая дельта (GRDA)
     cause_uz: Umumlashgan ritmik delta (GRDA)
-    effect_ru: Неспецифическая энцефалопатия / возможное повышение ВЧД
-    effect_uz: Nospetsifik ensefalopatiya / ehtimoliy ICP oshishi
+    effect_ru: Неспецифическая диффузная дисфункция (энцефалопатия); клиническая корреляция
+    effect_uz: Nospetsifik diffuz disfunksiya (ensefalopatiya); klinik korrelyatsiya
     physiology: pathologic
     confidence: 0.5
 
@@ -158,42 +190,43 @@ chains:
   # 7e) FIRDA -> deep midline / nonspecific (encephalopathy or raised ICP)
   - id: firda_nonspecific
     description_ru: >-
-      Лобная интермиттирующая ритмическая дельта (FIRDA) — неспецифический
-      признак: глубинная/срединная дисфункция, энцефалопатия или повышение ВЧД.
+      Лобная интермиттирующая ритмическая дельта (FIRDA) — неспецифический признак:
+      глубинная/срединная дисфункция или энцефалопатия; связь с повышением ВЧД не доказана.
     when:
       any_event: [firda]
     cause_ru: Лобная интермиттирующая ритмическая дельта (FIRDA)
     cause_uz: Peshona intermittent ritmik delta (FIRDA)
-    effect_ru: Неспецифическая глубинная/срединная дисфункция (энцефалопатия/ВЧД)
-    effect_uz: Nospetsifik chuqur/o‘rta chiziq disfunksiyasi (ensefalopatiya/ICP)
+    effect_ru: Неспецифическая глубинная/срединная дисфункция или энцефалопатия; клиническая корреляция
+    effect_uz: Nospetsifik chuqur/o‘rta chiziq disfunksiyasi yoki ensefalopatiya; klinik korrelyatsiya
     physiology: pathologic
     confidence: 0.5
 
   # 7f) Extreme delta brush -> specific (anti-NMDA-R encephalitis; extreme prematurity)
   - id: edb_specific
     description_ru: >-
-      Extreme delta brush — относительно специфичный паттерн: анти-NMDA-рецепторный
-      энцефалит (у взрослых/детей) или крайняя недоношенность (неонатально).
+      Extreme delta brush — описан при анти-NMDA-рецепторном энцефалите (у взрослых/детей), но не специфичен;
+      у недоношенных delta brush — нормальный признак созревания (интерпретировать по постменструальному возрасту).
     when:
       any_event: [extreme_delta_brush]
     cause_ru: Extreme delta brush
     cause_uz: Extreme delta brush
-    effect_ru: Анти-NMDA-рецепторный энцефалит (или крайняя недоношенность — по контексту)
-    effect_uz: Anti-NMDA-retseptor ensefaliti (yoki o‘ta chala tug‘ilish — kontekstga ko‘ra)
+    effect_ru: Возможен анти-NMDA-рецепторный энцефалит (не специфично); у недоношенных — норма созревания, по ПМВ
+    effect_uz: Anti-NMDA-retseptor ensefaliti mumkin (nospetsifik); chala tug‘ilganlarda — yetilish normasi, PMV bo‘yicha
     physiology: pathologic
     confidence: 0.55
 
   # 7h) Neonatal burst-suppression -> severe neonatal encephalopathy (e.g. HIE)
   - id: neonatal_bs_hie
     description_ru: >-
-      Вспышка-подавление у новорождённого — тяжёлая неонатальная энцефалопатия
-      (напр. гипоксически-ишемическая, HIE); прогностически неблагоприятно.
+      Вспышка-подавление у новорождённого — тяжёлая диффузная дисфункция; частая причина — гипоксически-ишемическая
+      энцефалопатия (HIE), но возможны метаболические причины, ранние эпилептические энцефалопатии, медикаменты;
+      прогностически неблагоприятно.
     when:
       any_event: [neonatal_burst_suppression]
     cause_ru: Неонатальная вспышка-подавление (aEEG BS)
     cause_uz: Neonatal portlash-bostirish (aEEG BS)
-    effect_ru: Тяжёлая неонатальная энцефалопатия (напр. гипоксически-ишемическая, HIE)
-    effect_uz: Og‘ir neonatal ensefalopatiya (masalan, gipoksik-ishemik, HIE)
+    effect_ru: Тяжёлая диффузная дисфункция (частая причина — HIE; также метаболические, эпилептические энцефалопатии, препараты)
+    effect_uz: Og‘ir diffuz disfunksiya (tez-tez sabab — HIE; shuningdek metabolik, epileptik ensefalopatiya, dorilar)
     physiology: pathologic
     confidence: 0.65
     critical: true
@@ -201,14 +234,14 @@ chains:
   # 7i) Neonatal inactive/flat trace -> very severe injury
   - id: neonatal_inactive_severe
     description_ru: >-
-      Неактивная (изоэлектрическая) кривая у новорождённого — крайне тяжёлое
-      повреждение мозга; требует срочной оценки и технических оговорок.
+      Неактивная (изоэлектрическая) кривая у новорождённого — возможно крайне тяжёлое повреждение мозга после
+      исключения седации, гипотермии и технических причин; требует срочной оценки.
     when:
       any_event: [neonatal_inactive]
     cause_ru: Неонатальная неактивная кривая (изоэлектрия)
     cause_uz: Neonatal faolsiz egri (izoelektrik)
-    effect_ru: Крайне тяжёлое повреждение мозга (плохой прогноз)
-    effect_uz: O‘ta og‘ir miya shikasti (yomon prognoz)
+    effect_ru: Возможно крайне тяжёлое повреждение мозга (после исключения седации, гипотермии, технических причин)
+    effect_uz: O‘ta og‘ir miya shikasti mumkin (sedatsiya, gipotermiya, texnik sabablar chiqarilgandan keyin)
     physiology: pathologic
     confidence: 0.6
     critical: true
