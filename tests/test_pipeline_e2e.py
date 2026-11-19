@@ -37,7 +37,8 @@ def test_e2e_produces_expected_events(demo_edf, configs):
 def test_e2e_causal_edges(demo_edf, configs):
     _, out = _run(demo_edf, configs)
     rule_ids = {e.rule_id for e in out.graph.edges}
-    assert "diffuse_slowing_encephalopathy" in rule_ids
+    # increment 66: the demo recording states sedatives, so slowing is read as a sedation effect (D107)
+    assert {"diffuse_slowing_encephalopathy", "diffuse_slowing_sedation"} & rule_ids
     assert "ecg_artifact_vs_ied" in rule_ids
 
 

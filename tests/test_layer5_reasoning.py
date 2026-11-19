@@ -113,3 +113,18 @@ def test_every_rule_trigger_code_is_emitted_by_a_detector(configs):
     for chain in configs.rule_base.chains:
         for code in list(chain.when.any_event) + list(chain.when.all_events):
             assert re.search(r'"%s"' % re.escape(code), src), f"{chain.id}: no detector emits {code}"
+
+
+def test_diffuse_slowing_under_stated_sedation_is_not_called_encephalopathy(configs):
+    """Increment 66 (DOSE-I): sedatives stated -> reversible-cause conclusion, not an encephalopathy edge."""
+    det = DetectionResult(events=[_event("diffuse_slowing", "background",
+                                         evidence=[EventEvidence(feature="pdr_hz", value=5.0)])])
+    eng = _engine(configs)
+    plain = build_causal_graph(det, ClinicalContext(), PatientInfo(age_years=50), configs.rule_base, eng)
+    assert {e.rule_id for e in plain.edges} >= {"diffuse_slowing_encephalopathy"}
+    assert "diffuse_slowing_sedation" not in {e.rule_id for e in plain.edges}
+    sed = build_causal_graph(det, ClinicalContext(sedatives=["propofol"]), PatientInfo(age_years=50), configs.rule_base, eng)
+    ids = {e.rule_id for e in sed.edges}
+    assert "diffuse_slowing_sedation" in ids and "diffuse_slowing_encephalopathy" not in ids
+    mech = [n for n in sed.nodes if n.id == "mech:diffuse_slowing_sedation"][0]
+    assert mech.physiology != PhysiologyLabel.PATHOLOGIC and "энцефалопатия не утверждается" in mech.label_ru

@@ -15,12 +15,28 @@ chains:
       метаболическая/токсическая/гипоксическая (уточняется контекстом); учитывать возраст, сонливость и препараты.
     when:
       any_event: [diffuse_slowing]
+      context_absent: [sedatives]
     cause_ru: Диффузное замедление фоновой активности
     cause_uz: Fon faolligining diffuz sekinlashuvi
     effect_ru: Возможна энцефалопатия (метаболическая/токсическая/гипоксическая — по контексту; учесть возраст, сонливость, препараты)
     effect_uz: Ensefalopatiya mumkin (kontekstga ko‘ra metabolik/toksik/gipoksik; yosh, uyquchanlik, dorilarni hisobga oling)
     physiology: pathologic
     confidence: 0.7
+
+  # 1b) Diffuse slowing with stated sedation (increment 66, DOSE-I: propofol sedation made the detector fire in 76% of recordings vs 0% awake)
+  - id: diffuse_slowing_sedation
+    description_ru: >-
+      Диффузное замедление при указанных седативных препаратах: согласуется с эффектом седации (обратимая причина);
+      энцефалопатия не утверждается без записи вне седации.
+    when:
+      any_event: [diffuse_slowing]
+      context_present: [sedatives]
+    cause_ru: "Диффузное замедление фоновой активности (контекст: седация)"
+    cause_uz: "Fon faolligining diffuz sekinlashuvi (kontekst: sedatsiya)"
+    effect_ru: "Согласуется с эффектом седативных препаратов (обратимая причина); энцефалопатия не утверждается без записи вне седации"
+    effect_uz: "Sedativ dorilar ta'siriga mos keladi (qaytar sabab); sedatsiyasiz yozuvsiz ensefalopatiya tasdiqlanmaydi"
+    physiology: uncertain
+    confidence: 0.6
 
   # 2) Triphasic waves are NONSPECIFIC; the metabolic conclusion needs hepatic/renal context (increment 64)
   - id: triphasic_metabolic_hepatic
