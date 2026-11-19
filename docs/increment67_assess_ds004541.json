@@ -1,0 +1,287 @@
+{
+ "rows": [
+  {
+   "subject": "sub-02",
+   "channels": [
+    "F7",
+    "F3",
+    "F4",
+    "F8",
+    "T3",
+    "C3",
+    "C4",
+    "T4",
+    "T5",
+    "P3",
+    "P4",
+    "T6",
+    "O1",
+    "O2"
+   ],
+   "fs": 1000.0,
+   "duration_s": 2139.6,
+   "std_uv": [
+    8213.9,
+    3747.5,
+    3825.5,
+    3632.7,
+    2789.5
+   ],
+   "awake": {
+    "seconds": 385.2,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.487
+   },
+   "unconscious": {
+    "seconds": 300.0,
+    "diffuse_slowing": false,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.431
+   }
+  },
+  {
+   "subject": "sub-03",
+   "channels": [
+    "F7",
+    "F3",
+    "F4",
+    "F8",
+    "T3",
+    "C3",
+    "C4",
+    "T4",
+    "T5",
+    "P3",
+    "P4",
+    "T6",
+    "O1",
+    "O2"
+   ],
+   "fs": 1000.0,
+   "duration_s": 1610.0,
+   "std_uv": [
+    35.4,
+    36.8,
+    31.7,
+    47.3,
+    7072.8
+   ],
+   "awake": {
+    "seconds": 764.1,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.512
+   },
+   "unconscious": {
+    "seconds": 300.0,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.712
+   }
+  },
+  {
+   "subject": "sub-04",
+   "channels": [
+    "F7",
+    "F3",
+    "F4",
+    "F8",
+    "T3",
+    "C3",
+    "C4",
+    "T4",
+    "T5",
+    "P3",
+    "P4",
+    "T6",
+    "O1",
+    "O2"
+   ],
+   "fs": 1000.0,
+   "duration_s": 4913.6,
+   "std_uv": [
+    28.8,
+    29.5,
+    22.0,
+    28.9,
+    2605.4
+   ],
+   "awake": {
+    "seconds": 611.3,
+    "diffuse_slowing": false,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.221
+   },
+   "unconscious": {
+    "seconds": 300.0,
+    "diffuse_slowing": false,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.221
+   }
+  },
+  {
+   "subject": "sub-07",
+   "channels": [
+    "F7",
+    "F3",
+    "F4",
+    "F8",
+    "T3",
+    "C3",
+    "C4",
+    "T4",
+    "T5",
+    "P3",
+    "P4",
+    "T6",
+    "O1",
+    "O2"
+   ],
+   "fs": 1000.0,
+   "duration_s": 2722.8,
+   "std_uv": [
+    18.9,
+    13.7,
+    15.4,
+    17.7,
+    15.4
+   ],
+   "awake": {
+    "seconds": 603.4,
+    "diffuse_slowing": false,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.397
+   },
+   "unconscious": {
+    "seconds": 300.0,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.783
+   }
+  },
+  {
+   "subject": "sub-08",
+   "channels": [
+    "F7",
+    "F3",
+    "F4",
+    "F8",
+    "T3",
+    "C3",
+    "C4",
+    "T4",
+    "T5",
+    "P3",
+    "P4",
+    "T6",
+    "O1",
+    "O2"
+   ],
+   "fs": 1000.0,
+   "duration_s": 2215.6,
+   "std_uv": [
+    45.7,
+    54.7,
+    30.4,
+    37.2,
+    11162.8
+   ],
+   "awake": {
+    "seconds": 526.0,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.425
+   },
+   "unconscious": {
+    "seconds": 300.0,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.963
+   }
+  },
+  {
+   "subject": "sub-09",
+   "channels": [
+    "F7",
+    "F3",
+    "F4",
+    "F8",
+    "T3",
+    "C3",
+    "C4",
+    "T4",
+    "T5",
+    "P3",
+    "P4",
+    "T6",
+    "O1",
+    "O2"
+   ],
+   "fs": 1000.0,
+   "duration_s": 1664.8,
+   "std_uv": [
+    41.7,
+    26.3,
+    27.1,
+    30.4,
+    34.8
+   ],
+   "awake": {
+    "seconds": 502.3,
+    "diffuse_slowing": false,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.275
+   },
+   "unconscious": {
+    "seconds": 300.0,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.843
+   }
+  },
+  {
+   "subject": "sub-10",
+   "channels": [
+    "F7",
+    "F3",
+    "F4",
+    "F8",
+    "T3",
+    "C3",
+    "C4",
+    "T4",
+    "T5",
+    "P3",
+    "P4",
+    "T6",
+    "O1",
+    "O2"
+   ],
+   "fs": 1000.0,
+   "duration_s": 3415.2,
+   "std_uv": [
+    67.8,
+    65.6,
+    66.3,
+    66.9,
+    5575.1
+   ],
+   "awake": {
+    "seconds": 510.0,
+    "diffuse_slowing": false,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.317
+   },
+   "unconscious": {
+    "seconds": 300.0,
+    "diffuse_slowing": true,
+    "burst_suppression": false,
+    "slow_epoch_fraction": 0.619
+   }
+  }
+ ],
+ "unconscious_slowing": "5/7",
+ "awake_slowing": "3/7",
+ "unconscious_burst_suppression": "0/7"
+}
