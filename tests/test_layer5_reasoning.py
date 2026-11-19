@@ -84,3 +84,20 @@ def test_no_rule_claims_raised_icp_as_a_conclusion(configs):
     for chain in configs.rule_base.chains:
         assert "повышение ВЧД" not in chain.effect_ru.replace("не доказана", "") or "не доказана" in chain.effect_ru
         assert "ВЧД" not in chain.effect_ru, chain.id
+
+
+def test_extreme_delta_brush_is_gated_by_postmenstrual_age(configs):
+    """Increment 65: delta brush in a preterm neonate is maturation, not pathology; adults/children keep the old label."""
+    eng = _engine(configs)
+    ev = _event("extreme_delta_brush", "special")
+    assert eng.label_event(ev, PatientInfo(postmenstrual_age_weeks=32)) == PhysiologyLabel.PHYSIOLOGIC
+    assert eng.label_event(ev, PatientInfo(postmenstrual_age_weeks=40)) == PhysiologyLabel.UNCERTAIN
+    assert eng.label_event(ev, PatientInfo(age_years=25)) == PhysiologyLabel.PATHOLOGIC
+    assert eng.label_event(ev, PatientInfo(age_years=0.5)) == PhysiologyLabel.PATHOLOGIC
+    det = DetectionResult(events=[ev])
+    g = build_causal_graph(det, ClinicalContext(), PatientInfo(postmenstrual_age_weeks=32), configs.rule_base, eng)
+    mech = [n for n in g.nodes if n.id == "mech:edb_specific"]
+    assert mech and mech[0].physiology == PhysiologyLabel.PHYSIOLOGIC and "нормальный признак созревания" in mech[0].label_ru
+    assert not g.has_critical()
+    adult = build_causal_graph(det, ClinicalContext(), PatientInfo(age_years=25), configs.rule_base, eng)
+    assert [n for n in adult.nodes if n.id == "mech:edb_specific"][0].physiology == PhysiologyLabel.PATHOLOGIC

@@ -50,6 +50,10 @@ _DEFAULT_PHYSIOLOGY = {
 
 LEARNED_IED_PATHOLOGIC = 0.95
 ICTAL_ML_PATHOLOGIC = 0.5
+# Increment 65 (D106): delta brushes are a normal maturational pattern in preterm neonates; below this postmenstrual age
+# an 'extreme delta brush' is physiologic, from it onwards uncertain (not claimed pathologic without validation).
+# The 38-week boundary is from memory of the neonatal EEG literature (ACNS 2013 terminology; to be verified by a neurologist).
+EDB_MATURATIONAL_PMA_WEEKS = 38.0
 
 
 class PhysiologyEngine:
@@ -89,6 +93,11 @@ class PhysiologyEngine:
                 return PhysiologyLabel.PATHOLOGIC
             if abnormal is False:
                 return PhysiologyLabel.PHYSIOLOGIC
+
+        # Extreme delta brush in a neonate (PMA given): normal maturation when preterm, otherwise not claimed pathologic.
+        if event.code == "extreme_delta_brush" and patient.postmenstrual_age_weeks is not None:
+            return (PhysiologyLabel.PHYSIOLOGIC if patient.postmenstrual_age_weeks < EDB_MATURATIONAL_PMA_WEEKS
+                    else PhysiologyLabel.UNCERTAIN)
 
         # Age-gated benign variant (e.g. posterior slow waves of youth).
         if self.is_age_physiologic_variant(event, patient):

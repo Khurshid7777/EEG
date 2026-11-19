@@ -97,7 +97,7 @@ class RulesEngine:
                 )
                 continue
             self._apply_causal_chain(
-                rule, detection, context, code_to_nodes, nodes, edges, critical_flags
+                rule, detection, context, code_to_nodes, nodes, edges, critical_flags, patient
             )
 
         # 2b) benign-variant (wicket) resolution of spike candidates
@@ -139,7 +139,7 @@ class RulesEngine:
         return True
 
     def _apply_causal_chain(
-        self, rule, detection, context, code_to_nodes, nodes, edges, critical_flags
+        self, rule, detection, context, code_to_nodes, nodes, edges, critical_flags, patient=None
     ) -> None:
         # anchor cause on the first present triggering event node
         trigger_codes = list(rule.when.any_event) + list(rule.when.all_events)
@@ -163,6 +163,12 @@ class RulesEngine:
                     else by_id[cause_id].physiology)
         effect_ru, effect_uz = rule.effect_ru, rule.effect_uz
         note = None
+        if rule.id == "edb_specific" and patient is not None and patient.postmenstrual_age_weeks is not None:
+            pma = patient.postmenstrual_age_weeks
+            effect_ru = (f"Delta brush у новорождённого (ПМВ {pma:.0f} нед.): у недоношенных — нормальный признак созревания, "
+                         "вывод об энцефалите не делается")
+            effect_uz = (f"Yangi tug‘ilgan chaqaloqda delta brush (PMV {pma:.0f} hafta): chala tug‘ilganlarda — yetilishning "
+                         "normal belgisi, ensefalit haqida xulosa qilinmaydi")
 
         # context split for burst-suppression
         if rule.id == "burst_suppression_context":
