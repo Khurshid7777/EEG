@@ -287,7 +287,8 @@ class Pipeline:
         out = stage_signal(signal.channel_names, signal.signal, signal.sampling_rate_hz, self._sleep_model,
                            parasagittal_fallback=sc.parasagittal_fallback,
                            parasagittal_model=self._sleep_para, aasm_model=self._sleep_aasm,
-                           aasm_smoothing=self._sleep_smooth)
+                           aasm_smoothing=self._sleep_smooth,
+                           aasm_n1_logit_offset=sc.aasm_n1_logit_offset)
         if out is not None:
             out["model"] = (sc.parasagittal_model if out["derivations"] == "parasagittal" and sc.parasagittal_model
                             else sc.aasm_model if out["derivations"] == "aasm" else sc.model)

@@ -596,3 +596,16 @@ def test_stage_signal_smoothing_only_on_aasm_path():
     assert out["hypnogram_unsmoothed"].count("N1") > out["hypnogram"].count("N1")
     mid = stage_signal(["Fpz-Cz", "Pz-Oz", "EOG"], rng.normal(0, 20, (3, n)), fs, Flip(), aasm_smoothing=sm)
     assert "hypnogram_unsmoothed" not in mid        # other montages are unchanged
+
+
+def test_n1_offset_lowers_n1_and_is_off_by_default():
+    """Increment 68: a negative N1 offset moves borderline N1 epochs to the neighbouring stage; 0 changes nothing."""
+    import numpy as np
+
+    from neurolens.layer4_detect.sleep_staging import STAGES, apply_n1_offset
+
+    p = np.array([[0.30, 0.38, 0.30, 0.01, 0.01], [0.02, 0.90, 0.06, 0.01, 0.01]])
+    assert np.array_equal(apply_n1_offset(p, 0.0), p)
+    q = apply_n1_offset(p, -1.0)
+    assert np.allclose(q.sum(axis=1), 1.0)
+    assert q[0].argmax() != STAGES.index("N1") and q[1].argmax() == STAGES.index("N1")

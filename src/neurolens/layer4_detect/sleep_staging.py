@@ -398,11 +398,21 @@ def _stage_sleep_period(F: np.ndarray, names: list[str], model,
     return proba, (a, b)
 
 
+def apply_n1_offset(proba: np.ndarray, offset: float) -> np.ndarray:
+    """Increment 68: shift the N1 log-probability by ``offset`` (<= 0 lowers N1) and renormalise rows."""
+    if not offset:
+        return proba
+    q = proba.copy()
+    q[:, STAGES.index("N1")] *= float(np.exp(offset))
+    return q / np.maximum(q.sum(axis=1, keepdims=True), 1e-12)
+
+
 def stage_signal(names: list[str], data: np.ndarray, fs: float, model: MulticlassTreeModel,
                  parasagittal_fallback: bool = False,
                  parasagittal_model: MulticlassTreeModel | None = None,
                  aasm_model: MulticlassTreeModel | None = None,
-                 aasm_smoothing: dict | None = None) -> dict | None:
+                 aasm_smoothing: dict | None = None,
+                 aasm_n1_logit_offset: float = 0.0, keep_proba: bool = False) -> dict | None:
     """Hypnogram + sleep summary for a recording, or None if derivations are missing.
     ``parasagittal_model`` (a stager trained on clinical derivations) replaces ``model``
     when the parasagittal fallback is used; ``aasm_model`` (increment 49) enables the AASM
@@ -431,6 +441,9 @@ def stage_signal(names: list[str], data: np.ndarray, fs: float, model: Multiclas
         F = np.column_stack([F, np.zeros((n_ep, 3))])
         names_f = names_f + ["eog_log_slow", "eog_log_fast", "eog_logvar"]
     proba, window = _stage_sleep_period(F, names_f, model, AASM_BRIDGE_EPOCHS if is_aasm else None)
+    proba_raw = proba
+    if is_aasm:
+        proba = apply_n1_offset(proba, aasm_n1_logit_offset)   # increment 68 (0 = off)
     stages = proba.argmax(axis=1)
     raw = None
     if is_aasm and aasm_smoothing is not None:  # increment 55: transitions of real nights, AASM path only
@@ -443,6 +456,7 @@ def stage_signal(names: list[str], data: np.ndarray, fs: float, model: Multiclas
         **({"hypnogram_unsmoothed": [STAGES[i] for i in raw]} if raw is not None else {}),
         "summary": hypnogram_summary(stages),
         "mean_confidence": round(float(proba.max(axis=1).mean()), 3),
+        **({"_proba": proba_raw} if keep_proba else {}),
         "derivations": "midline" if midline else ("aasm" if is_aasm else "parasagittal"),
         "eog_source": "eog_channel" if any(n.upper().startswith(("EOG", "LOC", "ROC")) or n.upper() in ("E1", "E2")
                                            for n in names)
