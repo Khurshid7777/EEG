@@ -1,0 +1,29 @@
+{
+ "rest": {
+  "n": 36,
+  "n_excluded": 0,
+  "specificity": 1.0,
+  "specificity_ci95": [
+   0.902606244085508,
+   1.0
+  ],
+  "rule_specificity": 0.8611111111111112,
+  "borderline": 3
+ },
+ "task": {
+  "n": 36,
+  "n_excluded": 0,
+  "specificity": 1.0,
+  "specificity_ci95": [
+   0.902606244085508,
+   1.0
+  ],
+  "rule_specificity": 0.9444444444444444,
+  "borderline": 5
+ },
+ "rest_not_decided": 0,
+ "task_not_decided": 0,
+ "hypotheses": {
+  "H1_rest_specificity_at_least_0.65": true
+ }
+}
