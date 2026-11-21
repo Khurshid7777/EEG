@@ -141,9 +141,9 @@ def loco(out: Path) -> dict:
     res["delta_kappa"] = {h: round(v, 4) for h, v in d.items()}
     res["delta_f1_n1"] = {h: round(v, 4) for h, v in n1.items()}
     res["mean_delta_kappa"] = round(float(np.mean(list(d.values()))), 4)
-    res["criteria"] = {"mean_gain_ge_0.008": res["mean_delta_kappa"] >= 0.008,
-                       "n1_f1_up_in_ge_3": sum(v > 0 for v in n1.values()) >= 3,
-                       "no_centre_drop_gt_0.01": min(d.values()) >= -0.01}
+    res["criteria"] = {"mean_gain_ge_0.008": bool(res["mean_delta_kappa"] >= 0.008),
+                       "n1_f1_up_in_ge_3": bool(sum(v > 0 for v in n1.values()) >= 3),
+                       "no_centre_drop_gt_0.01": bool(min(d.values()) >= -0.01)}
     res["accepted"] = all(res["criteria"].values())
     return res
 
