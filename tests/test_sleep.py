@@ -609,3 +609,24 @@ def test_n1_offset_lowers_n1_and_is_off_by_default():
     q = apply_n1_offset(p, -1.0)
     assert np.allclose(q.sum(axis=1), 1.0)
     assert q[0].argmax() != STAGES.index("N1") and q[1].argmax() == STAGES.index("N1")
+
+
+def test_n1_features_separate_alpha_and_slow_eye_movements():
+    from neurolens.layer4_detect.sleep_staging import N1_FEATURE_NAMES, n1_features
+
+    fs, n = 100.0, 3000
+    t = np.arange(2 * n) / fs
+    rng = np.random.default_rng(0)
+    alpha = np.sin(2 * np.pi * 10 * t) + 0.2 * rng.standard_normal(t.size)   # eyes closed, awake
+    theta = np.sin(2 * np.pi * 6 * t) + 0.2 * rng.standard_normal(t.size)    # drowsy
+    po = np.where(t < 30, alpha, theta)
+    fc = 0.5 * rng.standard_normal(t.size)
+    fc[4500] += 12.0                                                           # vertex-like sharp transient
+    eog = 5 * np.sin(2 * np.pi * 0.4 * t)
+    F, names = n1_features(fc, po, eog, fs, 0, 2)
+    assert names == list(N1_FEATURE_NAMES) and F.shape == (2, 13)
+    d = dict(zip(names, F.T))
+    assert d["po_alpha_dom_frac"][0] > 0.9 > d["po_alpha_dom_frac"][1]
+    assert abs(d["po_alpha_peak_freq"][0] - 10) <= 1 and d["fc_vx_count"][1] >= 1 and d["fc_vx_count"][0] == 0
+    assert d["eog_sem_rel"][0] > 0.5
+    assert np.isnan(n1_features(fc, po, None, fs, 0, 2)[0][:, -3:]).all()

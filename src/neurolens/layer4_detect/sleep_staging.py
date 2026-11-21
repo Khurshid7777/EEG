@@ -84,6 +84,70 @@ def epoch_features(frontal: np.ndarray, parietal: np.ndarray, eog: np.ndarray | 
     return np.column_stack(blocks), names
 
 
+N1_FEATURE_NAMES = ("po_alpha_dom_frac", "po_alpha_rel_max", "po_alpha_peak_freq", "po_alpha_fluct",
+                    "fc_vx_count", "fc_vx_logamp", "fc_crest", "fc_log_gamma", "fc_gamma_beta",
+                    "fc_delta_fluct", "eog_log_sem", "eog_sem_rel", "eog_sem_rapid")
+
+
+def _bp(p: np.ndarray, f: np.ndarray, lo: float, hi: float) -> np.ndarray:
+    return p[..., (f >= lo) & (f < hi)].sum(axis=-1)
+
+
+def n1_features(frontal: np.ndarray, parietal: np.ndarray, eog: np.ndarray | None, fs: float,
+                start: int, end: int) -> tuple[np.ndarray, list[str]]:
+    """Increment 69: features for N1 (alpha persistence / peak frequency, vertex-wave proxies, slow eye
+    movements, muscle tone, spectral fluctuation). Definitions are fixed in
+    ``docs/preregistration_increment69.md``. ``eog=None`` gives NaN (missing) EOG columns."""
+    from scipy.signal import butter, find_peaks, sosfiltfilt
+
+    fc, po = epoch_matrix(frontal, fs, start, end), epoch_matrix(parietal, fs, start, end)
+    n_ep, n = fc.shape
+    w = int(2 * fs)
+    nw = n // w
+
+    def win(x: np.ndarray) -> np.ndarray:  # (ep, nw, w) 2-s windows
+        return x[:, :nw * w].reshape(n_ep, nw, w)
+
+    # parietal-occipital alpha persistence / peak frequency (2-s windows, 0.5 Hz resolution)
+    f, p = welch(win(po), fs=fs, nperseg=w, axis=-1)
+    tot = _bp(p, f, 0.5, 30.0) + 1e-12
+    a, th, sg = _bp(p, f, 8.0, 12.0), _bp(p, f, 4.0, 8.0), _bp(p, f, 12.0, 16.0)
+    arel = a / tot
+    dom = ((a > th) & (a > sg)).mean(axis=1)
+    sel = (f >= 6.0) & (f <= 13.0)
+    pk = f[sel][np.argmax(p[..., sel], axis=-1)]
+    out = [dom, arel.max(axis=1), np.median(pk, axis=1), arel.std(axis=1)]
+
+    # frontal vertex-wave proxies (1-8 Hz)
+    sos = butter(2, [1.0, 8.0], btype="band", fs=fs, output="sos")
+    xb = sosfiltfilt(sos, fc, axis=1)
+    sigma = 1.4826 * np.median(np.abs(xb - np.median(xb, axis=1, keepdims=True)), axis=1) + 1e-9
+    cnt, amp = np.zeros(n_ep), np.zeros(n_ep)
+    for i in range(n_ep):
+        _, pr = find_peaks(xb[i], prominence=8.0 * sigma[i], distance=int(fs))
+        cnt[i] = len(pr["prominences"])
+        amp[i] = pr["prominences"].max() / sigma[i] if cnt[i] else 0.0
+    out += [cnt, np.log1p(amp), np.abs(xb).max(axis=1) / (np.sqrt((xb ** 2).mean(axis=1)) + 1e-9)]
+
+    # muscle tone proxy and slow-wave fluctuation (frontal)
+    ff, pf = welch(win(fc), fs=fs, nperseg=w, axis=-1)
+    gam = _bp(pf, ff, 30.0, min(45.0, fs / 2 - 0.5)).mean(axis=1)
+    bet = _bp(pf, ff, 16.0, 30.0).mean(axis=1)
+    out += [np.log(gam + 1e-12), np.log((gam + 1e-12) / (bet + 1e-12))]
+    drel = _bp(pf, ff, 0.5, 4.0) / (_bp(pf, ff, 0.5, 30.0) + 1e-12)
+    out.append(drel.std(axis=1))
+
+    # slow eye movements (10-s windows)
+    if eog is None:
+        out += [np.full(n_ep, np.nan)] * 3
+    else:
+        fe, pe = welch(epoch_matrix(eog, fs, start, end), fs=fs, nperseg=int(10 * fs), axis=-1)
+        sem = _bp(pe, fe, 0.2, 0.7)
+        out += [np.log(sem + 1e-12), sem / (_bp(pe, fe, 0.1, 8.0) + 1e-12),
+                np.log((sem + 1e-12) / (_bp(pe, fe, 2.0, 8.0) + 1e-12))]
+    return np.column_stack(out), list(N1_FEATURE_NAMES)
+
+
 def standardise_and_context(F: np.ndarray, names: list[str], context: int = CONTEXT,
                             absolute: tuple[str, ...] = ()) -> tuple[np.ndarray, list[str]]:
     """Per-night robust z-score (median / IQR) + neighbouring epochs (edge-padded). Epochs with
