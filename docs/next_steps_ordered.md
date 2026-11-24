@@ -43,3 +43,12 @@
 | BDSP (IIIC/SPaRCNet) | https://bdsp.io/ |
 | Kaggle HMS (правила конкурса) | https://www.kaggle.com/competitions/hms-harmful-brain-activity-classification |
 | Kaggle API-токен | https://www.kaggle.com/settings (раздел API → Create New Token) |
+
+## Статус заявок (проверка 2026-11-24, после подачи владельцем проекта)
+
+Подтверждения доступа в сессии пока нет: NMT-4K (Zenodo) по-прежнему показывает 0 файлов; PhysioNet (NCH, CPS, jsmf-access) отвечает 403 на `physionet.org/files/…`; домены `eutils.ncbi.nlm.nih.gov`, `api.crossref.org`, `www.isip.piconepress.com` и Kaggle из сессии недоступны. Одобрение обычно занимает от нескольких дней (Zenodo — решает автор; PhysioNet — проверка аккредитации и CITI; NEDC — ответ по почте).
+
+Когда придёт одобрение, что нужно сделать для доступа сессии (я не получаю чужие письма и пароли):
+1. PhysioNet / TUH / Kaggle требуют логин или токен на скачивание → я запрошу их через защищённую форму среды (`request_credential`, хосты `physionet.org`, `www.kaggle.com`, TUH-сервер); значения вводите только в форме, не в чат.
+2. Для Kaggle, eutils, Crossref и TUH — добавить хосты в сетевые настройки окружения.
+3. Zenodo (NMT-4K): после одобрения появится ссылка/токен на скачивание; если файлы закрыты токеном — тоже через форму.
