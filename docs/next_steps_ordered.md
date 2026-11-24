@@ -28,3 +28,18 @@
 ## Чего я не сделаю без вас
 
 Заявки, подписи соглашений, ввод токенов и AWS-ключей, переключение продукта на v5 в обход пре-регистрированного правила — только по вашему явному решению.
+
+## Ссылки для подачи заявок (проверены запросом 2026-11-24; Kaggle из сессии не открывается — ссылки без проверки)
+
+| Источник | Ссылка |
+|---|---|
+| NMT-4K (Request access) | https://zenodo.org/records/21405022 |
+| PhysioNet — аккредитация | https://physionet.org/settings/credentialing/ |
+| PhysioNet — курс CITI | https://physionet.org/about/citi-course/ |
+| NCH Sleep DataBank | https://physionet.org/content/nch-sleep/ |
+| CPS (сон, ПСГ) | https://physionet.org/content/cps-dataset-sleep/ |
+| jsmf-access (наркоз, 646 пациентов) | https://physionet.org/content/jsmf-access/ |
+| TUH EEG (форма NEDC) | https://isip.piconepress.com/projects/nedc/html/tuh_eeg/ |
+| BDSP (IIIC/SPaRCNet) | https://bdsp.io/ |
+| Kaggle HMS (правила конкурса) | https://www.kaggle.com/competitions/hms-harmful-brain-activity-classification |
+| Kaggle API-токен | https://www.kaggle.com/settings (раздел API → Create New Token) |
