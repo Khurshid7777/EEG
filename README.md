@@ -65,6 +65,11 @@ JSON + текстовый протокол + графики**.
   признакам, JSON-модель + numpy-исполнение, один детектор оффлайн и в мониторе,
   калибровка Platt; включение по умолчанию — по пре-регистрированному правилу
   (`docs/learned_detector.md`, `docs/model_card_ictal_gbm.md`).
+- **Региональная карта коры (доли и полушария):** интерактивная страница «диагностика + карта»
+  (самодостаточный HTML, RU/UZ), страница PDF и блок `regional` в `result.json`; скальповое
+  картирование, **не** локализация источников и не диагноз; сторона очага не определяется
+  (проверка не прошла). `neurolens regional FILE --html out.html`; описание и результаты проверок —
+  `docs/regional_view.md`, примеры — `docs/demo/`.
 - **Слой 6 — реальный LLM:** провайдер Anthropic (schema-constrained) при наличии
   `ANTHROPIC_API_KEY`; иначе детерминированный заземлённый провайдер (оффлайн,
   воспроизводимо, используется в тестах).
@@ -117,6 +122,8 @@ python examples/run_demo.py
 neurolens demo --out out_demo
 neurolens analyze data/synthetic/demo.edf --mode A --montage double_banana --out out_demo
 neurolens export-schemas schemas
+# интерактивная региональная карта одной записи (HTML) и компактная сводка (JSON):
+neurolens regional data/synthetic/demo.edf --html out_demo/regional.html --json out_demo/regional.json
 
 # real-time мониторинг (cEEG) с тревогами и фрагментами ЭЭГ:
 neurolens monitor data/synthetic/demo.edf --out out_rt          # быстрый повтор
