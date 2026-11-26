@@ -127,3 +127,13 @@ def test_page_script_parses_with_node(tmp_path):
     f.write_text(js, encoding="utf-8")
     r = subprocess.run(["node", "--check", str(f)], capture_output=True, text=True, check=False)
     assert r.returncode == 0, r.stderr
+
+
+def test_cli_regional_writes_html_and_json(tmp_path):
+    from neurolens.cli import _generate_demo_edf, main
+
+    edf = _generate_demo_edf(tmp_path / "demo.edf")
+    html, js = tmp_path / "v.html", tmp_path / "v.json"
+    assert main(["regional", str(edf), "--html", str(html), "--json", str(js)]) == 0
+    assert "regional_view_v1" in html.read_text(encoding="utf-8")
+    assert json.loads(js.read_text())["version"] == "regional_view_v1"

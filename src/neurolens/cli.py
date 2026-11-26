@@ -60,6 +60,32 @@ def _analyze(args) -> int:
     return 0
 
 
+def _regional(args) -> int:
+    """Interactive regional view (HTML) + optional JSON summary for one recording (increments 73-81)."""
+    import json
+
+    from .layer1_ingest.registry import ingest
+    from .outputs.regional_view import build_view, regional_summary, render_html
+    from .pipeline.pipeline import Pipeline
+
+    patient = PatientInfo(age_years=args.age) if args.age is not None else None
+    sig = ingest(args.file, patient=patient) if patient else ingest(args.file)
+    out = Pipeline(provider_pref=args.provider, run_ica=False).analyze_signal(sig)
+    try:
+        view = build_view(out.signal.signal, list(out.signal.channel_names), out.signal.sampling_rate_hz, out.result_json,
+                          win_s=args.win, title=args.title or Path(args.file).stem)
+    except ValueError as exc:
+        print(f"Региональная карта недоступна: {exc}", file=sys.stderr)
+        return 2
+    Path(args.html).parent.mkdir(parents=True, exist_ok=True)
+    Path(args.html).write_text(render_html(view), encoding="utf-8")
+    print(f"HTML: {args.html}")
+    if args.json:
+        Path(args.json).write_text(json.dumps(regional_summary(view), ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"JSON: {args.json}")
+    return 0
+
+
 def _summary_of(path: str, patient=None) -> dict:
     """Record summary of a prior EEG: its saved ``result.json`` or the recording itself."""
     import json
@@ -781,6 +807,16 @@ def build_parser() -> argparse.ArgumentParser:
     cm.add_argument("--age", type=float, default=None, help="Age in years (when recordings are given).")
     cm.add_argument("--out", help="Write the comparison as JSON.")
     cm.set_defaults(func=_compare)
+
+    rg = sub.add_parser("regional", help="Interactive regional (lobe / hemisphere) scalp view of one recording (HTML).")
+    rg.add_argument("file")
+    rg.add_argument("--html", required=True, help="Output HTML file.")
+    rg.add_argument("--json", default=None, help="Optional compact regional summary (JSON).")
+    rg.add_argument("--win", type=float, default=10.0, help="Window length, s (lengthened for very long recordings).")
+    rg.add_argument("--age", type=float, default=None, help="Age in years.")
+    rg.add_argument("--title", default=None)
+    rg.add_argument("--provider", default="deterministic", choices=["auto", "anthropic", "deterministic"])
+    rg.set_defaults(func=_regional)
 
     d = sub.add_parser("demo", help="Generate a synthetic EDF and analyze it.")
     d.add_argument("--out", default="out_demo")
