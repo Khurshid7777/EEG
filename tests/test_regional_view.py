@@ -58,7 +58,7 @@ def test_html_is_self_contained_and_data_roundtrips(tmp_path):
     html = render_html(v)
     assert "/*__DATA__*/null" not in html and "<script src" not in html and "http://" not in html.replace("http://www.w3.org", "")
     m = re.search(r"const V=(\{.*?\});\n\(\(\)", html, re.DOTALL)
-    back = json.loads(m.group(1).replace("<\\/", "</"))
+    back = json.loads(m.group(1))
     assert back["title"] == "t</script>x" and back["series"]["n_windows"] == 6
     assert html.count("</script>") == 1                      # the data cannot close the script tag
     png = plot_regional_static(v, tmp_path / "s.png")
@@ -137,3 +137,13 @@ def test_cli_regional_writes_html_and_json(tmp_path):
     assert main(["regional", str(edf), "--html", str(html), "--json", str(js)]) == 0
     assert "regional_view_v1" in html.read_text(encoding="utf-8")
     assert json.loads(js.read_text())["version"] == "regional_view_v1"
+
+
+def test_page_escapes_labels_channels_and_title():
+    x, ch, fs = _signal(secs=40)
+    res = {"events": [{"code": "spike", "t_start": 12.0, "t_end": 12.1, "confidence": 0.8,
+                       "channels": ["<img src=x onerror=1>", "T3"]}],
+           "causal_graph": {"nodes": [{"event_code": "spike", "label_ru": "<img src=x onerror=1>"}]}}
+    html = render_html(build_view(x, ch, fs, res, title="<script>1</script>"))
+    assert "const esc=" in html and "esc(evLbl(e))" in html and "esc(e.channels.join" in html
+    assert html.count("<script>") == 1 and html.count("</script>") == 1      # title/label text cannot open or close a script

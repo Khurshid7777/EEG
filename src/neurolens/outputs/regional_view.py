@@ -105,7 +105,7 @@ def build_view(signal: np.ndarray, channels: list[str], fs: float, result_json: 
 
 def render_html(view: Mapping) -> str:
     tpl = (Path(__file__).with_name("regional_view.html")).read_text(encoding="utf-8")
-    data = json.dumps(view, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    data = json.dumps(view, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     return tpl.replace("/*__DATA__*/null", data)
 
 
