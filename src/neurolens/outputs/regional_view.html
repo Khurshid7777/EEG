@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NeuroLens — региональная карта коры</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#16202a;--mut:#56626f;--line:#d6dce3;--acc:#1b5fd1;--accbg:#e6efff;--warn:#b4400a;--warnbg:#fff1e6;--ok:#146c34;--chip:#eef1f4}
+@media (prefers-color-scheme:dark){:root{--bg:#0f141a;--card:#171e26;--ink:#e8edf2;--mut:#9aa7b4;--line:#2b3641;--acc:#6aa2ff;--accbg:#1b2c4a;--warn:#ff9d5c;--warnbg:#3a2415;--ok:#5fd18a;--chip:#222c37}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header,main{max-width:1280px;margin:0 auto;padding:0 16px}
+header{padding-top:14px}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--mut);font-size:13px}
+.caveat{margin:10px 0;padding:8px 12px;border:1px solid var(--warn);background:var(--warnbg);border-radius:8px;font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.grp{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.grp>span.lbl{color:var(--mut);font-size:12px;margin-right:2px}
+button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:5px 10px;border-radius:7px;cursor:pointer}
+button[aria-pressed=true]{background:var(--accbg);border-color:var(--acc);color:var(--acc);font-weight:600}
+button:focus-visible,input:focus-visible,canvas:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}
+.card h2{font-size:14px;margin:0 0 8px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+#tl{width:100%;display:block;touch-action:none;cursor:col-resize}
+.grid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:12px}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.right{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:1100px){.right{grid-template-columns:1fr}}
+#map{display:block;margin:0 auto;max-width:100%}
+.cb{display:flex;align-items:center;gap:6px;justify-content:center;font-size:12px;color:var(--mut);margin-top:6px}
+#cbc{width:160px;height:10px;border-radius:5px;border:1px solid var(--line)}
+#slider{width:100%}
+.cap p{margin:4px 0}
+.badge{display:inline-block;padding:1px 7px;border-radius:9px;background:var(--chip);font-size:12px;margin-right:4px}
+.badge.w{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+td,th{padding:3px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+tr.ev{cursor:pointer}tr.ev:hover{background:var(--accbg)}tr.cur{background:var(--accbg)}
+.evwrap{max-height:230px;overflow:auto}
+svg text{fill:var(--ink);font-size:11px}
+.note{font-size:12px;color:var(--mut)}
+.imp{font-size:13px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<header>
+<h1 id="ttl"></h1>
+<div class="sub" id="sub"></div>
+<div class="caveat" id="cav" role="note"></div>
+<div class="bar">
+ <div class="grp" id="gband"><span class="lbl" id="lband"></span></div>
+ <div class="grp" id="gmetric"><span class="lbl" id="lmetric"></span></div>
+ <div class="grp" id="gview"><span class="lbl" id="lview"></span></div>
+ <div class="grp" id="gmode"></div>
+ <div class="grp" id="glang"></div>
+</div>
+</header>
+<main>
+<section class="card"><h2 id="h_tl"></h2><canvas id="tl" tabindex="0" role="img" aria-label="timeline"></canvas>
+ <input id="slider" type="range" min="0" value="0" aria-label="window"></section>
+<div class="grid">
+ <section class="card"><h2 id="h_map"></h2><canvas id="map" role="img" aria-label="map"></canvas>
+  <div class="cb"><span id="cbmin"></span><canvas id="cbc" width="160" height="10"></canvas><span id="cbmax"></span></div>
+  <div class="note" id="mapnote" style="text-align:center;margin-top:4px"></div></section>
+ <div class="right">
+  <section class="card"><h2 id="h_cap"></h2><div class="cap" id="cap"></div></section>
+  <section class="card"><h2 id="h_as"></h2><svg id="asv" width="100%" height="230" role="img"></svg><div class="note" id="asnote"></div></section>
+  <section class="card" style="grid-column:1/-1"><h2 id="h_ev"></h2><div class="evwrap"><table id="evt"></table></div></section>
+  <section class="card" style="grid-column:1/-1" id="impcard"><h2 id="h_imp"></h2><div class="imp" id="imp"></div></section>
+ </div>
+</div>
+<p class="note" id="foot"></p>
+</main>
+<script>
+const V=/*__DATA__*/null;
+(()=>{
+const S=V.series, CH=S.channels, NW=S.n_windows, WS=S.win_s, BANDS=['delta','theta','alpha','beta'];
+const REG=Object.keys(V.regions);
+const T={
+ru:{ttl:'Региональная карта коры',band:'Диапазон',metric:'Показатель',view:'Карта',rel:'Отн. мощность',z:'Отклонение (z)',topo:'Электроды',cells:'Доли × полушария',
+ delta:'дельта',theta:'тета',alpha:'альфа',beta:'бета',all:'Вся запись',play:'▶ Воспроизвести',pause:'⏸ Пауза',pinA:'Закрепить A',clearA:'Сброс A',
+ h_tl:'Процесс диагностики по времени',h_map:'Карта коры (скальповая)',h_cap:'Что видно в выбранном окне',h_as:'Межполушарная асимметрия (альфа)',h_ev:'Найденные события',h_imp:'Заключение автоматического анализа',
+ sub:(d,n,w)=>`Запись ${fmtT(d)} · ${n} электродов · окно ${w} с`,win:'Окно',s:'с',allrec:'Вся запись (среднее по окнам без артефактов)',
+ reg:{frontal:'лобная',central:'центральная',temporal:'височная',parietal:'теменная',occipital:'затылочная'},L:'левая',R:'правая',
+ maxb:(b,c,v)=>`Максимум «${b}»: ${c} (${v}).`,diffmax:(c,v)=>`Наибольшее отличие B от A: ${c} (${v}).`,
+ ev0:'В этом окне событий детекторов нет.',evin:'События детекторов в окне:',art:'Окно содержит артефакты (размах > 200 мкВ на ≥ 2 электродах): значения ненадёжны.',
+ asrec:'На уровне записи вне нормативного коридора:',asnone:'На уровне записи все пары в пределах нормативного коридора.',rgt:'правое сильнее левого',lft:'левое сильнее правого',
+ asnote:'Ромб — вся запись (сравнивается с коридором), кружок — текущее окно (только ориентир). Коридор — 2.5–97.5 процентили здоровых; выход за него не означает очаг.',
+ lsub:'левое сильнее',rsub:'правое сильнее',pin:'A закреплено на',diff:'Разность B − A',
+ evcols:['Время, с','Событие','Где','Увер.'],noloc:'без привязки к каналам',noev:'Событий детекторов нет.',noimp:'Текст заключения недоступен.',
+ foot:'Нормативные пределы:',spec:'Слева — левое полушарие, справа — правое (вид сверху, нос вверху). Электродные подписи — стандарт 10-20.'},
+uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkich',view:'Xarita',rel:'Nisbiy quvvat',z:'Og‘ish (z)',topo:'Elektrodlar',cells:'Bo‘laklar × yarimsharlar',
+ delta:'delta',theta:'teta',alpha:'alfa',beta:'beta',all:'Butun yozuv',play:'▶ Ijro',pause:'⏸ Pauza',pinA:'A ni qotirish',clearA:'A ni tozalash',
+ h_tl:'Vaqt bo‘yicha diagnostika jarayoni',h_map:'Po‘stloq xaritasi (bosh terisi)',h_cap:'Tanlangan oynada nima ko‘rinadi',h_as:'Yarimsharlararo assimetriya (alfa)',h_ev:'Topilgan hodisalar',h_imp:'Avtomatik tahlil xulosasi',
+ sub:(d,n,w)=>`Yozuv ${fmtT(d)} · ${n} elektrod · oyna ${w} s`,win:'Oyna',s:'s',allrec:'Butun yozuv (artefaktsiz oynalar o‘rtachasi)',
+ reg:{frontal:'peshona',central:'markaziy',temporal:'chakka',parietal:'tepa',occipital:'ensa'},L:'chap',R:'o‘ng',
+ maxb:(b,c,v)=>`«${b}» maksimumi: ${c} (${v}).`,diffmax:(c,v)=>`B ning A dan eng katta farqi: ${c} (${v}).`,
+ ev0:'Bu oynada detektor hodisalari yo‘q.',evin:'Oynadagi detektor hodisalari:',art:'Oynada artefaktlar bor (≥ 2 elektrodda > 200 mkV): qiymatlar ishonchsiz.',
+ asrec:'Yozuv darajasida me’yor koridoridan tashqarida:',asnone:'Yozuv darajasida barcha juftliklar me’yor koridorida.',rgt:'o‘ng chapdan kuchli',lft:'chap o‘ngdan kuchli',
+ asnote:'Romb — butun yozuv (koridor bilan solishtiriladi), doira — joriy oyna (faqat mo‘ljal). Koridor — sog‘lomlarning 2.5–97.5 protsentili; undan chiqish o‘choqni bildirmaydi.',
+ lsub:'chap kuchli',rsub:'o‘ng kuchli',pin:'A qotirilgan:',diff:'Farq B − A',
+ evcols:['Vaqt, s','Hodisa','Qayerda','Ishonch'],noloc:'kanallarga bog‘lanmagan',noev:'Detektor hodisalari yo‘q.',noimp:'Xulosa matni mavjud emas.',
+ foot:'Me’yor chegaralari:',spec:'Chapda — chap yarimshar, o‘ngda — o‘ng yarimshar (yuqoridan ko‘rinish, burun tepada). Belgilar 10-20 standarti.'}
+};
+const st={w:0,band:'alpha',metric:'rel',view:'topo',lang:'ru',pinA:null,all:false,timer:null};
+const $=id=>document.getElementById(id);
+function fmtT(s){const m=Math.floor(s/60),u=st.lang==='uz'?['daq','s']:['мин','с'];return m>=1?`${m} ${u[0]} ${Math.round(s-m*60)} ${u[1]}`:`${Math.round(s)} ${u[1]}`}
+function evLbl(e){return st.lang==='uz'?(SHORT.uz[e.code]||e.label):e.label}
+const isMid=c=>c.endsWith('z'), sideOf=c=>isMid(c)?'M':(parseInt(c.slice(-1))%2?'L':'R');
+// cells: region x side (midline electrodes belong to both sides)
+const CELLS=[];REG.forEach(r=>['L','R'].forEach(s=>{const ch=V.regions[r].filter(c=>CH.includes(c)&&(sideOf(c)===s||sideOf(c)==='M'));if(ch.length)CELLS.push({r,s,ch,id:r+s})}));
+const cellOf=(ch,x)=>{const r=REG.find(r=>V.regions[r].includes(ch));if(!r)return -1;const s=sideOf(ch)==='M'?(x<0?'L':'R'):sideOf(ch);return CELLS.findIndex(c=>c.r===r&&c.s===s)};
+const chIdx=Object.fromEntries(CH.map((c,i)=>[c,i]));
+const okW=[...Array(NW).keys()].filter(w=>!S.artefact[w]);
+const useW=okW.length>=3?okW:[...Array(NW).keys()];
+function chVal(c,w,b){return w<0?useW.reduce((a,i)=>a+S.rel[b][chIdx[c]][i],0)/useW.length:S.rel[b][chIdx[c]][w]}
+function cellVal(ci,w,b){const c=CELLS[ci];return c.ch.reduce((a,x)=>a+chVal(x,w,b),0)/c.ch.length}
+// robust z per cell/band over clean windows
+const ZS={};BANDS.forEach(b=>{ZS[b]=CELLS.map((_,ci)=>{const v=useW.map(w=>cellVal(ci,w,b)).sort((x,y)=>x-y);const med=v[v.length>>1];const dev=v.map(x=>Math.abs(x-med)).sort((x,y)=>x-y);return{med,mad:Math.max(1e-4,1.4826*dev[dev.length>>1])}})});
+function metricCell(ci,w,b){const v=cellVal(ci,w,b);return st.metric==='z'?Math.max(-4,Math.min(4,(v-ZS[b][ci].med)/ZS[b][ci].mad)):v}
+function metricCh(c,w,b){if(st.metric!=='z')return chVal(c,w,b);const ci=cellOf(c,V.coords[c][0]);return Math.max(-4,Math.min(4,(chVal(c,w,b)-ZS[b][ci].med)/ZS[b][ci].mad))}
+// colour scales
+const VIR=[[68,1,84],[59,82,139],[33,145,140],[94,201,98],[253,231,37]];
+const DIV=[[33,102,172],[146,197,222],[247,247,247],[244,165,130],[178,24,43]];
+function lerp(stops,t){t=Math.max(0,Math.min(1,t));const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;return stops[i].map((v,k)=>Math.round(v+(stops[i+1][k]-v)*f))}
+function scaleFor(){ // [lo,hi,diverging]
+ if(st.pinA!==null&&!st.all){let m=0.05;for(const w of useW){for(let ci=0;ci<CELLS.length;ci++){m=Math.max(m,Math.abs(metricCell(ci,w,st.band)-metricCell(ci,st.pinA,st.band)))}}return[-m,m,true]}
+ if(st.metric==='z')return[-3,3,true];
+ const a=[];useW.forEach(w=>CELLS.forEach((_,ci)=>a.push(cellVal(ci,w,st.band))));a.sort((x,y)=>x-y);
+ return[a[Math.floor(a.length*.02)],a[Math.min(a.length-1,Math.floor(a.length*.98))]||1,false]}
+function colour(v,sc){const t=(v-sc[0])/((sc[1]-sc[0])||1);return lerp(sc[2]?DIV:VIR,t)}
+// ---------- head map ----------
+const mapC=$('map'),mctx=mapC.getContext('2d');const CW=320,CHT=350,CX=160,CY=185,SC=120,HR=1.12;
+function sizeMap(){const d=window.devicePixelRatio||1;mapC.width=CW*d;mapC.height=CHT*d;mapC.style.width=CW+'px';mapC.style.height=CHT+'px';return d}
+const px=(x,y)=>[CX+x*SC,CY-y*SC];
+function drawMap(){
+ const d=sizeMap(),sc=scaleFor(),w=st.all?-1:st.w,b=st.band;
+ const W=mapC.width,H=mapC.height,img=mctx.createImageData(W,H),dat=img.data;
+ const el=CH.filter(c=>V.coords[c]).map(c=>({c,x:V.coords[c][0],y:V.coords[c][1],v:null,ci:cellOf(c,V.coords[c][0])}));
+ const val=c=>{if(st.pinA!==null&&!st.all)return metricCh(c,st.w,b)-metricCh(c,st.pinA,b);return metricCh(c,w,b)};
+ el.forEach(e=>e.v=val(e.c));
+ const cellv=CELLS.map((_,ci)=>st.pinA!==null&&!st.all?metricCell(ci,st.w,b)-metricCell(ci,st.pinA,b):metricCell(ci,w,b));
+ const cid=new Int16Array(W*H).fill(-2);
+ for(let j=0;j<H;j++)for(let i=0;i<W;i++){
+  const x=(i/d-CX)/SC,y=(CY-j/d)/SC;if(x*x+y*y>HR*HR)continue;
+  let k=(j*W+i)*4,r,g,bl;
+  if(st.view==='topo'){let sw=0,sv=0;for(const e of el){const dd=(e.x-x)**2+(e.y-y)**2+1e-4;const ww=1/(dd*Math.sqrt(dd));sw+=ww;sv+=ww*e.v}[r,g,bl]=colour(sv/sw,sc)}
+  else{let bi=0,bd=1e9;el.forEach((e,n)=>{const dd=(e.x-x)**2+(e.y-y)**2;if(dd<bd){bd=dd;bi=n}});const e=el[bi];let ci=e.ci;if(sideOf(e.c)==='M'){const reg=REG.find(r=>V.regions[r].includes(e.c));ci=CELLS.findIndex(c=>c.r===reg&&c.s===(x<0?'L':'R'))}cid[j*W+i]=ci;[r,g,bl]=colour(cellv[ci],sc)}
+  dat[k]=r;dat[k+1]=g;dat[k+2]=bl;dat[k+3]=255}
+ if(st.view==='cells'){for(let j=0;j<H-1;j++)for(let i=0;i<W-1;i++){const a=cid[j*W+i];if(a<-1)continue;if(cid[j*W+i+1]!==a&&cid[j*W+i+1]>-2||cid[(j+1)*W+i]!==a&&cid[(j+1)*W+i]>-2){const k=(j*W+i)*4;dat[k]=dat[k+1]=dat[k+2]=40}}}
+ mctx.setTransform(1,0,0,1,0,0);mctx.clearRect(0,0,W,H);mctx.putImageData(img,0,0);mctx.setTransform(d,0,0,d,0,0);
+ const ink=getComputedStyle(document.body).color;mctx.strokeStyle=ink;mctx.lineWidth=1.6;
+ mctx.beginPath();mctx.arc(CX,CY,HR*SC,0,7);mctx.stroke();
+ mctx.beginPath();mctx.moveTo(CX-14,CY-HR*SC+2);mctx.lineTo(CX,CY-HR*SC-18);mctx.lineTo(CX+14,CY-HR*SC+2);mctx.stroke();
+ [-1,1].forEach(s=>{mctx.beginPath();mctx.moveTo(CX+s*HR*SC,CY-14);mctx.quadraticCurveTo(CX+s*(HR*SC+14),CY,CX+s*HR*SC,CY+14);mctx.stroke()});
+ // events in window: ring on electrodes
+ const evw=st.all?[]:eventsInWindow(st.w);const hot=new Set();evw.forEach(e=>e.channels.forEach(c=>hot.add(c)));
+ mctx.font='10px system-ui';mctx.textAlign='center';
+ el.forEach(e=>{const [X,Y]=px(e.x,e.y);mctx.beginPath();mctx.arc(X,Y,hot.has(e.c)?7:3,0,7);if(hot.has(e.c)){mctx.lineWidth=2.4;mctx.strokeStyle='#fff';mctx.stroke();mctx.lineWidth=1.2;mctx.strokeStyle='#000';mctx.stroke()}else{mctx.fillStyle='rgba(0,0,0,.75)';mctx.fill()}
+  mctx.fillStyle='#fff';mctx.strokeStyle='rgba(0,0,0,.65)';mctx.lineWidth=3;mctx.strokeText(e.c,X,Y-8);mctx.fillText(e.c,X,Y-8)});
+ if(st.view==='cells'){mctx.font='600 11px system-ui';CELLS.forEach((c,ci)=>{const pts=c.ch.map(x=>V.coords[x]);let mx=pts.reduce((a,p)=>a+p[0],0)/pts.length,my=pts.reduce((a,p)=>a+p[1],0)/pts.length;if(c.ch.some(x=>sideOf(x)==='M')){mx=(c.s==='L'?-1:1)*Math.max(0.12,Math.abs(mx))}const [X,Y]=px(mx,my-0.1);const t=(st.pinA!==null&&!st.all?(cellv[ci]>=0?'+':''):'')+cellv[ci].toFixed(st.metric==='z'||st.pinA!==null?2:2);mctx.strokeStyle='rgba(255,255,255,.9)';mctx.lineWidth=3;mctx.strokeText(t,X,Y);mctx.fillStyle='#111';mctx.fillText(t,X,Y)})}
+ // L / R labels
+ mctx.font='600 12px system-ui';mctx.fillStyle=ink;mctx.textAlign='left';mctx.fillText('L',6,CY+4);mctx.textAlign='right';mctx.fillText('R',CW-6,CY+4);
+ // colour bar
+ const cb=$('cbc').getContext('2d');for(let i=0;i<160;i++){const [r,g,bl]=colour(sc[0]+(sc[1]-sc[0])*i/159,sc);cb.fillStyle=`rgb(${r},${g},${bl})`;cb.fillRect(i,0,1,10)}
+ const f=v=>(sc[2]&&v>0?'+':'')+v.toFixed(sc[2]?2:2);$('cbmin').textContent=f(sc[0]);$('cbmax').textContent=f(sc[1]);
+ const L=T[st.lang];$('mapnote').textContent=(st.pinA!==null&&!st.all?`${L.diff}: B=${wlabel(st.w)}, A=${wlabel(st.pinA)} · `:'')+(st.all?L.allrec:`${L.win} ${wlabel(st.w)}`);
+}
+const wlabel=w=>`${(w*WS).toFixed(0)}–${((w+1)*WS).toFixed(0)} ${T[st.lang].s}`;
+function eventsInWindow(w){const a=w*WS,b=(w+1)*WS;return V.events.filter(e=>e.t1>=a&&e.t0<b)}
+// ---------- timeline ----------
+const tl=$('tl'),tctx=tl.getContext('2d');const LM=104;let lanes=[],tlH=0;
+const EVC={spike:'#d1342f',ictal_ml:'#8a1c7c',ictal:'#8a1c7c',focal_slowing:'#c27a00',diffuse_slowing:'#9a6b00',wicket:'#2d7d6f',burst_suppression:'#4b3fa0',gped:'#a02060',lpd:'#a02060',periodic:'#a02060'};
+const SHORT={ru:{spike:'Спайк',ictal_ml:'Приступ (ML)',ictal:'Приступ',focal_slowing:'Фок. замедл.',diffuse_slowing:'Диффуз. замедл.',wicket:'Wicket',burst_suppression:'Вспышка-подавл.',gped:'ГПД',lpd:'ЛПД',periodic:'Периодич.'},uz:{spike:'Spayk',ictal_ml:'Tutqanoq (ML)',ictal:'Tutqanoq',focal_slowing:'Fokal sekinl.',diffuse_slowing:'Diffuz sekinl.',wicket:'Wicket',burst_suppression:'Portlash-bosilish',gped:'GPD',lpd:'LPD',periodic:'Davriy'}};
+function shortLbl(c){const t=(SHORT[st.lang]||SHORT.ru)[c];if(t)return t;const l=(V.events.find(e=>e.code===c)||{}).label||c;return l.length>15?l.slice(0,14)+'…':l}
+const evCodes=[...new Set(V.events.map(e=>e.code))];
+const STG=['W','N1','N2','N3','REM'],STC={W:'#d9a441',N1:'#8fb3e8',N2:'#4a82d9',N3:'#1f3c88',REM:'#c25ab0'};
+function drawTL(){
+ const d=window.devicePixelRatio||1,Wc=tl.clientWidth||900;const hyp=V.hypnogram&&V.hypnogram.length;
+ const rowsS=10,ROW=13,laneH=14;tlH=22+(hyp?18:0)+evCodes.length*laneH+6+rowsS*ROW+6;
+ tl.width=Wc*d;tl.height=tlH*d;tl.style.height=tlH+'px';tctx.setTransform(d,0,0,d,0,0);tctx.clearRect(0,0,Wc,tlH);
+ const ink=getComputedStyle(document.body).color,mut=getComputedStyle(document.body).getPropertyValue('--mut');
+ const X0=LM,XW=Wc-LM-8,tx=t=>X0+t/S.duration_s*XW;
+ tctx.font='11px system-ui';tctx.fillStyle=mut;tctx.textAlign='center';
+ const step=niceStep(S.duration_s/Math.max(4,XW/90));for(let t=0;t<=S.duration_s;t+=step){tctx.fillText(Math.round(t)+'',tx(t),12);tctx.fillStyle='rgba(128,128,128,.25)';tctx.fillRect(tx(t),16,1,tlH-16);tctx.fillStyle=mut}
+ let y=22;tctx.textAlign='right';
+ if(hyp){tctx.fillStyle=mut;tctx.fillText('Сон / Uyqu',LM-6,y+11);V.hypnogram.forEach((s,i)=>{const t0=i*30,t1=Math.min((i+1)*30,S.duration_s);if(t0>=S.duration_s)return;tctx.fillStyle=STC[s]||'#999';tctx.fillRect(tx(t0),y,Math.max(1,tx(t1)-tx(t0)),14)});y+=18}
+ evCodes.forEach(c=>{tctx.fillStyle=mut;tctx.textAlign='right';tctx.fillText(shortLbl(c),LM-6,y+11);tctx.fillStyle=EVC[c]||'#555';V.events.filter(e=>e.code===c).forEach(e=>{tctx.fillRect(tx(e.t0),y+1,Math.max(2,tx(e.t1)-tx(e.t0)),laneH-3)});y+=laneH});
+ y+=6;st._stripY=y;
+ const L=T[st.lang];const rows=CELLS.map((c,i)=>({c,i}));
+ const bandNow=st.band;const sc2=st.metric==='z'?[-3,3,true]:scaleFor0();
+ rows.forEach((r,k)=>{tctx.fillStyle=mut;tctx.textAlign='right';tctx.fillText(`${L.reg[r.c.r].slice(0,5)}. ${r.c.s}`,LM-6,y+k*ROW+10);
+  const cw=XW/NW;for(let w=0;w<NW;w++){const v=st.metric==='z'?Math.max(-4,Math.min(4,(cellVal(r.i,w,bandNow)-ZS[bandNow][r.i].med)/ZS[bandNow][r.i].mad)):cellVal(r.i,w,bandNow);const [R,G,B]=colour(v,sc2);tctx.fillStyle=`rgb(${R},${G},${B})`;tctx.fillRect(X0+w*cw,y+k*ROW,Math.ceil(cw)+0.5,ROW-1)}});
+ // artefact windows
+ const cw=XW/NW;tctx.fillStyle='rgba(120,120,120,.55)';for(let w=0;w<NW;w++)if(S.artefact[w])tctx.fillRect(X0+w*cw,y,Math.ceil(cw),rowsS*ROW);
+ // cursor
+ if(!st.all){tctx.fillStyle='rgba(27,95,209,.18)';tctx.fillRect(X0+st.w*cw,16,Math.max(2,cw),tlH-16);tctx.fillStyle='#1b5fd1';tctx.fillRect(X0+st.w*cw,16,2,tlH-16);
+  if(st.pinA!==null){tctx.fillStyle='#b4400a';tctx.fillRect(X0+st.pinA*cw,16,2,tlH-16);tctx.textAlign='left';tctx.fillText('A',X0+st.pinA*cw+4,26)}}
+ tl._geo={X0,XW,cw}}
+function scaleFor0(){const a=[];useW.forEach(w=>CELLS.forEach((_,ci)=>a.push(cellVal(ci,w,st.band))));a.sort((x,y)=>x-y);return[a[Math.floor(a.length*.02)],a[Math.min(a.length-1,Math.floor(a.length*.98))]||1,false]}
+function niceStep(x){const p=10**Math.floor(Math.log10(x)),f=x/p;return(f<1.5?1:f<3.5?2:f<7.5?5:10)*p}
+function setW(w){st.all=false;st.w=Math.max(0,Math.min(NW-1,w));$('slider').value=st.w;refresh()}
+function pick(ev){const g=tl._geo;if(!g)return;const r=tl.getBoundingClientRect();const x=ev.clientX-r.left;setW(Math.floor((x-g.X0)/g.cw))}
+let drag=false;tl.addEventListener('pointerdown',e=>{drag=true;tl.setPointerCapture(e.pointerId);pick(e)});tl.addEventListener('pointermove',e=>{if(drag)pick(e)});tl.addEventListener('pointerup',()=>drag=false);
+tl.addEventListener('keydown',e=>{if(e.key==='ArrowRight')setW(st.w+1);if(e.key==='ArrowLeft')setW(st.w-1)});
+// ---------- asymmetry ----------
+function asym(){
+ const L=T[st.lang],svg=$('asv'),Wd=svg.clientWidth||340,H=230,m=46,rowH=(H-26)/V.pairs.length;
+ const ax=v=>m+(Math.max(-2,Math.min(2,v))+2)/4*(Wd-m-10);
+ let h=`<text x="${ax(-2)}" y="10" text-anchor="start">← ${L.lsub}</text><text x="${ax(2)}" y="10" text-anchor="end">${L.rsub} →</text>`;
+ V.pairs.forEach((p,i)=>{const y=22+i*rowH,rec=V.asymmetry_record[p];const [l,r]=p.split('-');
+  h+=`<text x="2" y="${y+rowH/2+3}">${p}</text>`;
+  if(rec){h+=`<rect x="${ax(rec.low)}" y="${y+3}" width="${ax(rec.high)-ax(rec.low)}" height="${rowH-6}" fill="rgba(128,160,200,.28)" rx="3"/>`}
+  h+=`<line x1="${ax(0)}" x2="${ax(0)}" y1="${y}" y2="${y+rowH}" stroke="currentColor" opacity=".35"/>`;
+  if(!st.all){const a=S.log10_abs_alpha;if(chIdx[l]!==undefined&&chIdx[r]!==undefined&&!S.artefact[st.w]){const v=(a[chIdx[r]][st.w]-a[chIdx[l]][st.w])*Math.LN10;h+=`<circle cx="${ax(v)}" cy="${y+rowH/2}" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/>`}}
+  if(rec){const out=!!rec.flag;h+=`<path d="M${ax(rec.ai)} ${y+rowH/2-6} l6 6 l-6 6 l-6 -6z" fill="${out?'#c2410c':'#1b5fd1'}"/>`}});
+ svg.innerHTML=h;
+ const fl=Object.entries(V.asymmetry_record).filter(([,v])=>v.flag);
+ $('asnote').innerHTML=(fl.length?`<span class="badge w">${L.asrec}</span> `+fl.map(([k,v])=>`${k} (${v.flag==='right>left'?L.rgt:L.lft}, ln ${v.ai})`).join('; '):`<span class="badge">${L.asnone}</span>`)+`<br>${L.asnote}`}
+// ---------- caption / events ----------
+function whereTxt(e){const L=T[st.lang];if(!e.where.length)return L.noloc;const seen=new Set();return e.where.map(w=>{const s=w.side==='mid'?'':' '+(w.side==='L'?L.L:L.R);const t=`${L.reg[w.region]}${s}`;return t}).filter(t=>!seen.has(t)&&seen.add(t)).join(', ')}
+function caption(){
+ const L=T[st.lang],w=st.all?-1:st.w,b=st.band;let h='';
+ if(st.pinA!==null&&!st.all){let bi=0,bv=0;CELLS.forEach((c,ci)=>{const v=cellVal(ci,w<0?0:st.w,b)-cellVal(ci,st.pinA,b);if(Math.abs(v)>Math.abs(bv)){bv=v;bi=ci}});h+=`<p>${L.diffmax(`${L.reg[CELLS[bi].r]} ${CELLS[bi].s==='L'?L.L:L.R}`,(bv>0?'+':'')+bv.toFixed(3))}</p>`}
+ else{let bi=0,bv=-1e9;CELLS.forEach((c,ci)=>{const v=metricCell(ci,w,b);if(v>bv){bv=v;bi=ci}});h+=`<p>${L.maxb(L[b],`${L.reg[CELLS[bi].r]} ${CELLS[bi].s==='L'?L.L:L.R}`,bv.toFixed(2)+(st.metric==='z'?' z':''))}</p>`}
+ if(!st.all){if(S.artefact[st.w])h+=`<p><span class="badge w">!</span>${L.art}</p>`;
+  const ev=eventsInWindow(st.w);h+=ev.length?`<p>${L.evin}</p><p>`+ev.slice(0,8).map(e=>`<span class="badge">${evLbl(e)}${e.channels.length?' · '+e.channels.join(','):''}${e.where.length?' → '+whereTxt(e):''}</span>`).join(' ')+(ev.length>8?` +${ev.length-8}`:'')+'</p>':`<p class="note">${L.ev0}</p>`}
+ h+=`<p class="note">${L.spec}</p>`;$('cap').innerHTML=h}
+function evTable(){const L=T[st.lang];const evs=[...V.events].sort((a,b)=>a.t0-b.t0);const cur=st.all?new Set():new Set(eventsInWindow(st.w));
+ let h=`<tr>${L.evcols.map(c=>`<th>${c}</th>`).join('')}</tr>`;evs.slice(0,300).forEach((e,i)=>{h+=`<tr class="ev${cur.has(e)?' cur':''}" data-w="${Math.floor(e.t0/WS)}"><td>${e.t0.toFixed(1)}</td><td>${evLbl(e)}</td><td>${whereTxt(e)}</td><td>${e.conf.toFixed(2)}</td></tr>`});
+ if(!evs.length)h=`<tr><td class="note">${L.noev}</td></tr>`;if(evs.length>300)h+=`<tr><td colspan=4 class="note">… +${evs.length-300}</td></tr>`;$('evt').innerHTML=h;
+ $('evt').querySelectorAll('tr.ev').forEach(r=>r.onclick=()=>setW(+r.dataset.w))}
+// ---------- UI ----------
+function mkbtn(par,id,label,pressed,fn){let b=$(id);if(!b){b=document.createElement('button');b.id=id;par.appendChild(b);b.onclick=fn}b.textContent=label;b.setAttribute('aria-pressed',pressed?'true':'false')}
+function ui(){const L=T[st.lang];document.documentElement.lang=st.lang;$('ttl').textContent=V.title&&st.lang==='ru'?V.title:L.ttl;$('sub').textContent=L.sub(S.duration_s,S.channels.length,WS);$('cav').textContent=V.caveat[st.lang];
+ $('lband').textContent=L.band+':';$('lmetric').textContent=L.metric+':';$('lview').textContent=L.view+':';
+ BANDS.forEach(b=>mkbtn($('gband'),'b_'+b,L[b],st.band===b,()=>{st.band=b;refresh()}));
+ mkbtn($('gmetric'),'m_rel',L.rel,st.metric==='rel',()=>{st.metric='rel';refresh()});mkbtn($('gmetric'),'m_z',L.z,st.metric==='z',()=>{st.metric='z';refresh()});
+ mkbtn($('gview'),'v_topo',L.topo,st.view==='topo',()=>{st.view='topo';refresh()});mkbtn($('gview'),'v_cells',L.cells,st.view==='cells',()=>{st.view='cells';refresh()});
+ mkbtn($('gmode'),'k_all',L.all,st.all,()=>{st.all=!st.all;refresh()});
+ mkbtn($('gmode'),'k_play',st.timer?L.pause:L.play,!!st.timer,()=>{if(st.timer){clearInterval(st.timer);st.timer=null}else{st.all=false;st.timer=setInterval(()=>{setW(st.w+1>=NW?0:st.w+1)},500)}ui()});
+ mkbtn($('gmode'),'k_pin',st.pinA===null?L.pinA:L.clearA,st.pinA!==null,()=>{st.pinA=st.pinA===null?st.w:null;refresh()});
+ mkbtn($('glang'),'l_ru','RU',st.lang==='ru',()=>{st.lang='ru';ui();refresh()});mkbtn($('glang'),'l_uz','UZ',st.lang==='uz',()=>{st.lang='uz';ui();refresh()});
+ ['h_tl','h_map','h_cap','h_as','h_ev','h_imp'].forEach(k=>$(k).textContent=L[k]);
+ const imp=st.lang==='uz'?V.record.impression_uz:V.record.impression_ru;$('imp').textContent=imp||L.noimp;
+ $('foot').textContent=`${L.foot} ${V.norms.version}; ${V.norms.fit}. ${V.norms.checked_on}.`}
+function refresh(){ui();drawTL();drawMap();asym();caption();evTable();$('slider').max=NW-1}
+$('slider').addEventListener('input',e=>setW(+e.target.value));
+window.addEventListener('resize',()=>{drawTL();asym()});
+refresh();
+})();
+</script>
+</body>
+</html>

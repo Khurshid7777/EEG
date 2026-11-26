@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NeuroLens — региональная карта коры</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#16202a;--mut:#56626f;--line:#d6dce3;--acc:#1b5fd1;--accbg:#e6efff;--warn:#b4400a;--warnbg:#fff1e6;--ok:#146c34;--chip:#eef1f4}
+@media (prefers-color-scheme:dark){:root{--bg:#0f141a;--card:#171e26;--ink:#e8edf2;--mut:#9aa7b4;--line:#2b3641;--acc:#6aa2ff;--accbg:#1b2c4a;--warn:#ff9d5c;--warnbg:#3a2415;--ok:#5fd18a;--chip:#222c37}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header,main{max-width:1280px;margin:0 auto;padding:0 16px}
+header{padding-top:14px}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--mut);font-size:13px}
+.caveat{margin:10px 0;padding:8px 12px;border:1px solid var(--warn);background:var(--warnbg);border-radius:8px;font-size:13px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0}
+.grp{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.grp>span.lbl{color:var(--mut);font-size:12px;margin-right:2px}
+button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:5px 10px;border-radius:7px;cursor:pointer}
+button[aria-pressed=true]{background:var(--accbg);border-color:var(--acc);color:var(--acc);font-weight:600}
+button:focus-visible,input:focus-visible,canvas:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}
+.card h2{font-size:14px;margin:0 0 8px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+#tl{width:100%;display:block;touch-action:none;cursor:col-resize}
+.grid{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:12px}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.right{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:1100px){.right{grid-template-columns:1fr}}
+#map{display:block;margin:0 auto;max-width:100%}
+.cb{display:flex;align-items:center;gap:6px;justify-content:center;font-size:12px;color:var(--mut);margin-top:6px}
+#cbc{width:160px;height:10px;border-radius:5px;border:1px solid var(--line)}
+#slider{width:100%}
+.cap p{margin:4px 0}
+.badge{display:inline-block;padding:1px 7px;border-radius:9px;background:var(--chip);font-size:12px;margin-right:4px}
+.badge.w{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+td,th{padding:3px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+tr.ev{cursor:pointer}tr.ev:hover{background:var(--accbg)}tr.cur{background:var(--accbg)}
+.evwrap{max-height:230px;overflow:auto}
+svg text{fill:var(--ink);font-size:11px}
+.note{font-size:12px;color:var(--mut)}
+.imp{font-size:13px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<header>
+<h1 id="ttl"></h1>
+<div class="sub" id="sub"></div>
+<div class="caveat" id="cav" role="note"></div>
+<div class="bar">
+ <div class="grp" id="gband"><span class="lbl" id="lband"></span></div>
+ <div class="grp" id="gmetric"><span class="lbl" id="lmetric"></span></div>
+ <div class="grp" id="gview"><span class="lbl" id="lview"></span></div>
+ <div class="grp" id="gmode"></div>
+ <div class="grp" id="glang"></div>
+</div>
+</header>
+<main>
+<section class="card"><h2 id="h_tl"></h2><canvas id="tl" tabindex="0" role="img" aria-label="timeline"></canvas>
+ <input id="slider" type="range" min="0" value="0" aria-label="window"></section>
+<div class="grid">
+ <section class="card"><h2 id="h_map"></h2><canvas id="map" role="img" aria-label="map"></canvas>
+  <div class="cb"><span id="cbmin"></span><canvas id="cbc" width="160" height="10"></canvas><span id="cbmax"></span></div>
+  <div class="note" id="mapnote" style="text-align:center;margin-top:4px"></div></section>
+ <div class="right">
+  <section class="card"><h2 id="h_cap"></h2><div class="cap" id="cap"></div></section>
+  <section class="card"><h2 id="h_as"></h2><svg id="asv" width="100%" height="230" role="img"></svg><div class="note" id="asnote"></div></section>
+  <section class="card" style="grid-column:1/-1"><h2 id="h_ev"></h2><div class="evwrap"><table id="evt"></table></div></section>
+  <section class="card" style="grid-column:1/-1" id="impcard"><h2 id="h_imp"></h2><div class="imp" id="imp"></div></section>
+ </div>
+</div>
+<p class="note" id="foot"></p>
+</main>
+<script>
+const V={"version":"regional_view_v1","title":"eegmat Subject00 — покой (здоровый доброволец)","caveat":{"ru":"Скальповое картирование по электродам 10-20 (доли и полушария), не локализация источников и не диагноз. Сторона очага не определяется (инкремент 75). Нормативный коридор асимметрии применим к записи целиком.","uz":"10-20 elektrodlari bo‘yicha bosh terisi xaritasi (bo‘laklar va yarimsharlar), manba lokalizatsiyasi va tashxis emas. O‘choq tomoni aniqlanmaydi (75-bosqich). Assimetriya me’yor koridori butun yozuvga tegishli."},"record":{"duration_s":182.0,"n_channels":19,"win_s":10.0,"impression_ru":"Заключение: явных патологических паттернов не выделено (в пределах анализа); сомнительные находки, требующие просмотра врачом: Эпилептиформный разряд (спайк/острая волна). (Разделение «норма/отклонения» на рутинной ЭЭГ: на 997 ранее не использовавшихся нормальных записях того же центра (NMT) специфичность 0.719 (95% ДИ 0.69–0.75) — ниже целевых 0.72; на оценочной части NMT 0.79 / 0.80 — пороги подбирались по этим данным, оценка оптимистична. На независимых центрах специфичность 0.96–1.00. Чувствительность вне NMT не измерена.)","impression_uz":"Xulosa: aniq patologik patternlar ajratilmadi (tahlil doirasida); shifokor ko‘rib chiqishi kerak bo‘lgan shubhali topilmalar: Epileptiform razryad (spike/o‘tkir to‘lqin). (Rutin EEGda «norma/og‘ish» ajratilishi: shu markazning (NMT) avval ishlatilmagan 997 ta normal yozuvida o‘ziga xoslik 0.719 (95% CI 0.69–0.75) — 0.72 maqsaddan past; NMT baholash qismida 0.79 / 0.80 — bo‘sag‘alar shu ma'lumotlarga moslangan, baho optimistik. Mustaqil markazlarda o‘ziga xoslik 0.96–1.00. NMT dan tashqarida sezgirlik o‘lchanmagan.)","critical":[]},"series":{"channels":["Fp1","Fp2","F3","F4","F7","F8","T3","T4","C3","C4","T5","T6","P3","P4","O1","O2","Fz","Cz","Pz"],"win_s":10.0,"n_windows":18,"duration_s":182.0,"rel":{"delta":[[0.1166,0.1343,0.172,0.235,0.1272,0.1195,0.1679,0.2804,0.1392,0.1062,0.1722,0.1061,0.1334,0.2393,0.1233,0.2593,0.3182,0.1432],[0.1872,0.1365,0.2306,0.2674,0.241,0.1836,0.295,0.3324,0.3426,0.2224,0.3406,0.2118,0.2321,0.2861,0.2366,0.3235,0.302,0.1764],[0.1618,0.3891,0.1961,0.286,0.1467,0.1413,0.1869,0.2637,0.1166,0.1411,0.1698,0.13,0.1376,0.2019,0.1459,0.2514,0.3951,0.2043],[0.1813,0.1736,0.2639,0.2709,0.1404,0.1674,0.2183,0.2586,0.1262,0.1381,0.147,0.1612,0.1531,0.1656,0.2013,0.3236,0.3954,0.1981],[0.5658,0.3398,0.4697,0.4555,0.5161,0.4521,0.5635,0.5168,0.5487,0.4494,0.5407,0.409,0.6208,0.4235,0.5191,0.4828,0.5662,0.4278],[0.4018,0.2785,0.4297,0.5402,0.3151,0.3217,0.452,0.4505,0.3452,0.3053,0.3806,0.3977,0.3648,0.5447,0.3906,0.4222,0.4781,0.3042],[0.3688,0.513,0.3417,0.4122,0.3702,0.2419,0.4259,0.3841,0.3608,0.4333,0.3567,0.2454,0.3185,0.2888,0.2769,0.4083,0.3441,0.2665],[0.2898,0.1525,0.1764,0.2402,0.1728,0.1927,0.1487,0.2695,0.1951,0.1702,0.22,0.132,0.078,0.1786,0.1199,0.1865,0.2109,0.1535],[0.5037,0.4315,0.4425,0.2641,0.387,0.6109,0.4607,0.4887,0.2755,0.3805,0.3054,0.2874,0.2503,0.2956,0.392,0.4306,0.5271,0.2569],[0.2581,0.2802,0.4415,0.3533,0.2409,0.2402,0.2477,0.3795,0.3146,0.1987,0.2638,0.1617,0.1628,0.2617,0.214,0.2151,0.2419,0.2093],[0.3464,0.3314,0.3832,0.4066,0.2056,0.2524,0.2775,0.3322,0.3547,0.2914,0.3036,0.2861,0.2342,0.3112,0.3684,0.3148,0.3826,0.227],[0.2719,0.1042,0.1936,0.2281,0.1075,0.1759,0.1808,0.224,0.1718,0.1658,0.1999,0.1094,0.0858,0.1797,0.1327,0.1528,0.1499,0.114],[0.0888,0.2627,0.2035,0.2744,0.1361,0.1797,0.0988,0.2373,0.1384,0.1335,0.1509,0.102,0.1291,0.2202,0.1217,0.2539,0.2216,0.1345],[0.1009,0.0587,0.1094,0.1726,0.1038,0.0941,0.1127,0.2508,0.1168,0.0779,0.086,0.0726,0.0918,0.1075,0.0791,0.1697,0.1476,0.093],[0.1083,0.1459,0.1779,0.142,0.0896,0.1261,0.1718,0.2132,0.094,0.0612,0.1443,0.1055,0.0966,0.1197,0.1456,0.1738,0.1661,0.0612],[0.0671,0.0522,0.1485,0.0692,0.0592,0.0713,0.1277,0.1653,0.0734,0.0607,0.0586,0.0421,0.0921,0.1112,0.0898,0.0723,0.113,0.1002],[0.1691,0.2115,0.2467,0.2519,0.1412,0.171,0.1901,0.2516,0.116,0.1385,0.1758,0.1686,0.2047,0.264,0.2131,0.3418,0.4082,0.2329],[0.3623,0.4211,0.562,0.4262,0.4734,0.3394,0.5119,0.5678,0.4135,0.3724,0.3407,0.2864,0.3543,0.4873,0.5787,0.5049,0.533,0.3022],[0.1681,0.1434,0.2792,0.3715,0.176,0.2202,0.2164,0.327,0.1995,0.144,0.1903,0.2644,0.2724,0.3149,0.1949,0.3132,0.2951,0.1466]],"theta":[[0.0712,0.0662,0.0983,0.0806,0.0449,0.0625,0.0583,0.0457,0.0375,0.0563,0.0819,0.039,0.0537,0.0464,0.0528,0.0901,0.0544,0.0461],[0.0988,0.0925,0.1271,0.1191,0.0624,0.1062,0.0609,0.0631,0.053,0.0868,0.1095,0.0449,0.0691,0.0667,0.0759,0.1071,0.1007,0.0594],[0.0688,0.0482,0.1051,0.0869,0.0645,0.0763,0.0821,0.0768,0.0468,0.0559,0.0564,0.0798,0.0516,0.0776,0.068,0.1014,0.0568,0.0561],[0.0803,0.1038,0.112,0.1417,0.0637,0.1121,0.0787,0.0831,0.0853,0.1154,0.0857,0.0512,0.0699,0.0856,0.0979,0.1109,0.0802,0.0674],[0.0801,0.1211,0.1524,0.1196,0.104,0.0844,0.1294,0.1229,0.0619,0.1099,0.0879,0.0751,0.0845,0.111,0.0722,0.1505,0.0869,0.116],[0.0959,0.1143,0.112,0.1162,0.0925,0.1245,0.1103,0.0887,0.0975,0.1139,0.1192,0.085,0.0788,0.0895,0.1117,0.151,0.0897,0.0758],[0.126,0.1027,0.1255,0.145,0.0845,0.1326,0.0878,0.1047,0.083,0.1159,0.0905,0.0848,0.0762,0.1381,0.0974,0.1092,0.1276,0.1035],[0.0824,0.0642,0.0604,0.0827,0.0698,0.1088,0.0736,0.0656,0.0549,0.0744,0.0738,0.0441,0.0495,0.0555,0.0561,0.066,0.0537,0.0704],[0.0969,0.0758,0.0706,0.1207,0.0565,0.0731,0.1121,0.068,0.0763,0.0596,0.0751,0.0981,0.0862,0.0754,0.0879,0.0674,0.0762,0.0713],[0.1971,0.1137,0.1058,0.1062,0.0766,0.1645,0.1504,0.1016,0.1024,0.0989,0.1836,0.0971,0.0906,0.139,0.1391,0.1016,0.1191,0.1238],[0.1269,0.1406,0.1344,0.1166,0.0919,0.1431,0.11,0.1161,0.0956,0.1337,0.0994,0.0898,0.0612,0.1083,0.0919,0.1084,0.0993,0.1009],[0.0613,0.0463,0.0542,0.0687,0.055,0.0708,0.079,0.0816,0.0624,0.0527,0.0494,0.0538,0.0426,0.0598,0.0548,0.0598,0.0512,0.0487],[0.0588,0.0739,0.0775,0.0874,0.056,0.0947,0.1057,0.069,0.063,0.0902,0.0827,0.0564,0.0474,0.0711,0.0728,0.1073,0.0577,0.0728],[0.0431,0.0428,0.1035,0.0739,0.0424,0.0417,0.0516,0.0472,0.0352,0.059,0.0629,0.0304,0.0418,0.0378,0.046,0.0778,0.073,0.0628],[0.0903,0.0728,0.1146,0.0814,0.048,0.0933,0.0819,0.0761,0.0718,0.0652,0.0786,0.0613,0.0508,0.0612,0.0779,0.0931,0.0642,0.0522],[0.0473,0.0419,0.0892,0.0456,0.0373,0.0399,0.0667,0.0513,0.0343,0.03,0.0367,0.033,0.0346,0.0383,0.0495,0.0401,0.0528,0.043],[0.0778,0.0936,0.1125,0.1466,0.0645,0.1055,0.0839,0.0831,0.0903,0.1141,0.0811,0.0541,0.065,0.0743,0.0955,0.1058,0.0829,0.0757],[0.3009,0.115,0.1467,0.1689,0.1065,0.1861,0.1713,0.1532,0.2824,0.1487,0.2701,0.3094,0.1209,0.1487,0.1706,0.1633,0.2219,0.2676],[0.0964,0.1057,0.1284,0.1512,0.0778,0.1058,0.0851,0.1016,0.0655,0.1305,0.1216,0.0691,0.0829,0.0874,0.1005,0.1453,0.111,0.0812]],"alpha":[[0.4133,0.6287,0.488,0.4933,0.5211,0.5198,0.493,0.3982,0.5659,0.5346,0.3838,0.6224,0.459,0.477,0.6291,0.4177,0.3271,0.6216],[0.324,0.5886,0.4149,0.3688,0.4265,0.437,0.3664,0.3365,0.3891,0.4032,0.2387,0.4773,0.3635,0.3612,0.476,0.3331,0.2892,0.5611],[0.3865,0.4064,0.4895,0.4509,0.5367,0.4975,0.4336,0.3775,0.5451,0.5362,0.3979,0.5496,0.5024,0.4593,0.552,0.4062,0.2745,0.5289],[0.3254,0.5336,0.4293,0.3995,0.556,0.4559,0.3998,0.4138,0.5069,0.4832,0.2891,0.5038,0.4499,0.4382,0.4834,0.3474,0.3069,0.5641],[0.1824,0.3727,0.2004,0.2435,0.1803,0.2399,0.1658,0.1851,0.2409,0.2464,0.2076,0.3627,0.1501,0.2856,0.2585,0.2026,0.1528,0.2815],[0.2047,0.413,0.2683,0.1589,0.3531,0.3158,0.207,0.2446,0.3057,0.2861,0.1591,0.3105,0.2787,0.1902,0.3044,0.2156,0.191,0.3998],[0.1986,0.1662,0.3403,0.2288,0.3023,0.3237,0.1772,0.2397,0.3178,0.2849,0.2394,0.4555,0.3109,0.328,0.2535,0.2418,0.209,0.3142],[0.3145,0.4913,0.4665,0.3821,0.4769,0.3447,0.3221,0.3105,0.4334,0.5029,0.3086,0.3893,0.5197,0.4232,0.3778,0.4034,0.3105,0.4231],[0.1985,0.3578,0.3194,0.4102,0.3714,0.1781,0.1904,0.2234,0.4,0.4128,0.4264,0.4226,0.3931,0.4098,0.2434,0.3319,0.1417,0.3652],[0.2265,0.3715,0.2538,0.3155,0.4119,0.2874,0.2273,0.311,0.3227,0.4744,0.2607,0.4672,0.5289,0.363,0.2226,0.4098,0.3003,0.3722],[0.2412,0.2559,0.3088,0.2367,0.4893,0.3801,0.219,0.3037,0.2976,0.3602,0.2525,0.3969,0.4486,0.3035,0.208,0.2327,0.2395,0.2825],[0.3544,0.5953,0.4822,0.4866,0.5835,0.4181,0.3716,0.3808,0.4652,0.5303,0.4633,0.4884,0.517,0.4806,0.506,0.4973,0.3793,0.552],[0.3968,0.4644,0.4546,0.3388,0.5839,0.4459,0.3126,0.3441,0.5071,0.4086,0.2753,0.516,0.4519,0.3191,0.3282,0.3205,0.2838,0.415],[0.445,0.7229,0.5097,0.5106,0.5309,0.5499,0.5085,0.3735,0.5692,0.5791,0.5025,0.6822,0.5211,0.6168,0.6581,0.4764,0.4255,0.6428],[0.4354,0.6368,0.4964,0.5773,0.6858,0.5312,0.4739,0.4266,0.5518,0.6153,0.3932,0.6088,0.6399,0.5547,0.4738,0.4982,0.3789,0.6285],[0.591,0.8017,0.5814,0.7434,0.7539,0.6893,0.5721,0.5133,0.6384,0.7278,0.7429,0.8138,0.6932,0.7023,0.6561,0.7353,0.5622,0.6424],[0.3353,0.5168,0.4443,0.4156,0.559,0.4605,0.4176,0.4204,0.5119,0.4895,0.2855,0.4998,0.4277,0.3928,0.4786,0.3395,0.3004,0.533],[0.177,0.3604,0.2048,0.2891,0.3012,0.3374,0.2015,0.1826,0.172,0.3664,0.2293,0.2844,0.3947,0.2362,0.1617,0.2247,0.1407,0.2818],[0.3653,0.5898,0.3837,0.2491,0.4323,0.404,0.4172,0.2938,0.5059,0.374,0.2751,0.4647,0.3001,0.3214,0.4433,0.3018,0.2586,0.547]],"beta":[[0.3989,0.1708,0.2417,0.1911,0.3067,0.2982,0.2809,0.2757,0.2574,0.3029,0.3621,0.2324,0.354,0.2373,0.1948,0.233,0.3003,0.189],[0.39,0.1824,0.2273,0.2448,0.2701,0.2732,0.2777,0.268,0.2152,0.2875,0.3112,0.2661,0.3353,0.2861,0.2115,0.2363,0.3081,0.2031],[0.3829,0.1564,0.2093,0.1762,0.2522,0.2848,0.2974,0.2821,0.2915,0.2668,0.3758,0.2406,0.3084,0.2613,0.2341,0.2409,0.2736,0.2107],[0.4129,0.189,0.1949,0.188,0.2399,0.2647,0.3032,0.2445,0.2816,0.2633,0.4781,0.2838,0.327,0.3107,0.2174,0.2181,0.2174,0.1704],[0.1717,0.1664,0.1775,0.1813,0.1996,0.2235,0.1413,0.1753,0.1485,0.1943,0.1639,0.1533,0.1446,0.1799,0.1501,0.1641,0.194,0.1748],[0.2976,0.1942,0.1901,0.1846,0.2392,0.2379,0.2307,0.2162,0.2516,0.2948,0.3411,0.2068,0.2777,0.1756,0.1932,0.2112,0.2412,0.2202],[0.3066,0.218,0.1925,0.2141,0.243,0.3018,0.309,0.2715,0.2384,0.1659,0.3134,0.2143,0.2944,0.2452,0.3722,0.2406,0.3193,0.3158],[0.3133,0.2921,0.2966,0.2951,0.2806,0.3537,0.4556,0.3543,0.3166,0.2525,0.3976,0.4346,0.3527,0.3427,0.4463,0.3441,0.4249,0.353],[0.2009,0.1349,0.1675,0.205,0.1851,0.1378,0.2368,0.2199,0.2482,0.1471,0.1932,0.1919,0.2704,0.2191,0.2766,0.17,0.255,0.3066],[0.3183,0.2346,0.1989,0.225,0.2706,0.3079,0.3746,0.2079,0.2603,0.2279,0.2919,0.2739,0.2177,0.2362,0.4243,0.2736,0.3386,0.2947],[0.2855,0.272,0.1735,0.2401,0.2131,0.2243,0.3935,0.248,0.2521,0.2147,0.3445,0.2272,0.2561,0.2771,0.3318,0.344,0.2786,0.3896],[0.3124,0.2541,0.2701,0.2167,0.254,0.3353,0.3686,0.3135,0.3005,0.2511,0.2873,0.3484,0.3546,0.28,0.3066,0.2901,0.4196,0.2854],[0.4556,0.1989,0.2643,0.2994,0.224,0.2797,0.483,0.3496,0.2915,0.3676,0.4911,0.3257,0.3716,0.3896,0.4773,0.3182,0.4369,0.3776],[0.411,0.1756,0.2774,0.2428,0.3229,0.3143,0.3271,0.3285,0.2788,0.284,0.3486,0.2148,0.3453,0.2379,0.2169,0.2761,0.3539,0.2014],[0.366,0.1445,0.2111,0.1992,0.1766,0.2493,0.2724,0.2841,0.2824,0.2582,0.3839,0.2245,0.2126,0.2644,0.3027,0.235,0.3908,0.2582],[0.2945,0.1042,0.1809,0.1418,0.1496,0.1994,0.2336,0.2701,0.2539,0.1814,0.1619,0.1112,0.1802,0.1481,0.2045,0.1523,0.272,0.2144],[0.4178,0.1781,0.1965,0.1859,0.2352,0.263,0.3084,0.2449,0.2818,0.258,0.4575,0.2775,0.3027,0.2688,0.2128,0.2128,0.2084,0.1584],[0.1598,0.1035,0.0865,0.1158,0.1188,0.1371,0.1153,0.0964,0.1321,0.1125,0.1599,0.1198,0.1301,0.1278,0.0891,0.1072,0.1043,0.1484],[0.3702,0.1611,0.2087,0.2283,0.3138,0.27,0.2813,0.2775,0.2291,0.3515,0.413,0.2019,0.3445,0.2762,0.2613,0.2397,0.3352,0.2252]]},"log10_abs_alpha":[[1.815,2.226,1.746,1.728,1.944,2.124,1.811,1.69,2.004,1.912,1.738,2.034,1.897,1.894,2.009,1.724,1.593,2.082],[1.908,2.285,1.884,1.767,2.07,2.208,1.86,1.809,2.101,1.972,1.797,2.054,2.013,1.879,2.058,1.804,1.689,2.192],[1.931,2.261,1.905,1.997,2.135,2.201,1.925,1.792,2.067,2.098,1.883,2.086,2.076,2.014,2.064,1.893,1.757,2.162],[1.929,2.228,1.979,1.835,2.16,2.168,1.888,1.929,2.102,2.048,1.796,2.063,2.083,1.925,2.032,1.822,1.795,2.252],[1.919,2.295,1.8,1.879,1.854,2.054,1.835,1.775,2.044,1.987,1.887,2.139,1.898,2.062,1.991,1.817,1.716,1.978],[1.842,2.177,1.832,1.662,2.049,2.088,1.754,1.783,1.948,1.88,1.637,1.981,1.978,1.829,1.977,1.702,1.641,2.077],[1.803,1.839,2.061,1.773,1.981,2.107,1.862,1.959,2.042,1.948,1.977,2.18,2.133,2.096,1.838,1.958,1.849,2.068],[1.547,2.005,1.749,1.559,1.871,1.85,1.602,1.583,1.808,1.787,1.578,1.817,2.038,1.811,1.689,1.704,1.639,1.83],[1.508,1.879,1.701,1.784,1.881,1.795,1.48,1.558,1.771,1.876,1.837,1.859,1.884,1.861,1.605,1.761,1.423,1.808],[1.358,1.74,1.475,1.51,1.739,1.518,1.357,1.643,1.579,1.724,1.439,1.728,1.863,1.682,1.3,1.649,1.418,1.634],[1.899,1.901,1.904,1.84,2.24,2.149,1.758,2.005,1.99,2.042,1.923,2.129,2.333,2.087,1.769,1.79,1.873,1.931],[2.109,2.545,2.222,2.263,2.389,2.431,2.132,2.162,2.342,2.384,2.327,2.448,2.46,2.353,2.29,2.261,2.16,2.453],[1.902,2.089,1.865,1.684,2.219,2.009,1.672,1.725,2.09,1.884,1.728,2.003,2.173,1.806,1.744,1.693,1.683,1.925],[2.046,2.559,2.03,2.014,2.209,2.386,2.094,1.929,2.229,2.218,2.131,2.464,2.275,2.32,2.354,2.024,1.955,2.365],[2.158,2.609,2.159,2.422,2.653,2.363,2.002,2.096,2.316,2.562,2.108,2.481,2.637,2.46,2.182,2.165,1.989,2.446],[2.589,3.103,2.497,2.964,2.941,2.866,2.447,2.488,2.729,3.064,2.933,3.117,2.928,2.936,2.697,2.812,2.522,2.736],[1.928,2.231,1.975,1.837,2.161,2.173,1.889,1.921,2.101,2.051,1.797,2.057,2.087,1.931,2.031,1.82,1.792,2.249],[1.624,2.007,1.723,1.908,1.953,1.923,1.741,1.716,1.631,2.07,1.711,1.893,2.097,1.867,1.705,1.814,1.626,1.858],[1.849,2.165,1.806,1.478,1.938,1.999,1.813,1.607,2.061,1.806,1.648,2.022,1.789,1.765,1.938,1.635,1.513,2.074]],"artefact":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false]},"coords":{"Fp1":[-0.31,0.95],"Fp2":[0.31,0.95],"F7":[-0.81,0.59],"F3":[-0.39,0.61],"Fz":[0.0,0.61],"F4":[0.39,0.61],"F8":[0.81,0.59],"T3":[-1.0,0.0],"C3":[-0.5,0.0],"Cz":[0.0,0.0],"C4":[0.5,0.0],"T4":[1.0,0.0],"T5":[-0.81,-0.59],"P3":[-0.39,-0.61],"Pz":[0.0,-0.61],"P4":[0.39,-0.61],"T6":[0.81,-0.59],"O1":[-0.31,-0.95],"O2":[0.31,-0.95]},"regions":{"frontal":["Fp1","Fp2","F3","F4","F7","F8","Fz"],"central":["C3","C4","Cz"],"temporal":["T3","T4","T5","T6"],"parietal":["P3","P4","Pz"],"occipital":["O1","O2"]},"pairs":["F3-F4","C3-C4","T3-T4","P3-P4","O1-O2","F7-F8","T5-T6"],"asymmetry_record":{"F3-F4":{"ai":-0.021,"low":-0.549,"high":0.527,"flag":null},"C3-C4":{"ai":-0.363,"low":-0.807,"high":0.436,"flag":null},"T3-T4":{"ai":-0.495,"low":-0.768,"high":0.872,"flag":null},"P3-P4":{"ai":0.732,"low":-0.684,"high":1.029,"flag":null},"O1-O2":{"ai":1.09,"low":-0.671,"high":0.982,"flag":"right>left"},"F7-F8":{"ai":-0.128,"low":-0.53,"high":0.338,"flag":null},"T5-T6":{"ai":0.759,"low":-0.667,"high":1.671,"flag":null}},"norms":{"version":"regional_norms_v1","fit":"empirical 2.5/97.5 percentiles over healthy adults (ds003775, Oslo, n=99)","checked_on":"ds004504 controls (n=29) + eegmat rest (n=36): mean out-of-limit fraction 0.070 (pre-registered limit 0.10); any-pair flag fraction 0.354 (not usable as an abnormality flag)"},"events":[{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":89.05,"t1":89.15,"conf":0.64,"channels":[],"where":[]},{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":115.21,"t1":115.31,"conf":0.61,"channels":[],"where":[]},{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":46.77,"t1":46.87,"conf":0.58,"channels":[],"where":[]},{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":175.71,"t1":175.81,"conf":0.57,"channels":[],"where":[]},{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":149.87,"t1":149.97,"conf":0.56,"channels":[],"where":[]},{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":7.15,"t1":7.25,"conf":0.56,"channels":[],"where":[]},{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":52.26,"t1":52.36,"conf":0.55,"channels":[],"where":[]},{"code":"spike","label":"Эпилептиформный разряд (спайк/острая волна)","t0":148.91,"t1":149.01,"conf":0.55,"channels":[],"where":[]}],"hypnogram":null};
+(()=>{
+const S=V.series, CH=S.channels, NW=S.n_windows, WS=S.win_s, BANDS=['delta','theta','alpha','beta'];
+const REG=Object.keys(V.regions);
+const T={
+ru:{ttl:'Региональная карта коры',band:'Диапазон',metric:'Показатель',view:'Карта',rel:'Отн. мощность',z:'Отклонение (z)',topo:'Электроды',cells:'Доли × полушария',
+ delta:'дельта',theta:'тета',alpha:'альфа',beta:'бета',all:'Вся запись',play:'▶ Воспроизвести',pause:'⏸ Пауза',pinA:'Закрепить A',clearA:'Сброс A',
+ h_tl:'Процесс диагностики по времени',h_map:'Карта коры (скальповая)',h_cap:'Что видно в выбранном окне',h_as:'Межполушарная асимметрия (альфа)',h_ev:'Найденные события',h_imp:'Заключение автоматического анализа',
+ sub:(d,n,w)=>`Запись ${fmtT(d)} · ${n} электродов · окно ${w} с`,win:'Окно',s:'с',allrec:'Вся запись (среднее по окнам без артефактов)',
+ reg:{frontal:'лобная',central:'центральная',temporal:'височная',parietal:'теменная',occipital:'затылочная'},L:'левая',R:'правая',
+ maxb:(b,c,v)=>`Максимум «${b}»: ${c} (${v}).`,diffmax:(c,v)=>`Наибольшее отличие B от A: ${c} (${v}).`,
+ ev0:'В этом окне событий детекторов нет.',evin:'События детекторов в окне:',art:'Окно содержит артефакты (размах > 200 мкВ на ≥ 2 электродах): значения ненадёжны.',
+ asrec:'На уровне записи вне нормативного коридора:',asnone:'На уровне записи все пары в пределах нормативного коридора.',rgt:'правое сильнее левого',lft:'левое сильнее правого',
+ asnote:'Ромб — вся запись (сравнивается с коридором), кружок — текущее окно (только ориентир). Коридор — 2.5–97.5 процентили здоровых; выход за него не означает очаг.',
+ lsub:'левое сильнее',rsub:'правое сильнее',pin:'A закреплено на',diff:'Разность B − A',
+ evcols:['Время, с','Событие','Где','Увер.'],noloc:'без привязки к каналам',noev:'Событий детекторов нет.',noimp:'Текст заключения недоступен.',
+ foot:'Нормативные пределы:',spec:'Слева — левое полушарие, справа — правое (вид сверху, нос вверху). Электродные подписи — стандарт 10-20.'},
+uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkich',view:'Xarita',rel:'Nisbiy quvvat',z:'Og‘ish (z)',topo:'Elektrodlar',cells:'Bo‘laklar × yarimsharlar',
+ delta:'delta',theta:'teta',alpha:'alfa',beta:'beta',all:'Butun yozuv',play:'▶ Ijro',pause:'⏸ Pauza',pinA:'A ni qotirish',clearA:'A ni tozalash',
+ h_tl:'Vaqt bo‘yicha diagnostika jarayoni',h_map:'Po‘stloq xaritasi (bosh terisi)',h_cap:'Tanlangan oynada nima ko‘rinadi',h_as:'Yarimsharlararo assimetriya (alfa)',h_ev:'Topilgan hodisalar',h_imp:'Avtomatik tahlil xulosasi',
+ sub:(d,n,w)=>`Yozuv ${fmtT(d)} · ${n} elektrod · oyna ${w} s`,win:'Oyna',s:'s',allrec:'Butun yozuv (artefaktsiz oynalar o‘rtachasi)',
+ reg:{frontal:'peshona',central:'markaziy',temporal:'chakka',parietal:'tepa',occipital:'ensa'},L:'chap',R:'o‘ng',
+ maxb:(b,c,v)=>`«${b}» maksimumi: ${c} (${v}).`,diffmax:(c,v)=>`B ning A dan eng katta farqi: ${c} (${v}).`,
+ ev0:'Bu oynada detektor hodisalari yo‘q.',evin:'Oynadagi detektor hodisalari:',art:'Oynada artefaktlar bor (≥ 2 elektrodda > 200 mkV): qiymatlar ishonchsiz.',
+ asrec:'Yozuv darajasida me’yor koridoridan tashqarida:',asnone:'Yozuv darajasida barcha juftliklar me’yor koridorida.',rgt:'o‘ng chapdan kuchli',lft:'chap o‘ngdan kuchli',
+ asnote:'Romb — butun yozuv (koridor bilan solishtiriladi), doira — joriy oyna (faqat mo‘ljal). Koridor — sog‘lomlarning 2.5–97.5 protsentili; undan chiqish o‘choqni bildirmaydi.',
+ lsub:'chap kuchli',rsub:'o‘ng kuchli',pin:'A qotirilgan:',diff:'Farq B − A',
+ evcols:['Vaqt, s','Hodisa','Qayerda','Ishonch'],noloc:'kanallarga bog‘lanmagan',noev:'Detektor hodisalari yo‘q.',noimp:'Xulosa matni mavjud emas.',
+ foot:'Me’yor chegaralari:',spec:'Chapda — chap yarimshar, o‘ngda — o‘ng yarimshar (yuqoridan ko‘rinish, burun tepada). Belgilar 10-20 standarti.'}
+};
+const st={w:0,band:'alpha',metric:'rel',view:'topo',lang:'ru',pinA:null,all:false,timer:null};
+const $=id=>document.getElementById(id);
+function fmtT(s){const m=Math.floor(s/60),u=st.lang==='uz'?['daq','s']:['мин','с'];return m>=1?`${m} ${u[0]} ${Math.round(s-m*60)} ${u[1]}`:`${Math.round(s)} ${u[1]}`}
+function evLbl(e){return st.lang==='uz'?(SHORT.uz[e.code]||e.label):e.label}
+const isMid=c=>c.endsWith('z'), sideOf=c=>isMid(c)?'M':(parseInt(c.slice(-1))%2?'L':'R');
+// cells: region x side (midline electrodes belong to both sides)
+const CELLS=[];REG.forEach(r=>['L','R'].forEach(s=>{const ch=V.regions[r].filter(c=>CH.includes(c)&&(sideOf(c)===s||sideOf(c)==='M'));if(ch.length)CELLS.push({r,s,ch,id:r+s})}));
+const cellOf=(ch,x)=>{const r=REG.find(r=>V.regions[r].includes(ch));if(!r)return -1;const s=sideOf(ch)==='M'?(x<0?'L':'R'):sideOf(ch);return CELLS.findIndex(c=>c.r===r&&c.s===s)};
+const chIdx=Object.fromEntries(CH.map((c,i)=>[c,i]));
+const okW=[...Array(NW).keys()].filter(w=>!S.artefact[w]);
+const useW=okW.length>=3?okW:[...Array(NW).keys()];
+function chVal(c,w,b){return w<0?useW.reduce((a,i)=>a+S.rel[b][chIdx[c]][i],0)/useW.length:S.rel[b][chIdx[c]][w]}
+function cellVal(ci,w,b){const c=CELLS[ci];return c.ch.reduce((a,x)=>a+chVal(x,w,b),0)/c.ch.length}
+// robust z per cell/band over clean windows
+const ZS={};BANDS.forEach(b=>{ZS[b]=CELLS.map((_,ci)=>{const v=useW.map(w=>cellVal(ci,w,b)).sort((x,y)=>x-y);const med=v[v.length>>1];const dev=v.map(x=>Math.abs(x-med)).sort((x,y)=>x-y);return{med,mad:Math.max(1e-4,1.4826*dev[dev.length>>1])}})});
+function metricCell(ci,w,b){const v=cellVal(ci,w,b);return st.metric==='z'?Math.max(-4,Math.min(4,(v-ZS[b][ci].med)/ZS[b][ci].mad)):v}
+function metricCh(c,w,b){if(st.metric!=='z')return chVal(c,w,b);const ci=cellOf(c,V.coords[c][0]);return Math.max(-4,Math.min(4,(chVal(c,w,b)-ZS[b][ci].med)/ZS[b][ci].mad))}
+// colour scales
+const VIR=[[68,1,84],[59,82,139],[33,145,140],[94,201,98],[253,231,37]];
+const DIV=[[33,102,172],[146,197,222],[247,247,247],[244,165,130],[178,24,43]];
+function lerp(stops,t){t=Math.max(0,Math.min(1,t));const x=t*(stops.length-1),i=Math.min(stops.length-2,Math.floor(x)),f=x-i;return stops[i].map((v,k)=>Math.round(v+(stops[i+1][k]-v)*f))}
+function scaleFor(){ // [lo,hi,diverging]
+ if(st.pinA!==null&&!st.all){let m=0.05;for(const w of useW){for(let ci=0;ci<CELLS.length;ci++){m=Math.max(m,Math.abs(metricCell(ci,w,st.band)-metricCell(ci,st.pinA,st.band)))}}return[-m,m,true]}
+ if(st.metric==='z')return[-3,3,true];
+ const a=[];useW.forEach(w=>CELLS.forEach((_,ci)=>a.push(cellVal(ci,w,st.band))));a.sort((x,y)=>x-y);
+ return[a[Math.floor(a.length*.02)],a[Math.min(a.length-1,Math.floor(a.length*.98))]||1,false]}
+function colour(v,sc){const t=(v-sc[0])/((sc[1]-sc[0])||1);return lerp(sc[2]?DIV:VIR,t)}
+// ---------- head map ----------
+const mapC=$('map'),mctx=mapC.getContext('2d');const CW=320,CHT=350,CX=160,CY=185,SC=120,HR=1.12;
+function sizeMap(){const d=window.devicePixelRatio||1;mapC.width=CW*d;mapC.height=CHT*d;mapC.style.width=CW+'px';mapC.style.height=CHT+'px';return d}
+const px=(x,y)=>[CX+x*SC,CY-y*SC];
+function drawMap(){
+ const d=sizeMap(),sc=scaleFor(),w=st.all?-1:st.w,b=st.band;
+ const W=mapC.width,H=mapC.height,img=mctx.createImageData(W,H),dat=img.data;
+ const el=CH.filter(c=>V.coords[c]).map(c=>({c,x:V.coords[c][0],y:V.coords[c][1],v:null,ci:cellOf(c,V.coords[c][0])}));
+ const val=c=>{if(st.pinA!==null&&!st.all)return metricCh(c,st.w,b)-metricCh(c,st.pinA,b);return metricCh(c,w,b)};
+ el.forEach(e=>e.v=val(e.c));
+ const cellv=CELLS.map((_,ci)=>st.pinA!==null&&!st.all?metricCell(ci,st.w,b)-metricCell(ci,st.pinA,b):metricCell(ci,w,b));
+ const cid=new Int16Array(W*H).fill(-2);
+ for(let j=0;j<H;j++)for(let i=0;i<W;i++){
+  const x=(i/d-CX)/SC,y=(CY-j/d)/SC;if(x*x+y*y>HR*HR)continue;
+  let k=(j*W+i)*4,r,g,bl;
+  if(st.view==='topo'){let sw=0,sv=0;for(const e of el){const dd=(e.x-x)**2+(e.y-y)**2+1e-4;const ww=1/(dd*Math.sqrt(dd));sw+=ww;sv+=ww*e.v}[r,g,bl]=colour(sv/sw,sc)}
+  else{let bi=0,bd=1e9;el.forEach((e,n)=>{const dd=(e.x-x)**2+(e.y-y)**2;if(dd<bd){bd=dd;bi=n}});const e=el[bi];let ci=e.ci;if(sideOf(e.c)==='M'){const reg=REG.find(r=>V.regions[r].includes(e.c));ci=CELLS.findIndex(c=>c.r===reg&&c.s===(x<0?'L':'R'))}cid[j*W+i]=ci;[r,g,bl]=colour(cellv[ci],sc)}
+  dat[k]=r;dat[k+1]=g;dat[k+2]=bl;dat[k+3]=255}
+ if(st.view==='cells'){for(let j=0;j<H-1;j++)for(let i=0;i<W-1;i++){const a=cid[j*W+i];if(a<-1)continue;if(cid[j*W+i+1]!==a&&cid[j*W+i+1]>-2||cid[(j+1)*W+i]!==a&&cid[(j+1)*W+i]>-2){const k=(j*W+i)*4;dat[k]=dat[k+1]=dat[k+2]=40}}}
+ mctx.setTransform(1,0,0,1,0,0);mctx.clearRect(0,0,W,H);mctx.putImageData(img,0,0);mctx.setTransform(d,0,0,d,0,0);
+ const ink=getComputedStyle(document.body).color;mctx.strokeStyle=ink;mctx.lineWidth=1.6;
+ mctx.beginPath();mctx.arc(CX,CY,HR*SC,0,7);mctx.stroke();
+ mctx.beginPath();mctx.moveTo(CX-14,CY-HR*SC+2);mctx.lineTo(CX,CY-HR*SC-18);mctx.lineTo(CX+14,CY-HR*SC+2);mctx.stroke();
+ [-1,1].forEach(s=>{mctx.beginPath();mctx.moveTo(CX+s*HR*SC,CY-14);mctx.quadraticCurveTo(CX+s*(HR*SC+14),CY,CX+s*HR*SC,CY+14);mctx.stroke()});
+ // events in window: ring on electrodes
+ const evw=st.all?[]:eventsInWindow(st.w);const hot=new Set();evw.forEach(e=>e.channels.forEach(c=>hot.add(c)));
+ mctx.font='10px system-ui';mctx.textAlign='center';
+ el.forEach(e=>{const [X,Y]=px(e.x,e.y);mctx.beginPath();mctx.arc(X,Y,hot.has(e.c)?7:3,0,7);if(hot.has(e.c)){mctx.lineWidth=2.4;mctx.strokeStyle='#fff';mctx.stroke();mctx.lineWidth=1.2;mctx.strokeStyle='#000';mctx.stroke()}else{mctx.fillStyle='rgba(0,0,0,.75)';mctx.fill()}
+  mctx.fillStyle='#fff';mctx.strokeStyle='rgba(0,0,0,.65)';mctx.lineWidth=3;mctx.strokeText(e.c,X,Y-8);mctx.fillText(e.c,X,Y-8)});
+ if(st.view==='cells'){mctx.font='600 11px system-ui';CELLS.forEach((c,ci)=>{const pts=c.ch.map(x=>V.coords[x]);let mx=pts.reduce((a,p)=>a+p[0],0)/pts.length,my=pts.reduce((a,p)=>a+p[1],0)/pts.length;if(c.ch.some(x=>sideOf(x)==='M')){mx=(c.s==='L'?-1:1)*Math.max(0.12,Math.abs(mx))}const [X,Y]=px(mx,my-0.1);const t=(st.pinA!==null&&!st.all?(cellv[ci]>=0?'+':''):'')+cellv[ci].toFixed(st.metric==='z'||st.pinA!==null?2:2);mctx.strokeStyle='rgba(255,255,255,.9)';mctx.lineWidth=3;mctx.strokeText(t,X,Y);mctx.fillStyle='#111';mctx.fillText(t,X,Y)})}
+ // L / R labels
+ mctx.font='600 12px system-ui';mctx.fillStyle=ink;mctx.textAlign='left';mctx.fillText('L',6,CY+4);mctx.textAlign='right';mctx.fillText('R',CW-6,CY+4);
+ // colour bar
+ const cb=$('cbc').getContext('2d');for(let i=0;i<160;i++){const [r,g,bl]=colour(sc[0]+(sc[1]-sc[0])*i/159,sc);cb.fillStyle=`rgb(${r},${g},${bl})`;cb.fillRect(i,0,1,10)}
+ const f=v=>(sc[2]&&v>0?'+':'')+v.toFixed(sc[2]?2:2);$('cbmin').textContent=f(sc[0]);$('cbmax').textContent=f(sc[1]);
+ const L=T[st.lang];$('mapnote').textContent=(st.pinA!==null&&!st.all?`${L.diff}: B=${wlabel(st.w)}, A=${wlabel(st.pinA)} · `:'')+(st.all?L.allrec:`${L.win} ${wlabel(st.w)}`);
+}
+const wlabel=w=>`${(w*WS).toFixed(0)}–${((w+1)*WS).toFixed(0)} ${T[st.lang].s}`;
+function eventsInWindow(w){const a=w*WS,b=(w+1)*WS;return V.events.filter(e=>e.t1>=a&&e.t0<b)}
+// ---------- timeline ----------
+const tl=$('tl'),tctx=tl.getContext('2d');const LM=104;let lanes=[],tlH=0;
+const EVC={spike:'#d1342f',ictal_ml:'#8a1c7c',ictal:'#8a1c7c',focal_slowing:'#c27a00',diffuse_slowing:'#9a6b00',wicket:'#2d7d6f',burst_suppression:'#4b3fa0',gped:'#a02060',lpd:'#a02060',periodic:'#a02060'};
+const SHORT={ru:{spike:'Спайк',ictal_ml:'Приступ (ML)',ictal:'Приступ',focal_slowing:'Фок. замедл.',diffuse_slowing:'Диффуз. замедл.',wicket:'Wicket',burst_suppression:'Вспышка-подавл.',gped:'ГПД',lpd:'ЛПД',periodic:'Периодич.'},uz:{spike:'Spayk',ictal_ml:'Tutqanoq (ML)',ictal:'Tutqanoq',focal_slowing:'Fokal sekinl.',diffuse_slowing:'Diffuz sekinl.',wicket:'Wicket',burst_suppression:'Portlash-bosilish',gped:'GPD',lpd:'LPD',periodic:'Davriy'}};
+function shortLbl(c){const t=(SHORT[st.lang]||SHORT.ru)[c];if(t)return t;const l=(V.events.find(e=>e.code===c)||{}).label||c;return l.length>15?l.slice(0,14)+'…':l}
+const evCodes=[...new Set(V.events.map(e=>e.code))];
+const STG=['W','N1','N2','N3','REM'],STC={W:'#d9a441',N1:'#8fb3e8',N2:'#4a82d9',N3:'#1f3c88',REM:'#c25ab0'};
+function drawTL(){
+ const d=window.devicePixelRatio||1,Wc=tl.clientWidth||900;const hyp=V.hypnogram&&V.hypnogram.length;
+ const rowsS=10,ROW=13,laneH=14;tlH=22+(hyp?18:0)+evCodes.length*laneH+6+rowsS*ROW+6;
+ tl.width=Wc*d;tl.height=tlH*d;tl.style.height=tlH+'px';tctx.setTransform(d,0,0,d,0,0);tctx.clearRect(0,0,Wc,tlH);
+ const ink=getComputedStyle(document.body).color,mut=getComputedStyle(document.body).getPropertyValue('--mut');
+ const X0=LM,XW=Wc-LM-8,tx=t=>X0+t/S.duration_s*XW;
+ tctx.font='11px system-ui';tctx.fillStyle=mut;tctx.textAlign='center';
+ const step=niceStep(S.duration_s/Math.max(4,XW/90));for(let t=0;t<=S.duration_s;t+=step){tctx.fillText(Math.round(t)+'',tx(t),12);tctx.fillStyle='rgba(128,128,128,.25)';tctx.fillRect(tx(t),16,1,tlH-16);tctx.fillStyle=mut}
+ let y=22;tctx.textAlign='right';
+ if(hyp){tctx.fillStyle=mut;tctx.fillText('Сон / Uyqu',LM-6,y+11);V.hypnogram.forEach((s,i)=>{const t0=i*30,t1=Math.min((i+1)*30,S.duration_s);if(t0>=S.duration_s)return;tctx.fillStyle=STC[s]||'#999';tctx.fillRect(tx(t0),y,Math.max(1,tx(t1)-tx(t0)),14)});y+=18}
+ evCodes.forEach(c=>{tctx.fillStyle=mut;tctx.textAlign='right';tctx.fillText(shortLbl(c),LM-6,y+11);tctx.fillStyle=EVC[c]||'#555';V.events.filter(e=>e.code===c).forEach(e=>{tctx.fillRect(tx(e.t0),y+1,Math.max(2,tx(e.t1)-tx(e.t0)),laneH-3)});y+=laneH});
+ y+=6;st._stripY=y;
+ const L=T[st.lang];const rows=CELLS.map((c,i)=>({c,i}));
+ const bandNow=st.band;const sc2=st.metric==='z'?[-3,3,true]:scaleFor0();
+ rows.forEach((r,k)=>{tctx.fillStyle=mut;tctx.textAlign='right';tctx.fillText(`${L.reg[r.c.r].slice(0,5)}. ${r.c.s}`,LM-6,y+k*ROW+10);
+  const cw=XW/NW;for(let w=0;w<NW;w++){const v=st.metric==='z'?Math.max(-4,Math.min(4,(cellVal(r.i,w,bandNow)-ZS[bandNow][r.i].med)/ZS[bandNow][r.i].mad)):cellVal(r.i,w,bandNow);const [R,G,B]=colour(v,sc2);tctx.fillStyle=`rgb(${R},${G},${B})`;tctx.fillRect(X0+w*cw,y+k*ROW,Math.ceil(cw)+0.5,ROW-1)}});
+ // artefact windows
+ const cw=XW/NW;tctx.fillStyle='rgba(120,120,120,.55)';for(let w=0;w<NW;w++)if(S.artefact[w])tctx.fillRect(X0+w*cw,y,Math.ceil(cw),rowsS*ROW);
+ // cursor
+ if(!st.all){tctx.fillStyle='rgba(27,95,209,.18)';tctx.fillRect(X0+st.w*cw,16,Math.max(2,cw),tlH-16);tctx.fillStyle='#1b5fd1';tctx.fillRect(X0+st.w*cw,16,2,tlH-16);
+  if(st.pinA!==null){tctx.fillStyle='#b4400a';tctx.fillRect(X0+st.pinA*cw,16,2,tlH-16);tctx.textAlign='left';tctx.fillText('A',X0+st.pinA*cw+4,26)}}
+ tl._geo={X0,XW,cw}}
+function scaleFor0(){const a=[];useW.forEach(w=>CELLS.forEach((_,ci)=>a.push(cellVal(ci,w,st.band))));a.sort((x,y)=>x-y);return[a[Math.floor(a.length*.02)],a[Math.min(a.length-1,Math.floor(a.length*.98))]||1,false]}
+function niceStep(x){const p=10**Math.floor(Math.log10(x)),f=x/p;return(f<1.5?1:f<3.5?2:f<7.5?5:10)*p}
+function setW(w){st.all=false;st.w=Math.max(0,Math.min(NW-1,w));$('slider').value=st.w;refresh()}
+function pick(ev){const g=tl._geo;if(!g)return;const r=tl.getBoundingClientRect();const x=ev.clientX-r.left;setW(Math.floor((x-g.X0)/g.cw))}
+let drag=false;tl.addEventListener('pointerdown',e=>{drag=true;tl.setPointerCapture(e.pointerId);pick(e)});tl.addEventListener('pointermove',e=>{if(drag)pick(e)});tl.addEventListener('pointerup',()=>drag=false);
+tl.addEventListener('keydown',e=>{if(e.key==='ArrowRight')setW(st.w+1);if(e.key==='ArrowLeft')setW(st.w-1)});
+// ---------- asymmetry ----------
+function asym(){
+ const L=T[st.lang],svg=$('asv'),Wd=svg.clientWidth||340,H=230,m=46,rowH=(H-26)/V.pairs.length;
+ const ax=v=>m+(Math.max(-2,Math.min(2,v))+2)/4*(Wd-m-10);
+ let h=`<text x="${ax(-2)}" y="10" text-anchor="start">← ${L.lsub}</text><text x="${ax(2)}" y="10" text-anchor="end">${L.rsub} →</text>`;
+ V.pairs.forEach((p,i)=>{const y=22+i*rowH,rec=V.asymmetry_record[p];const [l,r]=p.split('-');
+  h+=`<text x="2" y="${y+rowH/2+3}">${p}</text>`;
+  if(rec){h+=`<rect x="${ax(rec.low)}" y="${y+3}" width="${ax(rec.high)-ax(rec.low)}" height="${rowH-6}" fill="rgba(128,160,200,.28)" rx="3"/>`}
+  h+=`<line x1="${ax(0)}" x2="${ax(0)}" y1="${y}" y2="${y+rowH}" stroke="currentColor" opacity=".35"/>`;
+  if(!st.all){const a=S.log10_abs_alpha;if(chIdx[l]!==undefined&&chIdx[r]!==undefined&&!S.artefact[st.w]){const v=(a[chIdx[r]][st.w]-a[chIdx[l]][st.w])*Math.LN10;h+=`<circle cx="${ax(v)}" cy="${y+rowH/2}" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/>`}}
+  if(rec){const out=!!rec.flag;h+=`<path d="M${ax(rec.ai)} ${y+rowH/2-6} l6 6 l-6 6 l-6 -6z" fill="${out?'#c2410c':'#1b5fd1'}"/>`}});
+ svg.innerHTML=h;
+ const fl=Object.entries(V.asymmetry_record).filter(([,v])=>v.flag);
+ $('asnote').innerHTML=(fl.length?`<span class="badge w">${L.asrec}</span> `+fl.map(([k,v])=>`${k} (${v.flag==='right>left'?L.rgt:L.lft}, ln ${v.ai})`).join('; '):`<span class="badge">${L.asnone}</span>`)+`<br>${L.asnote}`}
+// ---------- caption / events ----------
+function whereTxt(e){const L=T[st.lang];if(!e.where.length)return L.noloc;const seen=new Set();return e.where.map(w=>{const s=w.side==='mid'?'':' '+(w.side==='L'?L.L:L.R);const t=`${L.reg[w.region]}${s}`;return t}).filter(t=>!seen.has(t)&&seen.add(t)).join(', ')}
+function caption(){
+ const L=T[st.lang],w=st.all?-1:st.w,b=st.band;let h='';
+ if(st.pinA!==null&&!st.all){let bi=0,bv=0;CELLS.forEach((c,ci)=>{const v=cellVal(ci,w<0?0:st.w,b)-cellVal(ci,st.pinA,b);if(Math.abs(v)>Math.abs(bv)){bv=v;bi=ci}});h+=`<p>${L.diffmax(`${L.reg[CELLS[bi].r]} ${CELLS[bi].s==='L'?L.L:L.R}`,(bv>0?'+':'')+bv.toFixed(3))}</p>`}
+ else{let bi=0,bv=-1e9;CELLS.forEach((c,ci)=>{const v=metricCell(ci,w,b);if(v>bv){bv=v;bi=ci}});h+=`<p>${L.maxb(L[b],`${L.reg[CELLS[bi].r]} ${CELLS[bi].s==='L'?L.L:L.R}`,bv.toFixed(2)+(st.metric==='z'?' z':''))}</p>`}
+ if(!st.all){if(S.artefact[st.w])h+=`<p><span class="badge w">!</span>${L.art}</p>`;
+  const ev=eventsInWindow(st.w);h+=ev.length?`<p>${L.evin}</p><p>`+ev.slice(0,8).map(e=>`<span class="badge">${evLbl(e)}${e.channels.length?' · '+e.channels.join(','):''}${e.where.length?' → '+whereTxt(e):''}</span>`).join(' ')+(ev.length>8?` +${ev.length-8}`:'')+'</p>':`<p class="note">${L.ev0}</p>`}
+ h+=`<p class="note">${L.spec}</p>`;$('cap').innerHTML=h}
+function evTable(){const L=T[st.lang];const evs=[...V.events].sort((a,b)=>a.t0-b.t0);const cur=st.all?new Set():new Set(eventsInWindow(st.w));
+ let h=`<tr>${L.evcols.map(c=>`<th>${c}</th>`).join('')}</tr>`;evs.slice(0,300).forEach((e,i)=>{h+=`<tr class="ev${cur.has(e)?' cur':''}" data-w="${Math.floor(e.t0/WS)}"><td>${e.t0.toFixed(1)}</td><td>${evLbl(e)}</td><td>${whereTxt(e)}</td><td>${e.conf.toFixed(2)}</td></tr>`});
+ if(!evs.length)h=`<tr><td class="note">${L.noev}</td></tr>`;if(evs.length>300)h+=`<tr><td colspan=4 class="note">… +${evs.length-300}</td></tr>`;$('evt').innerHTML=h;
+ $('evt').querySelectorAll('tr.ev').forEach(r=>r.onclick=()=>setW(+r.dataset.w))}
+// ---------- UI ----------
+function mkbtn(par,id,label,pressed,fn){let b=$(id);if(!b){b=document.createElement('button');b.id=id;par.appendChild(b);b.onclick=fn}b.textContent=label;b.setAttribute('aria-pressed',pressed?'true':'false')}
+function ui(){const L=T[st.lang];document.documentElement.lang=st.lang;$('ttl').textContent=V.title&&st.lang==='ru'?V.title:L.ttl;$('sub').textContent=L.sub(S.duration_s,S.channels.length,WS);$('cav').textContent=V.caveat[st.lang];
+ $('lband').textContent=L.band+':';$('lmetric').textContent=L.metric+':';$('lview').textContent=L.view+':';
+ BANDS.forEach(b=>mkbtn($('gband'),'b_'+b,L[b],st.band===b,()=>{st.band=b;refresh()}));
+ mkbtn($('gmetric'),'m_rel',L.rel,st.metric==='rel',()=>{st.metric='rel';refresh()});mkbtn($('gmetric'),'m_z',L.z,st.metric==='z',()=>{st.metric='z';refresh()});
+ mkbtn($('gview'),'v_topo',L.topo,st.view==='topo',()=>{st.view='topo';refresh()});mkbtn($('gview'),'v_cells',L.cells,st.view==='cells',()=>{st.view='cells';refresh()});
+ mkbtn($('gmode'),'k_all',L.all,st.all,()=>{st.all=!st.all;refresh()});
+ mkbtn($('gmode'),'k_play',st.timer?L.pause:L.play,!!st.timer,()=>{if(st.timer){clearInterval(st.timer);st.timer=null}else{st.all=false;st.timer=setInterval(()=>{setW(st.w+1>=NW?0:st.w+1)},500)}ui()});
+ mkbtn($('gmode'),'k_pin',st.pinA===null?L.pinA:L.clearA,st.pinA!==null,()=>{st.pinA=st.pinA===null?st.w:null;refresh()});
+ mkbtn($('glang'),'l_ru','RU',st.lang==='ru',()=>{st.lang='ru';ui();refresh()});mkbtn($('glang'),'l_uz','UZ',st.lang==='uz',()=>{st.lang='uz';ui();refresh()});
+ ['h_tl','h_map','h_cap','h_as','h_ev','h_imp'].forEach(k=>$(k).textContent=L[k]);
+ const imp=st.lang==='uz'?V.record.impression_uz:V.record.impression_ru;$('imp').textContent=imp||L.noimp;
+ $('foot').textContent=`${L.foot} ${V.norms.version}; ${V.norms.fit}. ${V.norms.checked_on}.`}
+function refresh(){ui();drawTL();drawMap();asym();caption();evTable();$('slider').max=NW-1}
+$('slider').addEventListener('input',e=>setW(+e.target.value));
+window.addEventListener('resize',()=>{drawTL();asym()});
+refresh();
+})();
+</script>
+</body>
+</html>
