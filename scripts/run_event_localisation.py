@@ -14,7 +14,7 @@ import numpy as np
 CACHE = "data/nmt_events"
 
 
-def run(out: Path) -> None:
+def run(out: Path, split: str = "test") -> None:
     from neurolens.datasets.nmt_events import EPILEPTIFORM, SLOWING, NMTEventsClient
     from neurolens.layer1_ingest.electrodes import normalize_channel_name
     from neurolens.layer1_ingest.registry import ingest
@@ -25,7 +25,7 @@ def run(out: Path) -> None:
     anns = c.annotations()
     done = {json.loads(l)["record"] for l in out.read_text().splitlines()} if out.exists() else set()
     with out.open("a") as f:
-        for rid, normal, member in c.split_members("test"):
+        for rid, normal, member in c.split_members(split):
             if normal or rid in done:
                 continue
             ev = [e for e in anns[rid].events if e.category in (EPILEPTIFORM, SLOWING)]
@@ -66,7 +66,7 @@ def _hemi(expert):
     return next(iter(s)) if len(s) == 1 else None
 
 
-def assess(path: Path) -> dict:
+def assess(path: Path, primary: str = "A") -> dict:
     from neurolens.layer3_features.event_localiser import region_of, side_of
 
     rows = [json.loads(l) for l in path.read_text().splitlines()]
@@ -115,19 +115,24 @@ def assess(path: Path) -> dict:
         sub = [r for r in ok if r["category"] == cat]
         res[cat] = {v: metrics(sub, v) for v in ("A", "B", "C")}
         if cat == "epileptiform":
-            for key in ("M1_top1_in_expert", "M2_region_in_expert", "M3_hemisphere_unilateral"):
-                res[cat]["A"][key + "_ci95_by_record"] = boot(sub, "A", key)
-    a = res["epileptiform"]["A"]
+            for v in (primary,):
+              for key in ("M1_top1_in_expert", "M2_region_in_expert", "M3_hemisphere_unilateral"):
+                res[cat][v][key + "_ci95_by_record"] = boot(sub, v, key)
+    a = res["epileptiform"][primary]
+    res["primary_variant"] = primary
     res["H1"] = bool(a["M3_hemisphere_unilateral"] >= 0.75 and a["M3_hemisphere_unilateral_ci95_by_record"][0] > 0.60)
     res["H2"] = bool(a["M2_region_in_expert"] >= 0.60 and a["M2_region_in_expert"] - a["baseline_random_region"] >= 0.15)
-    res["H3"] = bool(a["M1_top1_in_expert"] >= 0.40 and a["M1_top1_in_expert"] >= 2 * a["baseline_random_channel"])
+    if primary == "A":   # increment 77 rule
+        res["H3"] = bool(a["M1_top1_in_expert"] >= 0.40 and a["M1_top1_in_expert"] >= 2 * a["baseline_random_channel"])
+    else:                # increment 78 rule (+0.10 absolute over the random-channel baseline)
+        res["H3"] = bool(a["M1_top1_in_expert"] >= 0.40 and a["M1_top1_in_expert"] - a["baseline_random_channel"] >= 0.10)
     return res
 
 
 if __name__ == "__main__":
     if sys.argv[1] == "run":
-        run(Path(sys.argv[2]))
+        run(Path(sys.argv[2]), sys.argv[3] if len(sys.argv) > 3 else "test")
     else:
-        r = assess(Path(sys.argv[2]))
+        r = assess(Path(sys.argv[2]), sys.argv[4] if len(sys.argv) > 4 else "A")
         Path(sys.argv[3]).write_text(json.dumps(r, indent=1) + "\n")
         print(json.dumps(r, indent=1))
