@@ -1,0 +1,57 @@
+{
+ "n_records": 151,
+ "n_errors": 2,
+ "H1_N2_sigma_central_gt_occipital": {
+  "n": 148,
+  "excluded": 1,
+  "frac": 0.5540540540540541,
+  "ci95": [
+   0.47,
+   0.636
+  ],
+  "ok": false
+ },
+ "H2_N3_delta_frontal_gt_occipital": {
+  "n": 145,
+  "excluded": 4,
+  "frac": 0.8344827586206897,
+  "ci95": [
+   0.764,
+   0.891
+  ],
+  "ok": false
+ },
+ "H3_W_alpha_occipital_gt_frontal": {
+  "n": 128,
+  "excluded": 21,
+  "frac": 0.8671875,
+  "ci95": [
+   0.796,
+   0.921
+  ],
+  "ok": false
+ },
+ "descriptive_N2_sigma_C4_gt_C3": {
+  "n": 148,
+  "excluded": 1,
+  "frac": 0.6756756756756757,
+  "ci95": [
+   0.594,
+   0.75
+  ]
+ },
+ "descriptive_N2_sigma_frontal_gt_central": {
+  "n": 148,
+  "excluded": 1,
+  "frac": 0.14189189189189189,
+  "ci95": [
+   0.09,
+   0.209
+  ]
+ },
+ "decision": {
+  "H1": false,
+  "H2": false,
+  "H3": false
+ }
+}

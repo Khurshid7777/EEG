@@ -40,6 +40,7 @@ def _one(rec):
         out = {"record": rec, "stages": {}}
         for sname, code in STAGE_OF.items():
             vals = {c: {b: [] for b in BANDS} for c in CH}
+            absv = {c: {b: [] for b in BANDS} for c in CH}
             used = 0
             for k, c in lab:
                 if c != code or (k + 1) * n > x.shape[1]:
@@ -51,10 +52,13 @@ def _one(rec):
                 tot = pw[:, (f >= 0.5) & (f < 30)].sum(axis=1)
                 for j, ch in enumerate(CH):
                     for b, (lo, hi) in BANDS.items():
-                        vals[ch][b].append(pw[j, (f >= lo) & (f < hi)].sum() / tot[j])
+                        bp = pw[j, (f >= lo) & (f < hi)].sum()
+                        vals[ch][b].append(bp / tot[j])
+                        absv[ch][b].append(np.log10(bp + 1e-12))
                 used += 1
             out["stages"][sname] = {"n_epochs": used,
-                                    "median": {ch: {b: float(np.median(v)) for b, v in vals[ch].items()} for ch in CH} if used else None}
+                                    "median": {ch: {b: float(np.median(v)) for b, v in vals[ch].items()} for ch in CH} if used else None,
+                                    "median_log10_abs": {ch: {b: float(np.median(v)) for b, v in absv[ch].items()} for ch in CH} if used else None}
         return out
     except Exception as exc:  # noqa: BLE001 - excluded and counted, as pre-registered
         return {"record": rec, "error": repr(exc)}
