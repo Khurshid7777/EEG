@@ -105,6 +105,7 @@ uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkic
 };
 const st={w:0,band:(V.hypnogram&&V.hypnogram.length)?'sigma':'alpha',metric:(V.hypnogram&&V.hypnogram.length)?'abs':'rel',view:CH.length<8?'cells':'topo',lang:'ru',pinA:null,all:false,timer:null};
 const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function fmtT(s){const m=Math.floor(s/60),u=st.lang==='uz'?['daq','s']:['мин','с'];return m>=1?`${m} ${u[0]} ${Math.round(s-m*60)} ${u[1]}`:`${Math.round(s)} ${u[1]}`}
 function evLbl(e){return st.lang==='uz'?(SHORT.uz[e.code]||e.label):e.label}
 const isMid=c=>c.endsWith('z'), sideOf=c=>isMid(c)?'M':(parseInt(c.slice(-1))%2?'L':'R');
@@ -210,14 +211,14 @@ function asym(){
  const ax=v=>m+(Math.max(-2,Math.min(2,v))+2)/4*(Wd-m-10);
  let h=`<text x="${ax(-2)}" y="10" text-anchor="start">← ${L.lsub}</text><text x="${ax(2)}" y="10" text-anchor="end">${L.rsub} →</text>`;
  PR.forEach((p,i)=>{const y=22+i*rowH,rec=V.asymmetry_record[p];const [l,r]=p.split('-');
-  h+=`<text x="2" y="${y+rowH/2+3}">${p}</text>`;
+  h+=`<text x="2" y="${y+rowH/2+3}">${esc(p)}</text>`;
   if(rec&&rec.low!==null&&rec.low!==undefined){h+=`<rect x="${ax(rec.low)}" y="${y+3}" width="${ax(rec.high)-ax(rec.low)}" height="${rowH-6}" fill="rgba(128,160,200,.28)" rx="3"/>`}
   h+=`<line x1="${ax(0)}" x2="${ax(0)}" y1="${y}" y2="${y+rowH}" stroke="currentColor" opacity=".35"/>`;
   if(!st.all){const a=S.log10_abs_alpha;if(chIdx[l]!==undefined&&chIdx[r]!==undefined&&!S.artefact[st.w]){const v=(a[chIdx[r]][st.w]-a[chIdx[l]][st.w])*Math.LN10;h+=`<circle cx="${ax(v)}" cy="${y+rowH/2}" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/>`}}
   if(rec){const out=!!rec.flag;h+=`<path d="M${ax(rec.ai)} ${y+rowH/2-6} l6 6 l-6 6 l-6 -6z" fill="${out?'#c2410c':'#1b5fd1'}"/>`}});
  svg.innerHTML=h;
  const fl=Object.entries(V.asymmetry_record).filter(([,v])=>v.flag);
- $('asnote').innerHTML=(fl.length?`<span class="badge w">${L.asrec}</span> `+fl.map(([k,v])=>`${k} (${v.flag==='right>left'?L.rgt:L.lft}, ln ${v.ai})`).join('; '):`<span class="badge">${S.reference==='recorded'?L.asnocor:L.asnone}</span>`)+`<br>${L.asnote}`}
+ $('asnote').innerHTML=(fl.length?`<span class="badge w">${L.asrec}</span> `+fl.map(([k,v])=>`${esc(k)} (${v.flag==='right>left'?L.rgt:L.lft}, ln ${v.ai})`).join('; '):`<span class="badge">${S.reference==='recorded'?L.asnocor:L.asnone}</span>`)+`<br>${L.asnote}`}
 // ---------- caption / events ----------
 function whereTxt(e){const L=T[st.lang];if(!e.where.length)return L.noloc;const seen=new Set();return e.where.map(w=>{const s=w.side==='mid'?'':' '+(w.side==='L'?L.L:L.R);const t=`${L.reg[w.region]}${s}`;return t}).filter(t=>!seen.has(t)&&seen.add(t)).join(', ')}
 function caption(){
@@ -225,11 +226,11 @@ function caption(){
  if(st.pinA!==null&&!st.all){let bi=0,bv=0;CELLS.forEach((c,ci)=>{const v=cellVal(ci,w<0?0:st.w,b)-cellVal(ci,st.pinA,b);if(Math.abs(v)>Math.abs(bv)){bv=v;bi=ci}});h+=`<p>${L.diffmax(`${L.reg[CELLS[bi].r]} ${CELLS[bi].s==='L'?L.L:L.R}`,(bv>0?'+':'')+bv.toFixed(3))}</p>`}
  else{let bi=0,bv=-1e9;CELLS.forEach((c,ci)=>{const v=metricCell(ci,w,b);if(v>bv){bv=v;bi=ci}});h+=`<p>${L.maxb(L[b],`${L.reg[CELLS[bi].r]} ${CELLS[bi].s==='L'?L.L:L.R}`,bv.toFixed(2)+(st.metric==='z'?' z':''))}</p>`}
  if(!st.all){if(S.artefact[st.w])h+=`<p><span class="badge w">!</span>${L.art}</p>`;
-  const ev=eventsInWindow(st.w);h+=ev.length?`<p>${L.evin}</p><p>`+ev.slice(0,8).map(e=>`<span class="badge">${evLbl(e)}${e.channels.length?' · '+e.channels.join(','):''}${e.where.length?' → '+whereTxt(e):''}</span>`).join(' ')+(ev.length>8?` +${ev.length-8}`:'')+'</p>':`<p class="note">${L.ev0}</p>`}
+  const ev=eventsInWindow(st.w);h+=ev.length?`<p>${L.evin}</p><p>`+ev.slice(0,8).map(e=>`<span class="badge">${esc(evLbl(e))}${e.channels.length?' · '+esc(e.channels.join(',')):''}${e.where.length?' → '+esc(whereTxt(e)):''}</span>`).join(' ')+(ev.length>8?` +${ev.length-8}`:'')+'</p>':`<p class="note">${L.ev0}</p>`}
  if(V.hypnogram&&V.hypnogram.length&&st.metric==='rel')h+=`<p><span class="badge w">!</span>${L.sleepwarn}</p>`;
  h+=`<p class="note">${L.spec}</p>`;$('cap').innerHTML=h}
 function evTable(){const L=T[st.lang];const evs=[...V.events].sort((a,b)=>a.t0-b.t0);const cur=st.all?new Set():new Set(eventsInWindow(st.w));
- let h=`<tr>${L.evcols.map(c=>`<th>${c}</th>`).join('')}</tr>`;evs.slice(0,300).forEach((e,i)=>{h+=`<tr class="ev${cur.has(e)?' cur':''}" data-w="${Math.floor(e.t0/WS)}"><td>${e.t0.toFixed(1)}</td><td>${evLbl(e)}</td><td>${whereTxt(e)}</td><td>${e.conf.toFixed(2)}</td></tr>`});
+ let h=`<tr>${L.evcols.map(c=>`<th>${c}</th>`).join('')}</tr>`;evs.slice(0,300).forEach((e,i)=>{h+=`<tr class="ev${cur.has(e)?' cur':''}" data-w="${Math.floor(e.t0/WS)}"><td>${e.t0.toFixed(1)}</td><td>${esc(evLbl(e))}</td><td>${esc(whereTxt(e))}</td><td>${e.conf.toFixed(2)}</td></tr>`});
  if(!evs.length)h=`<tr><td class="note">${L.noev}</td></tr>`;if(evs.length>300)h+=`<tr><td colspan=4 class="note">… +${evs.length-300}</td></tr>`;$('evt').innerHTML=h;
  $('evt').querySelectorAll('tr.ev').forEach(r=>r.onclick=()=>setW(+r.dataset.w))}
 // ---------- UI ----------
