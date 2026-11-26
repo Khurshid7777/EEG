@@ -10,13 +10,13 @@ The output is one self-contained HTML file (no external libraries or network acc
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Mapping, Optional
 
 import numpy as np
 import yaml
 
-from ..layer3_features.regional import (HOMOLOGOUS_PAIRS, REGIONS, regional_series)
+from ..layer3_features.regional import HOMOLOGOUS_PAIRS, REGIONS, canonical, regional_series
 
 _ROOT = Path(__file__).resolve().parents[3]
 CAVEAT = {
@@ -63,7 +63,7 @@ def _record_asymmetry(series: dict, norms: Mapping) -> dict:
 
 def _event_regions(channels: list[str]) -> list[dict]:
     out = []
-    for c in channels:
+    for c in (canonical(x) for x in channels):
         for region, chans in REGIONS.items():
             if c in chans:
                 side = "mid" if c.endswith("z") else ("L" if int(c[-1]) % 2 else "R")
@@ -71,8 +71,8 @@ def _event_regions(channels: list[str]) -> list[dict]:
     return out
 
 
-def build_view(signal: np.ndarray, channels: list[str], fs: float, result_json: Optional[Mapping] = None,
-               win_s: float = 10.0, norms: Optional[Mapping] = None, title: str = "") -> dict:
+def build_view(signal: np.ndarray, channels: list[str], fs: float, result_json: Mapping | None = None,
+               win_s: float = 10.0, norms: Mapping | None = None, title: str = "") -> dict:
     result_json = result_json or {}
     norms = norms or load_norms()
     series = regional_series(signal, channels, fs, win_s=win_s)
@@ -110,7 +110,7 @@ def render_html(view: Mapping) -> str:
 
 
 def write_regional_html(path: str | Path, signal: np.ndarray, channels: list[str], fs: float,
-                        result_json: Optional[Mapping] = None, **kw) -> Path:
+                        result_json: Mapping | None = None, **kw) -> Path:
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(render_html(build_view(signal, channels, fs, result_json, **kw)), encoding="utf-8")

@@ -7,12 +7,12 @@ all after common-average reference and a 2-40 Hz band-pass, normalised by the el
 
 from __future__ import annotations
 
-from typing import Mapping, Sequence
+from collections.abc import Sequence
 
 import numpy as np
 from scipy.signal import butter, sosfiltfilt
 
-from .regional import REGIONS, STANDARD_1020
+from .regional import REGIONS, canonical, usable_channels
 
 
 def region_of(ch: str) -> str | None:
@@ -25,10 +25,10 @@ def side_of(ch: str) -> str:
 
 class EventLocaliser:
     def __init__(self, signal: np.ndarray, channels: Sequence[str], fs: float):
-        idx = [i for i, c in enumerate(channels) if c in STANDARD_1020]
+        idx = usable_channels(signal, channels)
         if len(idx) < 8:
-            raise ValueError("fewer than 8 standard 10-20 electrodes")
-        self.names = [channels[i] for i in idx]
+            raise ValueError("fewer than 8 usable standard 10-20 electrodes")
+        self.names = [canonical(channels[i]) for i in idx]
         self.fs = fs
         x = np.asarray(signal)[idx].astype(float)
         x = x - x.mean(axis=0, keepdims=True)

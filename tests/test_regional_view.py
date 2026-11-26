@@ -4,8 +4,13 @@ import re
 import numpy as np
 
 from neurolens.layer3_features.regional import STANDARD_1020
-from neurolens.outputs.regional_view import (build_view, load_norms, plot_regional_static, regional_summary,
-                                             render_html)
+from neurolens.outputs.regional_view import (
+    build_view,
+    load_norms,
+    plot_regional_static,
+    regional_summary,
+    render_html,
+)
 
 
 def _signal(secs=60, fs=200.0):
@@ -52,7 +57,7 @@ def test_html_is_self_contained_and_data_roundtrips(tmp_path):
     v = build_view(x, ch, fs, RESULT, title="t</script>x")
     html = render_html(v)
     assert "/*__DATA__*/null" not in html and "<script src" not in html and "http://" not in html.replace("http://www.w3.org", "")
-    m = re.search(r"const V=(\{.*?\});\n\(\(\)", html, re.S)
+    m = re.search(r"const V=(\{.*?\});\n\(\(\)", html, re.DOTALL)
     back = json.loads(m.group(1).replace("<\\/", "</"))
     assert back["title"] == "t</script>x" and back["series"]["n_windows"] == 6
     assert html.count("</script>") == 1                      # the data cannot close the script tag
@@ -82,6 +87,43 @@ def test_sparse_psg_montage_keeps_recorded_reference_and_has_no_corridor():
     assert rec["low"] is None and rec["flag"] is None
     assert "log10_abs" in v["series"] and "sigma" in v["series"]["rel"]
     import pytest
+
     from neurolens.layer3_features.regional import regional_series
     with pytest.raises(ValueError):
         regional_series(x[:2], ch[:2], fs)
+
+
+def test_ten_ten_names_flat_and_nan_channels():
+    from neurolens.layer3_features.regional import canonical, regional_series
+
+    x, ch, fs = _signal(secs=60)
+    ch2 = [{"T3": "T7", "T4": "T8", "T5": "P7", "T6": "P8"}.get(c, c) for c in ch]
+    s = regional_series(x, ch2, fs)
+    assert {"T3", "T4", "T5", "T6"} <= set(s["channels"]) and canonical("P8") == "T6"
+    flat = x.copy()
+    flat[ch.index("Cz")] = 0.0                                   # flat electrode is dropped, not used as a reference leak
+    s2 = regional_series(flat, ch, fs)
+    assert "Cz" not in s2["channels"] and len(s2["channels"]) == len(ch) - 1
+    nan = x.copy()
+    nan[ch.index("F3"), 2000:2400] = np.nan                       # short gap: kept, the window is flagged
+    s3 = regional_series(nan, ch, fs)
+    assert "F3" in s3["channels"] and any(s3["artefact"]) and np.isfinite(np.array(s3["rel"]["alpha"])).all()
+    nan[ch.index("F4"), :] = np.nan                               # mostly missing: dropped
+    assert "F4" not in regional_series(nan, ch, fs)["channels"]
+
+
+def test_page_script_parses_with_node(tmp_path):
+    import shutil
+    import subprocess
+
+    import pytest
+
+    if shutil.which("node") is None:
+        pytest.skip("node not available")
+    x, ch, fs = _signal(secs=40)
+    html = render_html(build_view(x, ch, fs, RESULT))
+    js = re.search(r"<script>(.*)</script>", html, re.DOTALL).group(1)
+    f = tmp_path / "page.js"
+    f.write_text(js, encoding="utf-8")
+    r = subprocess.run(["node", "--check", str(f)], capture_output=True, text=True, check=False)
+    assert r.returncode == 0, r.stderr

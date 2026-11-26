@@ -1,7 +1,12 @@
 import numpy as np
 
-from neurolens.layer3_features.regional import (STANDARD_1020, asymmetry_index, channel_band_power, posterior_alpha,
-                                                region_values)
+from neurolens.layer3_features.regional import (
+    STANDARD_1020,
+    asymmetry_index,
+    channel_band_power,
+    posterior_alpha,
+    region_values,
+)
 
 
 def _synthetic(fs=200.0, secs=60, strong=("O1", "O2"), left_boost=1.0):
