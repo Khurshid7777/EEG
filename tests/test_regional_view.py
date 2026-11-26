@@ -69,3 +69,19 @@ def test_pipeline_adds_regional_block():
         UnifiedSignal(signal=x, sampling_rate_hz=fs, channel_names=ch, duration_s=40.0, source="edf"))
     r = out.result_json["regional"]
     assert r["version"] == "regional_view_v1" and set(r["asymmetry_alpha"]) >= {"O1-O2", "T3-T4"}
+
+
+def test_sparse_psg_montage_keeps_recorded_reference_and_has_no_corridor():
+    rng = np.random.default_rng(9)
+    fs, secs = 200.0, 90
+    ch = ["F3", "F4", "C3", "C4", "O1", "O2"]
+    x = 10 * rng.standard_normal((6, int(fs * secs)))
+    v = build_view(x, ch, fs, {})
+    assert v["series"]["reference"] == "recorded" and v["record"]["reference"] == "recorded"
+    rec = v["asymmetry_record"]["C3-C4"]
+    assert rec["low"] is None and rec["flag"] is None
+    assert "log10_abs" in v["series"] and "sigma" in v["series"]["rel"]
+    import pytest
+    from neurolens.layer3_features.regional import regional_series
+    with pytest.raises(ValueError):
+        regional_series(x[:2], ch[:2], fs)

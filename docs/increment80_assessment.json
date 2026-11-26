@@ -1,0 +1,58 @@
+{
+ "n_nights": 128,
+ "n_errors": 1,
+ "errors": [
+  [
+   "sub-79",
+   "CalledProcessError(18, ['curl', '-sSfL', '--retry', '5', '--retry-delay', '4', '"
+  ]
+ ],
+ "H1_N2_sigma_central_gt_occipital": {
+  "n": 125,
+  "excluded": 2,
+  "frac": 0.936,
+  "ci95": [
+   0.878,
+   0.972
+  ],
+  "ok": true
+ },
+ "H2_N3_delta_frontal_gt_occipital": {
+  "n": 58,
+  "excluded": 69,
+  "frac": 0.9827586206896551,
+  "ci95": [
+   0.908,
+   1.0
+  ],
+  "ok": true
+ },
+ "descriptive_N2_sigma_central_gt_frontal": {
+  "n": 125,
+  "excluded": 2,
+  "frac": 0.664,
+  "ci95": [
+   0.574,
+   0.746
+  ]
+ },
+ "descriptive_W_alpha_occipital_gt_frontal": {
+  "n": 122,
+  "excluded": 5,
+  "frac": 0.4918032786885246,
+  "ci95": [
+   0.4,
+   0.584
+  ]
+ },
+ "descriptive_N2_sigma_C4_gt_C3": {
+  "n": 125,
+  "excluded": 2,
+  "frac": 0.696,
+  "ci95": [
+   0.607,
+   0.775
+  ]
+ },
+ "allow_absolute_power_sleep_topography": true
+}

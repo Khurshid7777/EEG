@@ -1,7 +1,7 @@
 """Demo pages of the interactive regional view built from open data (docs/demo/).
 
     PYTHONPATH=src python scripts/make_regional_demo.py
-Pages: eegmat rest and task of one healthy volunteer; one Siena seizure (clinically right temporal focus; the view
+Pages: HMC sleep (4 PSG electrodes, recorded reference); eegmat rest and task of one healthy volunteer; one Siena seizure (clinically right temporal focus; the view
 does not state a side - increment 75). Only derived power summaries are stored, not the raw signal.
 """
 
@@ -43,9 +43,24 @@ def siena(subject: str, fname: str, onset: float, title: str, name: str) -> None
     write_regional_html(OUT / name, sig.signal, sig.channel_names, fs, out.result_json, title=title, win_s=5.0)
 
 
+def hmc_sleep(rec: str, hours: float, title: str, name: str) -> None:
+    import tempfile
+
+    import run_hmc_sleep as hm
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "a.edf"
+        hm._curl(f"{hm.BASE}/recordings/{rec}.edf", p)
+        sig = ingest(p)
+    n = int(hours * 3600 * sig.sampling_rate_hz)
+    sig = sig.model_copy(update={"signal": np.ascontiguousarray(sig.signal[:, :n]), "duration_s": n / sig.sampling_rate_hz})
+    out = _analyze(sig)
+    write_regional_html(OUT / name, sig.signal, sig.channel_names, sig.sampling_rate_hz, out.result_json, title=title, win_s=30.0)
+
+
 if __name__ == "__main__":
     OUT.mkdir(parents=True, exist_ok=True)
     eegmat("Subject00", "1", "eegmat Subject00 — покой (здоровый доброволец)", "regional_eegmat_rest.html")
     eegmat("Subject00", "2", "eegmat Subject00 — устный счёт (здоровый доброволец)", "regional_eegmat_task.html")
     siena("PN00", "PN00-1.edf", 1143.0, "Siena PN00 — фрагмент вокруг приступа (110 с до, 70 с после)", "regional_siena_seizure.html")
+    hmc_sleep("SN001", 2.5, "HMC SN001 — первые 2.5 часа ночи (сон)", "regional_hmc_sleep.html")
     print(sorted(p.name for p in OUT.iterdir()))

@@ -114,7 +114,7 @@ def flag_asymmetry(ai: Mapping[str, float], norms: Mapping[str, tuple[float, flo
 # windowed series for the interactive view (increment 76)
 # ---------------------------------------------------------------------------
 
-SERIES_BANDS = {"delta": (1.0, 4.0), "theta": (4.0, 8.0), "alpha": (8.0, 12.0), "beta": (12.0, 30.0)}
+SERIES_BANDS = {"delta": (1.0, 4.0), "theta": (4.0, 8.0), "alpha": (8.0, 12.0), "beta": (12.0, 30.0), "sigma": (12.0, 15.0)}
 LEFT_OF = {"Fp1": "Fp2", "F3": "F4", "F7": "F8", "C3": "C4", "T3": "T4", "T5": "T6", "P3": "P4", "O1": "O2"}
 
 
@@ -124,12 +124,13 @@ def regional_series(signal: np.ndarray, channels: Sequence[str], fs: float, win_
 
     Returns relative band power per channel and window (delta/theta/alpha/beta, share of 1-30 Hz), log10 absolute alpha
     power, and an artefact flag per window (two or more electrodes with peak-to-peak > 200 uV). Common-average reference
-    over the standard 10-20 electrodes, computed per window (memory stays small for 24-hour recordings). When a window is
+    over the standard 10-20 electrodes when at least 8 are present (otherwise the recorded reference is kept, e.g. PSG with mastoid references), computed per window (memory stays small for 24-hour recordings). When a window is
     longer than ``max_sample_s`` seconds only its first ``max_sample_s`` seconds are analysed (a representative sample).
     Scalp mapping only (no source localisation)."""
     idx = [i for i, c in enumerate(channels) if c in STANDARD_1020]
-    if len(idx) < 8:
-        raise ValueError("fewer than 8 standard 10-20 electrodes")
+    if len(idx) < 3:
+        raise ValueError("fewer than 3 standard 10-20 electrodes")
+    car = len(idx) >= 8            # sparse (PSG-type) montages keep the recorded reference: no common average
     names = [channels[i] for i in idx]
     sig = np.asarray(signal)
     total_s = sig.shape[1] / fs
@@ -140,16 +141,21 @@ def regional_series(signal: np.ndarray, channels: Sequence[str], fs: float, win_
         raise ValueError("recording shorter than one window")
     m = int(min(win_s, max_sample_s) * fs)
     rel = {b: [] for b in SERIES_BANDS}
+    lab = {b: [] for b in SERIES_BANDS}
     abs_alpha, artefact = [], []
     for w in range(n_win):
         x = sig[idx, w * n:w * n + m].astype(float)
-        x = x - x.mean(axis=0, keepdims=True)
+        if car:
+            x = x - x.mean(axis=0, keepdims=True)
         f, p = welch(x, fs=fs, nperseg=int(min(m, 4 * fs)), axis=-1)               # (ch, freq)
         tot = p[:, (f >= TOTAL_BAND[0]) & (f < TOTAL_BAND[1])].sum(axis=1) + 1e-12
         for b, (lo, hi) in SERIES_BANDS.items():
-            rel[b].append(p[:, (f >= lo) & (f < hi)].sum(axis=1) / tot)
+            bp = p[:, (f >= lo) & (f < hi)].sum(axis=1)
+            rel[b].append(bp / tot)
+            lab[b].append(np.log10(bp + 1e-12))
         abs_alpha.append(np.log10(p[:, (f >= 8.0) & (f < 12.0)].sum(axis=1) + 1e-12))
         artefact.append(bool((np.ptp(x, axis=1) > MAX_PTP_UV).sum() >= 2))
-    return {"channels": names, "win_s": win_s, "n_windows": int(n_win), "duration_s": float(total_s),
+    return {"channels": names, "reference": "car" if car else "recorded", "win_s": win_s, "n_windows": int(n_win), "duration_s": float(total_s),
             "rel": {b: np.array(v).T.round(4).tolist() for b, v in rel.items()},
+            "log10_abs": {b: np.array(v).T.round(3).tolist() for b, v in lab.items()},
             "log10_abs_alpha": np.array(abs_alpha).T.round(3).tolist(), "artefact": artefact}

@@ -75,11 +75,11 @@ svg text{fill:var(--ink);font-size:11px}
 <script>
 const V=/*__DATA__*/null;
 (()=>{
-const S=V.series, CH=S.channels, NW=S.n_windows, WS=S.win_s, BANDS=['delta','theta','alpha','beta'];
+const S=V.series, CH=S.channels, NW=S.n_windows, WS=S.win_s, BANDS=['delta','theta','alpha','beta','sigma'];
 const REG=Object.keys(V.regions);
 const T={
-ru:{ttl:'Региональная карта коры',band:'Диапазон',metric:'Показатель',view:'Карта',rel:'Отн. мощность',z:'Отклонение (z)',topo:'Электроды',cells:'Доли × полушария',
- delta:'дельта',theta:'тета',alpha:'альфа',beta:'бета',all:'Вся запись',play:'▶ Воспроизвести',pause:'⏸ Пауза',pinA:'Закрепить A',clearA:'Сброс A',
+ru:{ttl:'Региональная карта коры',band:'Диапазон',metric:'Показатель',view:'Карта',rel:'Отн. мощность',abs:'Абс. мощность (log10)',z:'Отклонение (z)',asnocor:'Нормативный коридор не применяется: референт записи, электродов меньше 8.',noimpsleep:'Заключение рутинной ЭЭГ к записи сна не применяется: правила рассчитаны на бодрствование.',refrec:'референт записи (без общего среднего), нормативный коридор асимметрии не применяется',sleepwarn:'В записях со сном относительная мощность не отражает топографию ритмов (проверка D119): для карты областей используйте абсолютную мощность.',topo:'Электроды',cells:'Доли × полушария',
+ delta:'дельта',theta:'тета',alpha:'альфа',beta:'бета',sigma:'сигма (веретёна)',all:'Вся запись',play:'▶ Воспроизвести',pause:'⏸ Пауза',pinA:'Закрепить A',clearA:'Сброс A',
  h_tl:'Процесс диагностики по времени',h_map:'Карта коры (скальповая)',h_cap:'Что видно в выбранном окне',h_as:'Межполушарная асимметрия (альфа)',h_ev:'Найденные события',h_imp:'Заключение автоматического анализа',
  sub:(d,n,w)=>`Запись ${fmtT(d)} · ${n} электродов · окно ${w} с`,win:'Окно',s:'с',allrec:'Вся запись (среднее по окнам без артефактов)',
  reg:{frontal:'лобная',central:'центральная',temporal:'височная',parietal:'теменная',occipital:'затылочная'},L:'левая',R:'правая',
@@ -90,8 +90,8 @@ ru:{ttl:'Региональная карта коры',band:'Диапазон',m
  lsub:'левое сильнее',rsub:'правое сильнее',pin:'A закреплено на',diff:'Разность B − A',
  evcols:['Время, с','Событие','Где','Увер.'],noloc:'без привязки к каналам',noev:'Событий детекторов нет.',noimp:'Текст заключения недоступен.',
  foot:'Нормативные пределы:',spec:'Слева — левое полушарие, справа — правое (вид сверху, нос вверху). Электродные подписи — стандарт 10-20.'},
-uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkich',view:'Xarita',rel:'Nisbiy quvvat',z:'Og‘ish (z)',topo:'Elektrodlar',cells:'Bo‘laklar × yarimsharlar',
- delta:'delta',theta:'teta',alpha:'alfa',beta:'beta',all:'Butun yozuv',play:'▶ Ijro',pause:'⏸ Pauza',pinA:'A ni qotirish',clearA:'A ni tozalash',
+uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkich',view:'Xarita',rel:'Nisbiy quvvat',abs:'Mutlaq quvvat (log10)',z:'Og‘ish (z)',asnocor:'Me’yor koridori qo‘llanilmaydi: yozuv referensi, elektrodlar 8 tadan kam.',noimpsleep:'Muntazam EEG xulosasi uyqu yozuviga qo‘llanilmaydi: qoidalar uyg‘oqlik uchun mo‘ljallangan.',refrec:'yozuv referensi (umumiy o‘rtachasiz), assimetriya koridori qo‘llanilmaydi',sleepwarn:'Uyqu yozuvlarida nisbiy quvvat ritmlar topografiyasini aks ettirmaydi (D119): hududlar xaritasi uchun mutlaq quvvatdan foydalaning.',topo:'Elektrodlar',cells:'Bo‘laklar × yarimsharlar',
+ delta:'delta',theta:'teta',alpha:'alfa',beta:'beta',sigma:'sigma (urchuq)',all:'Butun yozuv',play:'▶ Ijro',pause:'⏸ Pauza',pinA:'A ni qotirish',clearA:'A ni tozalash',
  h_tl:'Vaqt bo‘yicha diagnostika jarayoni',h_map:'Po‘stloq xaritasi (bosh terisi)',h_cap:'Tanlangan oynada nima ko‘rinadi',h_as:'Yarimsharlararo assimetriya (alfa)',h_ev:'Topilgan hodisalar',h_imp:'Avtomatik tahlil xulosasi',
  sub:(d,n,w)=>`Yozuv ${fmtT(d)} · ${n} elektrod · oyna ${w} s`,win:'Oyna',s:'s',allrec:'Butun yozuv (artefaktsiz oynalar o‘rtachasi)',
  reg:{frontal:'peshona',central:'markaziy',temporal:'chakka',parietal:'tepa',occipital:'ensa'},L:'chap',R:'o‘ng',
@@ -103,7 +103,7 @@ uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkic
  evcols:['Vaqt, s','Hodisa','Qayerda','Ishonch'],noloc:'kanallarga bog‘lanmagan',noev:'Detektor hodisalari yo‘q.',noimp:'Xulosa matni mavjud emas.',
  foot:'Me’yor chegaralari:',spec:'Chapda — chap yarimshar, o‘ngda — o‘ng yarimshar (yuqoridan ko‘rinish, burun tepada). Belgilar 10-20 standarti.'}
 };
-const st={w:0,band:'alpha',metric:'rel',view:'topo',lang:'ru',pinA:null,all:false,timer:null};
+const st={w:0,band:(V.hypnogram&&V.hypnogram.length)?'sigma':'alpha',metric:(V.hypnogram&&V.hypnogram.length)?'abs':'rel',view:CH.length<8?'cells':'topo',lang:'ru',pinA:null,all:false,timer:null};
 const $=id=>document.getElementById(id);
 function fmtT(s){const m=Math.floor(s/60),u=st.lang==='uz'?['daq','s']:['мин','с'];return m>=1?`${m} ${u[0]} ${Math.round(s-m*60)} ${u[1]}`:`${Math.round(s)} ${u[1]}`}
 function evLbl(e){return st.lang==='uz'?(SHORT.uz[e.code]||e.label):e.label}
@@ -114,12 +114,12 @@ const cellOf=(ch,x)=>{const r=REG.find(r=>V.regions[r].includes(ch));if(!r)retur
 const chIdx=Object.fromEntries(CH.map((c,i)=>[c,i]));
 const okW=[...Array(NW).keys()].filter(w=>!S.artefact[w]);
 const useW=okW.length>=3?okW:[...Array(NW).keys()];
-function chVal(c,w,b){return w<0?useW.reduce((a,i)=>a+S.rel[b][chIdx[c]][i],0)/useW.length:S.rel[b][chIdx[c]][w]}
-function cellVal(ci,w,b){const c=CELLS[ci];return c.ch.reduce((a,x)=>a+chVal(x,w,b),0)/c.ch.length}
+function chVal(c,w,b,src){src=src||(st.metric==='abs'?'abs':'rel');const A=src==='abs'?S.log10_abs[b]:S.rel[b];return w<0?useW.reduce((a,i)=>a+A[chIdx[c]][i],0)/useW.length:A[chIdx[c]][w]}
+function cellVal(ci,w,b,src){const c=CELLS[ci];return c.ch.reduce((a,x)=>a+chVal(x,w,b,src),0)/c.ch.length}
 // robust z per cell/band over clean windows
-const ZS={};BANDS.forEach(b=>{ZS[b]=CELLS.map((_,ci)=>{const v=useW.map(w=>cellVal(ci,w,b)).sort((x,y)=>x-y);const med=v[v.length>>1];const dev=v.map(x=>Math.abs(x-med)).sort((x,y)=>x-y);return{med,mad:Math.max(1e-4,1.4826*dev[dev.length>>1])}})});
-function metricCell(ci,w,b){const v=cellVal(ci,w,b);return st.metric==='z'?Math.max(-4,Math.min(4,(v-ZS[b][ci].med)/ZS[b][ci].mad)):v}
-function metricCh(c,w,b){if(st.metric!=='z')return chVal(c,w,b);const ci=cellOf(c,V.coords[c][0]);return Math.max(-4,Math.min(4,(chVal(c,w,b)-ZS[b][ci].med)/ZS[b][ci].mad))}
+const ZS={};BANDS.forEach(b=>{ZS[b]=CELLS.map((_,ci)=>{const v=useW.map(w=>cellVal(ci,w,b,'rel')).sort((x,y)=>x-y);const med=v[v.length>>1];const dev=v.map(x=>Math.abs(x-med)).sort((x,y)=>x-y);return{med,mad:Math.max(1e-4,1.4826*dev[dev.length>>1])}})});
+function metricCell(ci,w,b){if(st.metric==='z'){const v=cellVal(ci,w,b,'rel');return Math.max(-4,Math.min(4,(v-ZS[b][ci].med)/ZS[b][ci].mad))}return cellVal(ci,w,b)}
+function metricCh(c,w,b){if(st.metric!=='z')return chVal(c,w,b);const ci=cellOf(c,V.coords[c][0]);return Math.max(-4,Math.min(4,(chVal(c,w,b,'rel')-ZS[b][ci].med)/ZS[b][ci].mad))}
 // colour scales
 const VIR=[[68,1,84],[59,82,139],[33,145,140],[94,201,98],[253,231,37]];
 const DIV=[[33,102,172],[146,197,222],[247,247,247],[244,165,130],[178,24,43]];
@@ -178,7 +178,7 @@ const evCodes=[...new Set(V.events.map(e=>e.code))];
 const STG=['W','N1','N2','N3','REM'],STC={W:'#d9a441',N1:'#8fb3e8',N2:'#4a82d9',N3:'#1f3c88',REM:'#c25ab0'};
 function drawTL(){
  const d=window.devicePixelRatio||1,Wc=tl.clientWidth||900;const hyp=V.hypnogram&&V.hypnogram.length;
- const rowsS=10,ROW=13,laneH=14;tlH=22+(hyp?18:0)+evCodes.length*laneH+6+rowsS*ROW+6;
+ const rowsS=CELLS.length,ROW=13,laneH=14;tlH=22+(hyp?18:0)+evCodes.length*laneH+6+rowsS*ROW+6;
  tl.width=Wc*d;tl.height=tlH*d;tl.style.height=tlH+'px';tctx.setTransform(d,0,0,d,0,0);tctx.clearRect(0,0,Wc,tlH);
  const ink=getComputedStyle(document.body).color,mut=getComputedStyle(document.body).getPropertyValue('--mut');
  const X0=LM,XW=Wc-LM-8,tx=t=>X0+t/S.duration_s*XW;
@@ -191,7 +191,7 @@ function drawTL(){
  const L=T[st.lang];const rows=CELLS.map((c,i)=>({c,i}));
  const bandNow=st.band;const sc2=st.metric==='z'?[-3,3,true]:scaleFor0();
  rows.forEach((r,k)=>{tctx.fillStyle=mut;tctx.textAlign='right';tctx.fillText(`${L.reg[r.c.r].slice(0,5)}. ${r.c.s}`,LM-6,y+k*ROW+10);
-  const cw=XW/NW;for(let w=0;w<NW;w++){const v=st.metric==='z'?Math.max(-4,Math.min(4,(cellVal(r.i,w,bandNow)-ZS[bandNow][r.i].med)/ZS[bandNow][r.i].mad)):cellVal(r.i,w,bandNow);const [R,G,B]=colour(v,sc2);tctx.fillStyle=`rgb(${R},${G},${B})`;tctx.fillRect(X0+w*cw,y+k*ROW,Math.ceil(cw)+0.5,ROW-1)}});
+  const cw=XW/NW;for(let w=0;w<NW;w++){const v=st.metric==='z'?Math.max(-4,Math.min(4,(cellVal(r.i,w,bandNow,'rel')-ZS[bandNow][r.i].med)/ZS[bandNow][r.i].mad)):cellVal(r.i,w,bandNow);const [R,G,B]=colour(v,sc2);tctx.fillStyle=`rgb(${R},${G},${B})`;tctx.fillRect(X0+w*cw,y+k*ROW,Math.ceil(cw)+0.5,ROW-1)}});
  // artefact windows
  const cw=XW/NW;tctx.fillStyle='rgba(120,120,120,.55)';for(let w=0;w<NW;w++)if(S.artefact[w])tctx.fillRect(X0+w*cw,y,Math.ceil(cw),rowsS*ROW);
  // cursor
@@ -206,18 +206,18 @@ let drag=false;tl.addEventListener('pointerdown',e=>{drag=true;tl.setPointerCapt
 tl.addEventListener('keydown',e=>{if(e.key==='ArrowRight')setW(st.w+1);if(e.key==='ArrowLeft')setW(st.w-1)});
 // ---------- asymmetry ----------
 function asym(){
- const L=T[st.lang],svg=$('asv'),Wd=svg.clientWidth||340,H=230,m=46,rowH=(H-26)/V.pairs.length;
+ const L=T[st.lang],svg=$('asv'),Wd=svg.clientWidth||340,PR=V.pairs.filter(p=>V.asymmetry_record[p]),H=Math.max(90,PR.length*28+26),m=46,rowH=(H-26)/Math.max(1,PR.length);svg.setAttribute('height',H);
  const ax=v=>m+(Math.max(-2,Math.min(2,v))+2)/4*(Wd-m-10);
  let h=`<text x="${ax(-2)}" y="10" text-anchor="start">← ${L.lsub}</text><text x="${ax(2)}" y="10" text-anchor="end">${L.rsub} →</text>`;
- V.pairs.forEach((p,i)=>{const y=22+i*rowH,rec=V.asymmetry_record[p];const [l,r]=p.split('-');
+ PR.forEach((p,i)=>{const y=22+i*rowH,rec=V.asymmetry_record[p];const [l,r]=p.split('-');
   h+=`<text x="2" y="${y+rowH/2+3}">${p}</text>`;
-  if(rec){h+=`<rect x="${ax(rec.low)}" y="${y+3}" width="${ax(rec.high)-ax(rec.low)}" height="${rowH-6}" fill="rgba(128,160,200,.28)" rx="3"/>`}
+  if(rec&&rec.low!==null&&rec.low!==undefined){h+=`<rect x="${ax(rec.low)}" y="${y+3}" width="${ax(rec.high)-ax(rec.low)}" height="${rowH-6}" fill="rgba(128,160,200,.28)" rx="3"/>`}
   h+=`<line x1="${ax(0)}" x2="${ax(0)}" y1="${y}" y2="${y+rowH}" stroke="currentColor" opacity=".35"/>`;
   if(!st.all){const a=S.log10_abs_alpha;if(chIdx[l]!==undefined&&chIdx[r]!==undefined&&!S.artefact[st.w]){const v=(a[chIdx[r]][st.w]-a[chIdx[l]][st.w])*Math.LN10;h+=`<circle cx="${ax(v)}" cy="${y+rowH/2}" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/>`}}
   if(rec){const out=!!rec.flag;h+=`<path d="M${ax(rec.ai)} ${y+rowH/2-6} l6 6 l-6 6 l-6 -6z" fill="${out?'#c2410c':'#1b5fd1'}"/>`}});
  svg.innerHTML=h;
  const fl=Object.entries(V.asymmetry_record).filter(([,v])=>v.flag);
- $('asnote').innerHTML=(fl.length?`<span class="badge w">${L.asrec}</span> `+fl.map(([k,v])=>`${k} (${v.flag==='right>left'?L.rgt:L.lft}, ln ${v.ai})`).join('; '):`<span class="badge">${L.asnone}</span>`)+`<br>${L.asnote}`}
+ $('asnote').innerHTML=(fl.length?`<span class="badge w">${L.asrec}</span> `+fl.map(([k,v])=>`${k} (${v.flag==='right>left'?L.rgt:L.lft}, ln ${v.ai})`).join('; '):`<span class="badge">${S.reference==='recorded'?L.asnocor:L.asnone}</span>`)+`<br>${L.asnote}`}
 // ---------- caption / events ----------
 function whereTxt(e){const L=T[st.lang];if(!e.where.length)return L.noloc;const seen=new Set();return e.where.map(w=>{const s=w.side==='mid'?'':' '+(w.side==='L'?L.L:L.R);const t=`${L.reg[w.region]}${s}`;return t}).filter(t=>!seen.has(t)&&seen.add(t)).join(', ')}
 function caption(){
@@ -226,6 +226,7 @@ function caption(){
  else{let bi=0,bv=-1e9;CELLS.forEach((c,ci)=>{const v=metricCell(ci,w,b);if(v>bv){bv=v;bi=ci}});h+=`<p>${L.maxb(L[b],`${L.reg[CELLS[bi].r]} ${CELLS[bi].s==='L'?L.L:L.R}`,bv.toFixed(2)+(st.metric==='z'?' z':''))}</p>`}
  if(!st.all){if(S.artefact[st.w])h+=`<p><span class="badge w">!</span>${L.art}</p>`;
   const ev=eventsInWindow(st.w);h+=ev.length?`<p>${L.evin}</p><p>`+ev.slice(0,8).map(e=>`<span class="badge">${evLbl(e)}${e.channels.length?' · '+e.channels.join(','):''}${e.where.length?' → '+whereTxt(e):''}</span>`).join(' ')+(ev.length>8?` +${ev.length-8}`:'')+'</p>':`<p class="note">${L.ev0}</p>`}
+ if(V.hypnogram&&V.hypnogram.length&&st.metric==='rel')h+=`<p><span class="badge w">!</span>${L.sleepwarn}</p>`;
  h+=`<p class="note">${L.spec}</p>`;$('cap').innerHTML=h}
 function evTable(){const L=T[st.lang];const evs=[...V.events].sort((a,b)=>a.t0-b.t0);const cur=st.all?new Set():new Set(eventsInWindow(st.w));
  let h=`<tr>${L.evcols.map(c=>`<th>${c}</th>`).join('')}</tr>`;evs.slice(0,300).forEach((e,i)=>{h+=`<tr class="ev${cur.has(e)?' cur':''}" data-w="${Math.floor(e.t0/WS)}"><td>${e.t0.toFixed(1)}</td><td>${evLbl(e)}</td><td>${whereTxt(e)}</td><td>${e.conf.toFixed(2)}</td></tr>`});
@@ -233,17 +234,17 @@ function evTable(){const L=T[st.lang];const evs=[...V.events].sort((a,b)=>a.t0-b
  $('evt').querySelectorAll('tr.ev').forEach(r=>r.onclick=()=>setW(+r.dataset.w))}
 // ---------- UI ----------
 function mkbtn(par,id,label,pressed,fn){let b=$(id);if(!b){b=document.createElement('button');b.id=id;par.appendChild(b);b.onclick=fn}b.textContent=label;b.setAttribute('aria-pressed',pressed?'true':'false')}
-function ui(){const L=T[st.lang];document.documentElement.lang=st.lang;$('ttl').textContent=V.title&&st.lang==='ru'?V.title:L.ttl;$('sub').textContent=L.sub(S.duration_s,S.channels.length,WS);$('cav').textContent=V.caveat[st.lang];
+function ui(){const L=T[st.lang];document.documentElement.lang=st.lang;$('ttl').textContent=V.title&&st.lang==='ru'?V.title:L.ttl;$('sub').textContent=L.sub(S.duration_s,S.channels.length,WS)+(S.reference==='recorded'?' · '+L.refrec:'');$('cav').textContent=V.caveat[st.lang];
  $('lband').textContent=L.band+':';$('lmetric').textContent=L.metric+':';$('lview').textContent=L.view+':';
  BANDS.forEach(b=>mkbtn($('gband'),'b_'+b,L[b],st.band===b,()=>{st.band=b;refresh()}));
- mkbtn($('gmetric'),'m_rel',L.rel,st.metric==='rel',()=>{st.metric='rel';refresh()});mkbtn($('gmetric'),'m_z',L.z,st.metric==='z',()=>{st.metric='z';refresh()});
+ mkbtn($('gmetric'),'m_rel',L.rel,st.metric==='rel',()=>{st.metric='rel';refresh()});mkbtn($('gmetric'),'m_abs',L.abs,st.metric==='abs',()=>{st.metric='abs';refresh()});mkbtn($('gmetric'),'m_z',L.z,st.metric==='z',()=>{st.metric='z';refresh()});
  mkbtn($('gview'),'v_topo',L.topo,st.view==='topo',()=>{st.view='topo';refresh()});mkbtn($('gview'),'v_cells',L.cells,st.view==='cells',()=>{st.view='cells';refresh()});
  mkbtn($('gmode'),'k_all',L.all,st.all,()=>{st.all=!st.all;refresh()});
  mkbtn($('gmode'),'k_play',st.timer?L.pause:L.play,!!st.timer,()=>{if(st.timer){clearInterval(st.timer);st.timer=null}else{st.all=false;st.timer=setInterval(()=>{setW(st.w+1>=NW?0:st.w+1)},500)}ui()});
  mkbtn($('gmode'),'k_pin',st.pinA===null?L.pinA:L.clearA,st.pinA!==null,()=>{st.pinA=st.pinA===null?st.w:null;refresh()});
  mkbtn($('glang'),'l_ru','RU',st.lang==='ru',()=>{st.lang='ru';ui();refresh()});mkbtn($('glang'),'l_uz','UZ',st.lang==='uz',()=>{st.lang='uz';ui();refresh()});
  ['h_tl','h_map','h_cap','h_as','h_ev','h_imp'].forEach(k=>$(k).textContent=L[k]);
- const imp=st.lang==='uz'?V.record.impression_uz:V.record.impression_ru;$('imp').textContent=imp||L.noimp;
+ const imp=st.lang==='uz'?V.record.impression_uz:V.record.impression_ru;$('imp').textContent=(V.hypnogram&&V.hypnogram.length)?L.noimpsleep:(imp||L.noimp);
  $('foot').textContent=`${L.foot} ${V.norms.version}; ${V.norms.fit}. ${V.norms.checked_on}.`}
 function refresh(){ui();drawTL();drawMap();asym();caption();evTable();$('slider').max=NW-1}
 $('slider').addEventListener('input',e=>setW(+e.target.value));

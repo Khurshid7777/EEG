@@ -48,13 +48,14 @@ def _record_asymmetry(series: dict, norms: Mapping) -> dict:
     out = {}
     if len(ok) < 3:
         return out
+    car = series.get("reference") == "car"          # the normative corridor was fitted on common-average data only
     for left, right in HOMOLOGOUS_PAIRS:
         if left not in names or right not in names:
             continue
         pl = np.mean([10 ** series["log10_abs_alpha"][names.index(left)][i] for i in ok])
         pr = np.mean([10 ** series["log10_abs_alpha"][names.index(right)][i] for i in ok])
         ai = float(np.log(pr / pl))
-        lo, hi = norms["limits"].get(f"{left}-{right}", [None, None])
+        lo, hi = norms["limits"].get(f"{left}-{right}", [None, None]) if car else [None, None]
         flag = None if lo is None else ("right>left" if ai > hi else ("left>right" if ai < lo else None))
         out[f"{left}-{right}"] = {"ai": round(ai, 3), "low": lo, "high": hi, "flag": flag}
     return out
@@ -91,6 +92,7 @@ def build_view(signal: np.ndarray, channels: list[str], fs: float, result_json: 
     return {
         "version": "regional_view_v1", "title": title or "Региональная карта коры", "caveat": CAVEAT,
         "record": {"duration_s": series["duration_s"], "n_channels": len(series["channels"]), "win_s": series["win_s"],
+                   "reference": series["reference"],
                    "impression_ru": imp.get("ru"), "impression_uz": imp.get("uz"),
                    "critical": [str(c.get("code", c)) if isinstance(c, dict) else str(c) for c in (result_json.get("critical_findings") or [])]},
         "series": series, "coords": _coords(), "regions": {k: list(v) for k, v in REGIONS.items()},
@@ -130,8 +132,8 @@ def regional_summary(view: Mapping) -> dict:
         for w in e["where"]:
             key = f"{w['region']}_{w['side']}"
             counts[key] = counts.get(key, 0) + 1
-    return {"version": view["version"], "level": "scalp lobes and hemispheres (19 electrodes, 10-20); not source localisation",
-            "window_s": s["win_s"], "n_windows": s["n_windows"], "artefact_window_fraction": round(float(np.mean(s["artefact"])), 3),
+    return {"version": view["version"], "level": "scalp regions from the available 10-20 electrodes; not source localisation",
+            "reference": s["reference"], "n_electrodes": len(names), "window_s": s["win_s"], "n_windows": s["n_windows"], "artefact_window_fraction": round(float(np.mean(s["artefact"])), 3),
             "relative_power_by_region": bands, "asymmetry_alpha": view["asymmetry_record"], "norms": view["norms"]["version"],
             "events_by_region": counts, "events_without_channels": sum(1 for e in view["events"] if not e["where"]),
             "limitations": CAVEAT["ru"]}
