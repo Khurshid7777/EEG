@@ -38,3 +38,16 @@ def test_artifact_windows_are_rejected_and_short_input_fails():
     import pytest
     with pytest.raises(ValueError):
         channel_band_power(x[:, :300], ch, fs)
+
+
+def test_asymmetry_norms_flag_only_outside_limits():
+    from neurolens.layer3_features.regional import fit_asymmetry_norms, flag_asymmetry
+
+    rng = np.random.default_rng(1)
+    train = [{"O1-O2": float(v)} for v in rng.normal(0, 0.3, 500)]
+    norms = fit_asymmetry_norms(train)
+    lo, hi = norms["O1-O2"]
+    assert -0.7 < lo < -0.5 and 0.5 < hi < 0.7
+    assert flag_asymmetry({"O1-O2": 0.0}, norms) == {}
+    assert flag_asymmetry({"O1-O2": 1.5}, norms) == {"O1-O2": "right>left"}
+    assert flag_asymmetry({"O1-O2": -1.5}, norms) == {"O1-O2": "left>right"}

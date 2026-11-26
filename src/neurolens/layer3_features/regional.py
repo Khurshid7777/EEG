@@ -88,3 +88,23 @@ def posterior_alpha(per_channel: Mapping[str, Mapping[str, float]]) -> float:
     """Mean relative alpha over occipital + parietal electrodes (pre-registered H2b measure)."""
     ch = [c for c in REGIONS["occipital"] + REGIONS["parietal"] if c in per_channel]
     return float(np.mean([per_channel[c]["alpha"] for c in ch]))
+
+
+def fit_asymmetry_norms(ai_by_record: Sequence[Mapping[str, float]], lo: float = 2.5, hi: float = 97.5) -> dict[str, tuple[float, float]]:
+    """Per-pair normative limits (empirical percentiles of AI over healthy training records; increment 74)."""
+    pairs = {p for r in ai_by_record for p in r}
+    return {p: (float(np.percentile([r[p] for r in ai_by_record if p in r], lo)),
+                float(np.percentile([r[p] for r in ai_by_record if p in r], hi))) for p in sorted(pairs)}
+
+
+def flag_asymmetry(ai: Mapping[str, float], norms: Mapping[str, tuple[float, float]]) -> dict[str, str]:
+    """{pair: 'right>left' | 'left>right'} for pairs outside the normative limits."""
+    out: dict[str, str] = {}
+    for pair, v in ai.items():
+        if pair in norms:
+            lo, hi = norms[pair]
+            if v > hi:
+                out[pair] = "right>left"
+            elif v < lo:
+                out[pair] = "left>right"
+    return out
