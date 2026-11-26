@@ -108,3 +108,40 @@ def flag_asymmetry(ai: Mapping[str, float], norms: Mapping[str, tuple[float, flo
             elif v < lo:
                 out[pair] = "left>right"
     return out
+
+
+# ---------------------------------------------------------------------------
+# windowed series for the interactive view (increment 76)
+# ---------------------------------------------------------------------------
+
+SERIES_BANDS = {"delta": (1.0, 4.0), "theta": (4.0, 8.0), "alpha": (8.0, 12.0), "beta": (12.0, 30.0)}
+LEFT_OF = {"Fp1": "Fp2", "F3": "F4", "F7": "F8", "C3": "C4", "T3": "T4", "T5": "T6", "P3": "P4", "O1": "O2"}
+
+
+def regional_series(signal: np.ndarray, channels: Sequence[str], fs: float, win_s: float = 10.0,
+                    max_windows: int = 720) -> dict:
+    """Non-overlapping windows over the whole recording (window lengthened so that at most ``max_windows`` remain).
+
+    Returns relative band power per channel and window (delta/theta/alpha/beta, share of 1-30 Hz), absolute alpha power,
+    and an artefact flag per window (two or more electrodes with peak-to-peak > 200 uV). Common-average reference over
+    the standard 10-20 electrodes. Scalp mapping only (no source localisation)."""
+    idx = [i for i, c in enumerate(channels) if c in STANDARD_1020]
+    if len(idx) < 8:
+        raise ValueError("fewer than 8 standard 10-20 electrodes")
+    names = [channels[i] for i in idx]
+    x = np.asarray(signal, dtype=float)[idx]
+    x = x - x.mean(axis=0, keepdims=True)
+    total_s = x.shape[1] / fs
+    win_s = max(4.0, float(win_s), np.ceil(total_s / max_windows))
+    n = int(win_s * fs)
+    n_win = x.shape[1] // n
+    if n_win < 1:
+        raise ValueError("recording shorter than one window")
+    seg = x[:, :n_win * n].reshape(len(idx), n_win, n).transpose(1, 0, 2)          # (win, ch, samples)
+    f, p = welch(seg, fs=fs, nperseg=int(min(n, 4 * fs)), axis=-1)                   # (win, ch, freq)
+    tot = p[..., (f >= TOTAL_BAND[0]) & (f < TOTAL_BAND[1])].sum(axis=-1) + 1e-12
+    rel = {b: (p[..., (f >= lo) & (f < hi)].sum(axis=-1) / tot).T.round(4).tolist() for b, (lo, hi) in SERIES_BANDS.items()}
+    abs_alpha = np.log10(p[..., (f >= 8.0) & (f < 12.0)].sum(axis=-1) + 1e-12).T.round(3).tolist()
+    artefact = ((np.ptp(seg, axis=2) > MAX_PTP_UV).sum(axis=1) >= 2).tolist()
+    return {"channels": names, "win_s": win_s, "n_windows": int(n_win), "duration_s": float(total_s),
+            "rel": rel, "log10_abs_alpha": abs_alpha, "artefact": artefact}

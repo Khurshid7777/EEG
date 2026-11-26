@@ -1,0 +1,37 @@
+{
+ "version": "regional_norms_v1",
+ "metric": "AI = ln(P_right/P_left), absolute alpha 8-12 Hz, common-average reference, 4-s windows, windows with peak-to-peak > 200 uV rejected",
+ "fit": "empirical 2.5/97.5 percentiles over healthy adults (ds003775, Oslo, n=99)",
+ "checked_on": "ds004504 controls (n=29) + eegmat rest (n=36): mean out-of-limit fraction 0.070 (pre-registered limit 0.10); any-pair flag fraction 0.354 (not usable as an abnormality flag)",
+ "source": "docs/increment74_report.md (D114)",
+ "limits": {
+  "C3-C4": [
+   -0.807,
+   0.436
+  ],
+  "F3-F4": [
+   -0.549,
+   0.527
+  ],
+  "F7-F8": [
+   -0.53,
+   0.338
+  ],
+  "O1-O2": [
+   -0.671,
+   0.982
+  ],
+  "P3-P4": [
+   -0.684,
+   1.029
+  ],
+  "T3-T4": [
+   -0.768,
+   0.872
+  ],
+  "T5-T6": [
+   -0.667,
+   1.671
+  ]
+ }
+}

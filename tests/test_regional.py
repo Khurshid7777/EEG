@@ -51,3 +51,18 @@ def test_asymmetry_norms_flag_only_outside_limits():
     assert flag_asymmetry({"O1-O2": 0.0}, norms) == {}
     assert flag_asymmetry({"O1-O2": 1.5}, norms) == {"O1-O2": "right>left"}
     assert flag_asymmetry({"O1-O2": -1.5}, norms) == {"O1-O2": "left>right"}
+
+
+def test_regional_series_shapes_and_alpha_peak():
+    from neurolens.layer3_features.regional import regional_series
+
+    x, ch, fs = _synthetic(secs=60)
+    s = regional_series(x, ch, fs, win_s=10)
+    assert s["n_windows"] == 6 and s["win_s"] == 10 and len(s["channels"]) == 19
+    i = s["channels"].index("O1")
+    j = s["channels"].index("Fz")
+    assert np.mean(s["rel"]["alpha"][i]) > 2 * np.mean(s["rel"]["alpha"][j])
+    assert len(s["artefact"]) == 6 and not any(s["artefact"])
+    # long recording: window lengthened to respect max_windows
+    s2 = regional_series(np.tile(x, (1, 20)), ch, fs, win_s=10, max_windows=50)
+    assert s2["n_windows"] <= 50 and s2["win_s"] > 10
