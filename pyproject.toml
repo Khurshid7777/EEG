@@ -47,7 +47,7 @@ neurolens = "neurolens.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-neurolens = ["py.typed"]
+neurolens = ["py.typed", "outputs/regional_view.html"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"

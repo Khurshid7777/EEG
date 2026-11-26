@@ -182,11 +182,16 @@ def build_pdf_report(
 
     # figures
     for name, cap in [("curves", "Размеченные кривые"), ("dsa_aeeg", "DSA + aEEG"),
-                      ("topomap", "Топокарты"), ("causal_graph", "Каузальный граф")]:
+                      ("topomap", "Топокарты"), ("regional_static", "Региональная карта коры (доли и полушария)"),
+                      ("causal_graph", "Каузальный граф")]:
         img = _img(image_paths.get(name, "")) if image_paths.get(name) else None
         if img is not None:
             story.append(PageBreak())
             story.append(Paragraph(cap, st["h"]))
+            if name == "regional_static":
+                story.append(Paragraph("Скальповое картирование по 19 электродам 10-20: области и полушария, без локализации "
+                                       "источников и без указания стороны очага. Коридор асимметрии — 2.5–97.5 процентили здоровых; "
+                                       "выход за него не означает патологию.", st["small"]))
             story.append(img)
 
     # reasoning trace

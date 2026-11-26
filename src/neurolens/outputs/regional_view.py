@@ -113,3 +113,86 @@ def write_regional_html(path: str | Path, signal: np.ndarray, channels: list[str
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(render_html(build_view(signal, channels, fs, result_json, **kw)), encoding="utf-8")
     return p
+
+
+def regional_summary(view: Mapping) -> dict:
+    """Compact record-level summary for ``result_json['regional']`` (no time series)."""
+    s = view["series"]
+    names = s["channels"]
+    ok = [i for i, a in enumerate(s["artefact"]) if not a] or list(range(s["n_windows"]))
+    bands = {}
+    for b, rows in s["rel"].items():
+        chm = {c: float(np.mean([rows[names.index(c)][i] for i in ok])) for c in names}
+        bands[b] = {r: round(float(np.mean([chm[c] for c in chans if c in chm])), 4)
+                    for r, chans in REGIONS.items() if any(c in chm for c in chans)}
+    counts: dict[str, int] = {}
+    for e in view["events"]:
+        for w in e["where"]:
+            key = f"{w['region']}_{w['side']}"
+            counts[key] = counts.get(key, 0) + 1
+    return {"version": view["version"], "level": "scalp lobes and hemispheres (19 electrodes, 10-20); not source localisation",
+            "window_s": s["win_s"], "n_windows": s["n_windows"], "artefact_window_fraction": round(float(np.mean(s["artefact"])), 3),
+            "relative_power_by_region": bands, "asymmetry_alpha": view["asymmetry_record"], "norms": view["norms"]["version"],
+            "events_by_region": counts, "events_without_channels": sum(1 for e in view["events"] if not e["where"]),
+            "limitations": CAVEAT["ru"]}
+
+
+def plot_regional_static(view: Mapping, out_path: str | Path) -> Path:
+    """Static figure for the PDF: record-mean band maps, asymmetry with normative corridor, timeline with events."""
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    from .topomap import plot_topomap
+
+    s = view["series"]
+    names = s["channels"]
+    ok = [i for i, a in enumerate(s["artefact"]) if not a] or list(range(s["n_windows"]))
+    coords = {k: tuple(v) for k, v in view["coords"].items()}
+    fig = plt.figure(figsize=(11, 8.2))
+    gs = fig.add_gridspec(3, 4, height_ratios=[1.0, 1.15, 1.0], hspace=0.45, wspace=0.15)
+    for k, (b, ru) in enumerate((("delta", "дельта"), ("theta", "тета"), ("alpha", "альфа"), ("beta", "бета"))):
+        ax = fig.add_subplot(gs[0, k])
+        vals = {c: float(np.mean([s["rel"][b][names.index(c)][i] for i in ok])) for c in names}
+        plot_topomap(ax, vals, coords, title=f"{ru}, отн. мощность (вся запись)", cmap="viridis")
+    # asymmetry
+    ax = fig.add_subplot(gs[1, :])
+    pairs = view["pairs"]
+    for j, p in enumerate(pairs):
+        rec = view["asymmetry_record"].get(p)
+        if not rec:
+            continue
+        ax.barh(j, rec["high"] - rec["low"], left=rec["low"], color="#b9c8dc", height=0.6, zorder=1)
+        ax.plot(rec["ai"], j, marker="D", color="#c2410c" if rec["flag"] else "#1b5fd1", zorder=3)
+    ax.axvline(0, color="k", lw=0.8, alpha=0.5)
+    ax.set_yticks(range(len(pairs)))
+    ax.set_yticklabels(pairs, fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlim(-2, 2)
+    ax.set_xlabel("ln(P правое / P левое), альфа;  ← левое сильнее | правое сильнее →;  коридор — нормативные пределы здоровых", fontsize=8)
+    ax.set_title("Межполушарная асимметрия альфа-ритма (вся запись; ромб — значение, полоса — норма 2.5–97.5%)", fontsize=9)
+    # timeline: events + regional alpha strip
+    ax = fig.add_subplot(gs[2, :])
+    cells = [(r, side) for r in REGIONS for side in ("L", "R")]
+    mat = []
+    for r, side in cells:
+        ch = [c for c in REGIONS[r] if c in names and (c.endswith("z") or (int(c[-1]) % 2 == (1 if side == "L" else 0)))]
+        mat.append(np.mean([s["rel"]["alpha"][names.index(c)] for c in ch], axis=0) if ch else np.zeros(s["n_windows"]))
+    ax.imshow(np.array(mat), aspect="auto", cmap="viridis", extent=[0, s["duration_s"], len(cells), 0], interpolation="nearest")
+    ax.set_yticks(np.arange(len(cells)) + 0.5)
+    ru = {"frontal": "лоб.", "central": "центр.", "temporal": "вис.", "parietal": "тем.", "occipital": "зат."}
+    ax.set_yticklabels([f"{ru[r]} {sd}" for r, sd in cells], fontsize=7)
+    for e in view["events"][:400]:
+        ax.plot([e["t0"], e["t0"]], [-0.2, -0.9], color="#d1342f", lw=1.2, clip_on=False)
+    for k, a in enumerate(s["artefact"]):
+        if a:
+            ax.axvspan(k * s["win_s"], (k + 1) * s["win_s"], color="grey", alpha=0.45, lw=0)
+    ax.set_xlabel("время, с (красные метки сверху — события детекторов; серое — окна с артефактами)", fontsize=8)
+    ax.set_title("Процесс по времени: относительная альфа по областям (строки: лобная…затылочная × левое/правое)", fontsize=9)
+    fig.suptitle("Региональная карта коры (скальповая, 19 электродов; не диагноз, сторона очага не определяется)", fontsize=11)
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=110, bbox_inches="tight")
+    plt.close(fig)
+    return out_path

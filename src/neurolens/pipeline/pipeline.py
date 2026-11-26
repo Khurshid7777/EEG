@@ -550,6 +550,13 @@ class Pipeline:
         sleep = self._sleep_staging(signal)
         if sleep is not None:
             result_json["sleep_staging"] = sleep
+        try:  # regional (lobe / hemisphere) scalp summary, increments 73-76; never breaks the run
+            from ..outputs.regional_view import build_view, regional_summary
+
+            view = build_view(analysis.signal, list(analysis.channel_names), analysis.sampling_rate_hz, result_json)
+            result_json["regional"] = regional_summary(view)
+        except Exception as exc:  # noqa: BLE001 - e.g. fewer than 8 standard electrodes (neonatal montage)
+            result_json["regional"] = {"available": False, "reason": str(exc)}
 
         return PipelineOutput(
             signal=analysis,
@@ -592,6 +599,15 @@ class Pipeline:
                 paths["topomap"] = plot_band_topomaps(
                     output.features, self.cfg.electrode_coords, out_dir / "topomap.png"
                 )
+            if output.result_json.get("regional", {}).get("version"):
+                from ..outputs.regional_view import build_view, plot_regional_static, write_regional_html
+
+                a = output.signal
+                paths["regional_view"] = write_regional_html(out_dir / "regional_view.html", a.signal, list(a.channel_names),
+                                                              a.sampling_rate_hz, output.result_json)
+                paths["regional_static"] = plot_regional_static(
+                    build_view(a.signal, list(a.channel_names), a.sampling_rate_hz, output.result_json),
+                    out_dir / "regional_static.png")
             paths["causal_graph"] = plot_causal_graph(
                 output.graph, out_dir / "causal_graph.png"
             )

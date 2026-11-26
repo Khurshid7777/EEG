@@ -119,29 +119,37 @@ LEFT_OF = {"Fp1": "Fp2", "F3": "F4", "F7": "F8", "C3": "C4", "T3": "T4", "T5": "
 
 
 def regional_series(signal: np.ndarray, channels: Sequence[str], fs: float, win_s: float = 10.0,
-                    max_windows: int = 720) -> dict:
+                    max_windows: int = 720, max_sample_s: float = 30.0) -> dict:
     """Non-overlapping windows over the whole recording (window lengthened so that at most ``max_windows`` remain).
 
-    Returns relative band power per channel and window (delta/theta/alpha/beta, share of 1-30 Hz), absolute alpha power,
-    and an artefact flag per window (two or more electrodes with peak-to-peak > 200 uV). Common-average reference over
-    the standard 10-20 electrodes. Scalp mapping only (no source localisation)."""
+    Returns relative band power per channel and window (delta/theta/alpha/beta, share of 1-30 Hz), log10 absolute alpha
+    power, and an artefact flag per window (two or more electrodes with peak-to-peak > 200 uV). Common-average reference
+    over the standard 10-20 electrodes, computed per window (memory stays small for 24-hour recordings). When a window is
+    longer than ``max_sample_s`` seconds only its first ``max_sample_s`` seconds are analysed (a representative sample).
+    Scalp mapping only (no source localisation)."""
     idx = [i for i, c in enumerate(channels) if c in STANDARD_1020]
     if len(idx) < 8:
         raise ValueError("fewer than 8 standard 10-20 electrodes")
     names = [channels[i] for i in idx]
-    x = np.asarray(signal, dtype=float)[idx]
-    x = x - x.mean(axis=0, keepdims=True)
-    total_s = x.shape[1] / fs
-    win_s = max(4.0, float(win_s), np.ceil(total_s / max_windows))
+    sig = np.asarray(signal)
+    total_s = sig.shape[1] / fs
+    win_s = max(4.0, float(win_s), float(np.ceil(total_s / max_windows)))
     n = int(win_s * fs)
-    n_win = x.shape[1] // n
+    n_win = sig.shape[1] // n
     if n_win < 1:
         raise ValueError("recording shorter than one window")
-    seg = x[:, :n_win * n].reshape(len(idx), n_win, n).transpose(1, 0, 2)          # (win, ch, samples)
-    f, p = welch(seg, fs=fs, nperseg=int(min(n, 4 * fs)), axis=-1)                   # (win, ch, freq)
-    tot = p[..., (f >= TOTAL_BAND[0]) & (f < TOTAL_BAND[1])].sum(axis=-1) + 1e-12
-    rel = {b: (p[..., (f >= lo) & (f < hi)].sum(axis=-1) / tot).T.round(4).tolist() for b, (lo, hi) in SERIES_BANDS.items()}
-    abs_alpha = np.log10(p[..., (f >= 8.0) & (f < 12.0)].sum(axis=-1) + 1e-12).T.round(3).tolist()
-    artefact = ((np.ptp(seg, axis=2) > MAX_PTP_UV).sum(axis=1) >= 2).tolist()
+    m = int(min(win_s, max_sample_s) * fs)
+    rel = {b: [] for b in SERIES_BANDS}
+    abs_alpha, artefact = [], []
+    for w in range(n_win):
+        x = sig[idx, w * n:w * n + m].astype(float)
+        x = x - x.mean(axis=0, keepdims=True)
+        f, p = welch(x, fs=fs, nperseg=int(min(m, 4 * fs)), axis=-1)               # (ch, freq)
+        tot = p[:, (f >= TOTAL_BAND[0]) & (f < TOTAL_BAND[1])].sum(axis=1) + 1e-12
+        for b, (lo, hi) in SERIES_BANDS.items():
+            rel[b].append(p[:, (f >= lo) & (f < hi)].sum(axis=1) / tot)
+        abs_alpha.append(np.log10(p[:, (f >= 8.0) & (f < 12.0)].sum(axis=1) + 1e-12))
+        artefact.append(bool((np.ptp(x, axis=1) > MAX_PTP_UV).sum() >= 2))
     return {"channels": names, "win_s": win_s, "n_windows": int(n_win), "duration_s": float(total_s),
-            "rel": rel, "log10_abs_alpha": abs_alpha, "artefact": artefact}
+            "rel": {b: np.array(v).T.round(4).tolist() for b, v in rel.items()},
+            "log10_abs_alpha": np.array(abs_alpha).T.round(3).tolist(), "artefact": artefact}
