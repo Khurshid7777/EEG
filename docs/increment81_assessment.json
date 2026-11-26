@@ -1,0 +1,162 @@
+{
+ "n_train": 99,
+ "train_age_range": [
+  17.0,
+  71.0
+ ],
+ "held_age_range": {
+  "ds004504": [
+   57.0,
+   78.0
+  ],
+  "eegmat": [
+   16.0,
+   26.0
+  ]
+ },
+ "step1": [
+  {
+   "pair": "C3-C4",
+   "kind": "signed",
+   "rho": 0.236,
+   "p": 0.0185342852515902,
+   "holm_threshold": 0.00385,
+   "significant": false
+  },
+  {
+   "pair": "C3-C4",
+   "kind": "abs",
+   "rho": -0.1,
+   "p": 0.32661815960456636,
+   "holm_threshold": 0.00833,
+   "significant": false
+  },
+  {
+   "pair": "F3-F4",
+   "kind": "signed",
+   "rho": -0.121,
+   "p": 0.23256499150186932,
+   "holm_threshold": 0.00556,
+   "significant": false
+  },
+  {
+   "pair": "F3-F4",
+   "kind": "abs",
+   "rho": 0.114,
+   "p": 0.26051997321400333,
+   "holm_threshold": 0.00625,
+   "significant": false
+  },
+  {
+   "pair": "F7-F8",
+   "kind": "signed",
+   "rho": -0.019,
+   "p": 0.8508970107632401,
+   "holm_threshold": 0.01667,
+   "significant": false
+  },
+  {
+   "pair": "F7-F8",
+   "kind": "abs",
+   "rho": 0.099,
+   "p": 0.33126020787998156,
+   "holm_threshold": 0.01,
+   "significant": false
+  },
+  {
+   "pair": "O1-O2",
+   "kind": "signed",
+   "rho": -0.25,
+   "p": 0.012646927886676318,
+   "holm_threshold": 0.00357,
+   "significant": false
+  },
+  {
+   "pair": "O1-O2",
+   "kind": "abs",
+   "rho": -0.14,
+   "p": 0.16774195690658833,
+   "holm_threshold": 0.00455,
+   "significant": false
+  },
+  {
+   "pair": "P3-P4",
+   "kind": "signed",
+   "rho": -0.124,
+   "p": 0.2220574600346158,
+   "holm_threshold": 0.005,
+   "significant": false
+  },
+  {
+   "pair": "P3-P4",
+   "kind": "abs",
+   "rho": 0.006,
+   "p": 0.9493006598725696,
+   "holm_threshold": 0.05,
+   "significant": false
+  },
+  {
+   "pair": "T3-T4",
+   "kind": "signed",
+   "rho": 0.175,
+   "p": 0.08365349681864893,
+   "holm_threshold": 0.00417,
+   "significant": false
+  },
+  {
+   "pair": "T3-T4",
+   "kind": "abs",
+   "rho": 0.056,
+   "p": 0.5851112798589412,
+   "holm_threshold": 0.0125,
+   "significant": false
+  },
+  {
+   "pair": "T5-T6",
+   "kind": "signed",
+   "rho": -0.107,
+   "p": 0.28972929612809367,
+   "holm_threshold": 0.00714,
+   "significant": false
+  },
+  {
+   "pair": "T5-T6",
+   "kind": "abs",
+   "rho": 0.015,
+   "p": 0.8820332346444614,
+   "holm_threshold": 0.025,
+   "significant": false
+  }
+ ],
+ "step1_significant_pairs": [],
+ "age_norms_needed": false,
+ "pooled_limits_out_fraction_held_out": {
+  "C3-C4": 0.092,
+  "F3-F4": 0.062,
+  "F7-F8": 0.077,
+  "O1-O2": 0.046,
+  "P3-P4": 0.031,
+  "T3-T4": 0.123,
+  "T5-T6": 0.062
+ },
+ "pooled_out_fraction_by_set": {
+  "ds004504": {
+   "C3-C4": 0.103,
+   "F3-F4": 0.034,
+   "F7-F8": 0.069,
+   "O1-O2": 0.034,
+   "P3-P4": 0.069,
+   "T3-T4": 0.034,
+   "T5-T6": 0.103
+  },
+  "eegmat": {
+   "C3-C4": 0.083,
+   "F3-F4": 0.083,
+   "F7-F8": 0.083,
+   "O1-O2": 0.056,
+   "P3-P4": 0.0,
+   "T3-T4": 0.194,
+   "T5-T6": 0.028
+  }
+ }
+}
