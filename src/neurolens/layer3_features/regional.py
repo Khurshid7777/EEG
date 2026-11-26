@@ -35,7 +35,8 @@ def _windows(x: np.ndarray, fs: float) -> np.ndarray:
     return np.stack([x[:, s:s + n] for s in starts], axis=0) if len(starts) else np.empty((0, x.shape[0], n))
 
 
-def channel_band_power(signal: np.ndarray, channels: Sequence[str], fs: float) -> dict[str, dict[str, float]]:
+def channel_band_power(signal: np.ndarray, channels: Sequence[str], fs: float,
+                       highpass_hz: float | None = None) -> dict[str, dict[str, float]]:
     """Per-channel {band: relative power, "abs_alpha": absolute alpha power} after common-average referencing.
 
     ``signal``: (channels, samples) in uV; only channels in the standard 10-20 set are used."""
@@ -44,6 +45,9 @@ def channel_band_power(signal: np.ndarray, channels: Sequence[str], fs: float) -
         raise ValueError("fewer than 8 standard 10-20 electrodes")
     names = [channels[i] for i in idx]
     x = np.asarray(signal, dtype=float)[idx]
+    if highpass_hz:   # sensitivity option (not part of the pre-registered path): removes drift before the artefact rule
+        from scipy.signal import butter, sosfiltfilt
+        x = sosfiltfilt(butter(2, highpass_hz, btype="high", fs=fs, output="sos"), x, axis=1)
     x = x - x.mean(axis=0, keepdims=True)
     w = _windows(x, fs)
     if len(w) == 0:

@@ -15,10 +15,13 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
+HP = None   # set by --highpass (post-hoc sensitivity run only)
+
+
 def _summarise(sig) -> dict:
     from neurolens.layer3_features import regional as R
 
-    pc = R.channel_band_power(sig.signal, sig.channel_names, sig.sampling_rate_hz)
+    pc = R.channel_band_power(sig.signal, sig.channel_names, sig.sampling_rate_hz, highpass_hz=HP)
     return {"n_channels": len(pc), "duration_s": float(sig.duration_s),
             "alpha": R.region_values(pc, "alpha"), "theta": R.region_values(pc, "theta"),
             "posterior_alpha": R.posterior_alpha(pc),
@@ -105,7 +108,10 @@ def main() -> int:
     ap.add_argument("cmd", choices=["run", "assess"])
     ap.add_argument("args", nargs="+")
     ap.add_argument("--workers", type=int, default=3)
+    ap.add_argument("--highpass", type=float, default=None)
     a = ap.parse_args()
+    global HP
+    HP = a.highpass
     if a.cmd == "assess":
         res = assess(a.args[1:])
         Path(a.args[0]).write_text(json.dumps(res, indent=1) + "\n")

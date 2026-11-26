@@ -1,0 +1,84 @@
+{
+ "errors_excluded": {
+  "data/inc73/hp_ds003775.jsonl": 12,
+  "data/inc73/hp_ds004504.jsonl": 0,
+  "data/inc73/hp_eegmat_1.jsonl": 0,
+  "data/inc73/hp_eegmat_2.jsonl": 0
+ },
+ "H1": {
+  "ds003775": {
+   "n": 99,
+   "posterior_top": 0.9292929292929293,
+   "ci95": [
+    0.86,
+    0.971
+   ],
+   "occipital_top": 0.5151515151515151,
+   "ok": true
+  },
+  "ds004504_controls": {
+   "n": 29,
+   "posterior_top": 1.0,
+   "ci95": [
+    0.881,
+    1.0
+   ],
+   "occipital_top": 0.8275862068965517,
+   "ok": true
+  }
+ },
+ "H2": {
+  "n_pairs": 36,
+  "frontal_theta_up": {
+   "k": 25,
+   "frac": 0.6944444444444444,
+   "ci95": [
+    0.519,
+    0.837
+   ],
+   "p": 0.014408359827939423,
+   "ok": true
+  },
+  "posterior_alpha_down": {
+   "k": 30,
+   "frac": 0.8333333333333334,
+   "ci95": [
+    0.672,
+    0.936
+   ],
+   "p": 3.480084706097841e-05,
+   "ok": true
+  }
+ },
+ "H3": {
+  "ds003775": {
+   "median_abs_ai": {
+    "F3-F4": 0.121,
+    "C3-C4": 0.174,
+    "T3-T4": 0.212,
+    "P3-P4": 0.283,
+    "O1-O2": 0.248,
+    "F7-F8": 0.116,
+    "T5-T6": 0.441
+   },
+   "O1-O2_ok": false
+  },
+  "ds004504_controls": {
+   "median_abs_ai": {
+    "F3-F4": 0.07,
+    "C3-C4": 0.2,
+    "T3-T4": 0.119,
+    "P3-P4": 0.202,
+    "O1-O2": 0.178,
+    "F7-F8": 0.122,
+    "T5-T6": 0.334
+   },
+   "O1-O2_ok": true
+  }
+ },
+ "decision": {
+  "H1": true,
+  "H2": true,
+  "H3": false
+ }
+}
