@@ -1,0 +1,107 @@
+{
+ "n_seizures": 47,
+ "n_excluded": 1,
+ "errors": [
+  [
+   "PN10",
+   "PN10/PN10-7.8.9.edf",
+   "ValueError('cannot reshape array of size 344569088 into shape (23040)')"
+  ]
+ ],
+ "ictal10": {
+  "patient_calls": {
+   "PN00": "R",
+   "PN01": "L",
+   "PN03": "?",
+   "PN05": "L",
+   "PN06": "L",
+   "PN07": "L",
+   "PN09": "R",
+   "PN11": "?",
+   "PN12": "L",
+   "PN13": "L",
+   "PN14": "L",
+   "PN16": "?",
+   "PN17": "?"
+  },
+  "truth": {
+   "PN00": "R",
+   "PN01": "L",
+   "PN03": "R",
+   "PN05": "L",
+   "PN06": "L",
+   "PN07": "L",
+   "PN09": "L",
+   "PN11": "R",
+   "PN12": "L",
+   "PN13": "L",
+   "PN14": "L",
+   "PN16": "L",
+   "PN17": "R"
+  },
+  "acc_left": 0.7777777777777778,
+  "acc_right": 0.25,
+  "balanced_accuracy": 0.5138888888888888,
+  "permutation_p": 0.08659134086591341
+ },
+ "seizure_level": {
+  "n": 37,
+  "coverage": 0.7567567567567568,
+  "accuracy_among_called": 0.7857142857142857,
+  "accuracy_ci95": [
+   0.64,
+   0.906
+  ],
+  "coverage_ci95": [
+   0.6,
+   0.906
+  ]
+ },
+ "ictal20": {
+  "patient_calls": {
+   "PN00": "R",
+   "PN01": "L",
+   "PN03": "R",
+   "PN05": "L",
+   "PN06": "L",
+   "PN07": "L",
+   "PN09": "R",
+   "PN11": "?",
+   "PN12": "L",
+   "PN13": "L",
+   "PN14": "L",
+   "PN16": "L",
+   "PN17": "R"
+  },
+  "truth": {
+   "PN00": "R",
+   "PN01": "L",
+   "PN03": "R",
+   "PN05": "L",
+   "PN06": "L",
+   "PN07": "L",
+   "PN09": "L",
+   "PN11": "R",
+   "PN12": "L",
+   "PN13": "L",
+   "PN14": "L",
+   "PN16": "L",
+   "PN17": "R"
+  },
+  "acc_left": 0.8888888888888888,
+  "acc_right": 0.75,
+  "balanced_accuracy": 0.8194444444444444
+ },
+ "PN10_descriptive": [
+  -0.15,
+  -0.24,
+  -0.12,
+  -0.1,
+  -0.29,
+  -0.08,
+  -0.07,
+  -0.4,
+  -0.19
+ ],
+ "H1": false
+}

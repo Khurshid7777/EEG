@@ -24,6 +24,11 @@ MARGIN = 0.2
 UNILATERAL_TEMPORAL = ["PN00", "PN01", "PN03", "PN05", "PN06", "PN07", "PN09", "PN11", "PN12", "PN13", "PN14", "PN16", "PN17"]
 
 
+# file names in the published seizure lists that do not match the EDF names (typos), fixed before any result was seen
+FILE_FIX = {"PN01.edf": "PN01-1.edf", "PNO6-1.edf": "PN06-1.edf", "PNO6-2.edf": "PN06-2.edf", "PNO6-4.edf": "PN06-4.edf",
+            "PN11-.edf": "PN11-1.edf"}
+
+
 def _get(url, rng=None):
     req = urllib.request.Request(url, headers={"Range": f"bytes={rng[0]}-{rng[1]}"} if rng else {})
     with urllib.request.urlopen(req, timeout=120) as r:
@@ -70,7 +75,7 @@ def read_edf_segment(url: str, t0: float, t1: float):
 def _score(x, names, fs, win, ref_idx):
     from neurolens.layer3_features.regional import STANDARD_1020
     a, b = int(win[0] * fs), int(win[1] * fs)
-    seg = x[:, a:b] - x[ref_idx].mean(axis=0, keepdims=True)
+    seg = x[:, a:b] - x[ref_idx, a:b].mean(axis=0, keepdims=True)
     f, p = welch(seg, fs=fs, nperseg=int(2 * fs), axis=-1)
     m = (f >= BAND[0]) & (f < BAND[1])
     return {n: p[i, m].sum() for i, n in enumerate(names)}
@@ -105,10 +110,11 @@ def run(out_path):
                     rows.append({**base, "error": "onset < 100 s from file start"})
                     continue
                 try:
-                    rows.append({**base, **one_seizure(subject, rec.file.split("/")[1], sz.onset_s)})
+                    rows.append({**base, **one_seizure(subject, FILE_FIX.get(rec.file.split("/")[1], rec.file.split("/")[1]), sz.onset_s)})
                 except Exception as exc:  # noqa: BLE001 - excluded and counted, as pre-registered
                     rows.append({**base, "error": repr(exc)})
-                print(rows[-1]["subject"], rows[-1]["file"], rows[-1].get("error", round(rows[-1]["ictal10"]["delta"], 2)), flush=True)
+                r = rows[-1]
+                print(r["subject"], r["file"], r["error"] if "error" in r else round(r["ictal10"]["delta"], 2), flush=True)
     Path(out_path).write_text("".join(json.dumps(r) + "\n" for r in rows))
 
 
