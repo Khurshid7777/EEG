@@ -98,14 +98,17 @@ def assess(path: Path) -> dict:
         return out
 
     def boot(subset, v, key):
+        # per-event indicators computed once; bootstrap resamples records
+        ind = {"M1_top1_in_expert": lambda r: r[v]["top"][0] in r["expert"],
+               "M2_region_in_expert": lambda r: r[v]["region"] in {region_of(c) for c in r["expert"]},
+               "M3_hemisphere_unilateral": lambda r: (side_of(r[v]["top"][0]) == _hemi(r["expert"])) if _hemi(r["expert"]) else None}[key]
+        by = {rid: [x for x in (ind(r) for r in subset if r["record"] == rid) if x is not None] for rid in recs}
         vals = []
-        by = {rid: [r for r in subset if r["record"] == rid] for rid in recs}
         for _ in range(2000):
             pick = rng.choice(recs, len(recs))
-            s = [r for rid in pick for r in by[rid]]
-            m = metrics(s, v).get(key)
-            if m is not None:
-                vals.append(m)
+            s = [x for rid in pick for x in by[rid]]
+            if s:
+                vals.append(float(np.mean(s)))
         return [round(float(np.percentile(vals, q)), 3) for q in (2.5, 97.5)]
 
     for cat in ("epileptiform", "slowing"):
