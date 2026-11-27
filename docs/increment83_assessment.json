@@ -1,0 +1,130 @@
+{
+ "n": 176,
+ "errors": 0,
+ "by_set": {
+  "ds003775": {
+   "n": 111,
+   "total_hours": 7.4,
+   "median_minutes": 4.0,
+   "records_with_any_critical": 0.153,
+   "records_with_critical_by_code": {
+    "iic_bipds": 0.018,
+    "iic_lpds": 0.045,
+    "seizure_candidate": 0.099
+   },
+   "records_with_event_by_code": {
+    "bipds": 0.018,
+    "diffuse_slowing": 0.036,
+    "focal_slowing": 0.135,
+    "ictal_ml": 0.18,
+    "lpds": 0.063,
+    "lrda": 0.009,
+    "spike": 1.0,
+    "wicket": 0.279
+   },
+   "events_per_hour_by_code": {
+    "bipds": 0.3,
+    "diffuse_slowing": 0.5,
+    "focal_slowing": 2.0,
+    "ictal_ml": 4.6,
+    "lpds": 0.9,
+    "lrda": 0.1,
+    "spike": 118.9,
+    "wicket": 6.2
+   },
+   "record_abnormal_fraction": 0.018,
+   "borderline_fraction": 0.045,
+   "median_max_ictal_ml_conf": 0.0
+  },
+  "ds004504": {
+   "n": 29,
+   "total_hours": 6.79,
+   "median_minutes": 13.8,
+   "records_with_any_critical": 0.414,
+   "records_with_critical_by_code": {
+    "iic_bipds": 0.069,
+    "iic_lpds": 0.207,
+    "seizure_candidate": 0.172
+   },
+   "records_with_event_by_code": {
+    "bipds": 0.103,
+    "focal_slowing": 0.034,
+    "ictal_ml": 0.31,
+    "lpds": 0.207,
+    "spike": 1.0,
+    "wicket": 0.172
+   },
+   "events_per_hour_by_code": {
+    "bipds": 0.4,
+    "focal_slowing": 0.1,
+    "ictal_ml": 4.0,
+    "lpds": 0.9,
+    "spike": 34.2,
+    "wicket": 1.0
+   },
+   "record_abnormal_fraction": 0.0,
+   "borderline_fraction": 0.0,
+   "median_max_ictal_ml_conf": 0.0
+  },
+  "eegmat": {
+   "n": 36,
+   "total_hours": 1.79,
+   "median_minutes": 3.0,
+   "records_with_any_critical": 0.083,
+   "records_with_critical_by_code": {
+    "seizure_candidate": 0.083
+   },
+   "records_with_event_by_code": {
+    "diffuse_slowing": 0.111,
+    "focal_slowing": 0.167,
+    "ictal_ml": 0.222,
+    "spike": 1.0,
+    "wicket": 0.083
+   },
+   "events_per_hour_by_code": {
+    "diffuse_slowing": 2.2,
+    "focal_slowing": 3.4,
+    "ictal_ml": 8.9,
+    "spike": 150.3,
+    "wicket": 2.8
+   },
+   "record_abnormal_fraction": 0.0,
+   "borderline_fraction": 0.0,
+   "median_max_ictal_ml_conf": 0.0
+  },
+  "all": {
+   "n": 176,
+   "total_hours": 15.98,
+   "median_minutes": 4.0,
+   "records_with_any_critical": 0.182,
+   "records_with_critical_by_code": {
+    "iic_bipds": 0.023,
+    "iic_lpds": 0.062,
+    "seizure_candidate": 0.108
+   },
+   "records_with_event_by_code": {
+    "bipds": 0.028,
+    "diffuse_slowing": 0.045,
+    "focal_slowing": 0.125,
+    "ictal_ml": 0.21,
+    "lpds": 0.074,
+    "lrda": 0.006,
+    "spike": 1.0,
+    "wicket": 0.222
+   },
+   "events_per_hour_by_code": {
+    "bipds": 0.3,
+    "diffuse_slowing": 0.5,
+    "focal_slowing": 1.4,
+    "ictal_ml": 4.8,
+    "lpds": 0.8,
+    "lrda": 0.1,
+    "spike": 86.4,
+    "wicket": 3.6
+   },
+   "record_abnormal_fraction": 0.011,
+   "borderline_fraction": 0.028,
+   "median_max_ictal_ml_conf": 0.0
+  }
+ }
+}
