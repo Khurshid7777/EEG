@@ -147,3 +147,9 @@ def test_page_escapes_labels_channels_and_title():
     html = render_html(build_view(x, ch, fs, res, title="<script>1</script>"))
     assert "const esc=" in html and "esc(evLbl(e))" in html and "esc(e.channels.join" in html
     assert html.count("<script>") == 1 and html.count("</script>") == 1      # title/label text cannot open or close a script
+
+
+def test_page_has_event_confidence_filter():
+    x, ch, fs = _signal(secs=40)
+    html = render_html(build_view(x, ch, fs, RESULT))
+    assert 'id="conf"' in html and "visEv()" in html and "st.minConf" in html

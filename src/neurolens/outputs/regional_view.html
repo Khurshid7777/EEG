@@ -53,6 +53,7 @@ svg text{fill:var(--ink);font-size:11px}
  <div class="grp" id="gmetric"><span class="lbl" id="lmetric"></span></div>
  <div class="grp" id="gview"><span class="lbl" id="lview"></span></div>
  <div class="grp" id="gmode"></div>
+ <div class="grp" id="gconf"><span class="lbl" id="lconf"></span><input id="conf" type="range" min="0" max="1" step="0.05" value="0" aria-label="min confidence"><span id="vconf" class="note"></span></div>
  <div class="grp" id="glang"></div>
 </div>
 </header>
@@ -78,7 +79,7 @@ const V=/*__DATA__*/null;
 const S=V.series, CH=S.channels, NW=S.n_windows, WS=S.win_s, BANDS=['delta','theta','alpha','beta','sigma'];
 const REG=Object.keys(V.regions);
 const T={
-ru:{ttl:'Региональная карта коры',band:'Диапазон',metric:'Показатель',view:'Карта',rel:'Отн. мощность',abs:'Абс. мощность (log10)',z:'Отклонение (z)',asnocor:'Нормативный коридор не применяется: референт записи, электродов меньше 8.',noimpsleep:'Заключение рутинной ЭЭГ к записи сна не применяется: правила рассчитаны на бодрствование.',refrec:'референт записи (без общего среднего), нормативный коридор асимметрии не применяется',sleepwarn:'В записях со сном относительная мощность не отражает топографию ритмов (проверка D119): для карты областей используйте абсолютную мощность.',topo:'Электроды',cells:'Доли × полушария',
+ru:{ttl:'Региональная карта коры',band:'Диапазон',metric:'Показатель',view:'Карта',rel:'Отн. мощность',abs:'Абс. мощность (log10)',z:'Отклонение (z)',asnocor:'Нормативный коридор не применяется: референт записи, электродов меньше 8.',noimpsleep:'Заключение рутинной ЭЭГ к записи сна не применяется: правила рассчитаны на бодрствование.',conf:'Мин. уверенность событий',shown:(n,m)=>`показано ${n} из ${m}`,refrec:'референт записи (без общего среднего), нормативный коридор асимметрии не применяется',sleepwarn:'В записях со сном относительная мощность не отражает топографию ритмов (проверка D119): для карты областей используйте абсолютную мощность.',topo:'Электроды',cells:'Доли × полушария',
  delta:'дельта',theta:'тета',alpha:'альфа',beta:'бета',sigma:'сигма (веретёна)',all:'Вся запись',play:'▶ Воспроизвести',pause:'⏸ Пауза',pinA:'Закрепить A',clearA:'Сброс A',
  h_tl:'Процесс диагностики по времени',h_map:'Карта коры (скальповая)',h_cap:'Что видно в выбранном окне',h_as:'Межполушарная асимметрия (альфа)',h_ev:'Найденные события',h_imp:'Заключение автоматического анализа',
  sub:(d,n,w)=>`Запись ${fmtT(d)} · ${n} электродов · окно ${w} с`,win:'Окно',s:'с',allrec:'Вся запись (среднее по окнам без артефактов)',
@@ -90,7 +91,7 @@ ru:{ttl:'Региональная карта коры',band:'Диапазон',m
  lsub:'левое сильнее',rsub:'правое сильнее',pin:'A закреплено на',diff:'Разность B − A',
  evcols:['Время, с','Событие','Где','Увер.'],noloc:'без привязки к каналам',noev:'Событий детекторов нет.',noimp:'Текст заключения недоступен.',
  foot:'Нормативные пределы:',spec:'Слева — левое полушарие, справа — правое (вид сверху, нос вверху). Электродные подписи — стандарт 10-20.'},
-uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkich',view:'Xarita',rel:'Nisbiy quvvat',abs:'Mutlaq quvvat (log10)',z:'Og‘ish (z)',asnocor:'Me’yor koridori qo‘llanilmaydi: yozuv referensi, elektrodlar 8 tadan kam.',noimpsleep:'Muntazam EEG xulosasi uyqu yozuviga qo‘llanilmaydi: qoidalar uyg‘oqlik uchun mo‘ljallangan.',refrec:'yozuv referensi (umumiy o‘rtachasiz), assimetriya koridori qo‘llanilmaydi',sleepwarn:'Uyqu yozuvlarida nisbiy quvvat ritmlar topografiyasini aks ettirmaydi (D119): hududlar xaritasi uchun mutlaq quvvatdan foydalaning.',topo:'Elektrodlar',cells:'Bo‘laklar × yarimsharlar',
+uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkich',view:'Xarita',rel:'Nisbiy quvvat',abs:'Mutlaq quvvat (log10)',z:'Og‘ish (z)',asnocor:'Me’yor koridori qo‘llanilmaydi: yozuv referensi, elektrodlar 8 tadan kam.',noimpsleep:'Muntazam EEG xulosasi uyqu yozuviga qo‘llanilmaydi: qoidalar uyg‘oqlik uchun mo‘ljallangan.',conf:'Hodisalarning min. ishonchi',shown:(n,m)=>`${m} dan ${n} ko‘rsatilgan`,refrec:'yozuv referensi (umumiy o‘rtachasiz), assimetriya koridori qo‘llanilmaydi',sleepwarn:'Uyqu yozuvlarida nisbiy quvvat ritmlar topografiyasini aks ettirmaydi (D119): hududlar xaritasi uchun mutlaq quvvatdan foydalaning.',topo:'Elektrodlar',cells:'Bo‘laklar × yarimsharlar',
  delta:'delta',theta:'teta',alpha:'alfa',beta:'beta',sigma:'sigma (urchuq)',all:'Butun yozuv',play:'▶ Ijro',pause:'⏸ Pauza',pinA:'A ni qotirish',clearA:'A ni tozalash',
  h_tl:'Vaqt bo‘yicha diagnostika jarayoni',h_map:'Po‘stloq xaritasi (bosh terisi)',h_cap:'Tanlangan oynada nima ko‘rinadi',h_as:'Yarimsharlararo assimetriya (alfa)',h_ev:'Topilgan hodisalar',h_imp:'Avtomatik tahlil xulosasi',
  sub:(d,n,w)=>`Yozuv ${fmtT(d)} · ${n} elektrod · oyna ${w} s`,win:'Oyna',s:'s',allrec:'Butun yozuv (artefaktsiz oynalar o‘rtachasi)',
@@ -103,7 +104,7 @@ uz:{ttl:'Bosh miya po‘stlog‘i xaritasi',band:'Diapazon',metric:'Ko‘rsatkic
  evcols:['Vaqt, s','Hodisa','Qayerda','Ishonch'],noloc:'kanallarga bog‘lanmagan',noev:'Detektor hodisalari yo‘q.',noimp:'Xulosa matni mavjud emas.',
  foot:'Me’yor chegaralari:',spec:'Chapda — chap yarimshar, o‘ngda — o‘ng yarimshar (yuqoridan ko‘rinish, burun tepada). Belgilar 10-20 standarti.'}
 };
-const st={w:0,band:(V.hypnogram&&V.hypnogram.length)?'sigma':'alpha',metric:(V.hypnogram&&V.hypnogram.length)?'abs':'rel',view:CH.length<8?'cells':'topo',lang:'ru',pinA:null,all:false,timer:null};
+const st={minConf:0,w:0,band:(V.hypnogram&&V.hypnogram.length)?'sigma':'alpha',metric:(V.hypnogram&&V.hypnogram.length)?'abs':'rel',view:CH.length<8?'cells':'topo',lang:'ru',pinA:null,all:false,timer:null};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function fmtT(s){const m=Math.floor(s/60),u=st.lang==='uz'?['daq','s']:['мин','с'];return m>=1?`${m} ${u[0]} ${Math.round(s-m*60)} ${u[1]}`:`${Math.round(s)} ${u[1]}`}
@@ -169,7 +170,8 @@ function drawMap(){
  const L=T[st.lang];$('mapnote').textContent=(st.pinA!==null&&!st.all?`${L.diff}: B=${wlabel(st.w)}, A=${wlabel(st.pinA)} · `:'')+(st.all?L.allrec:`${L.win} ${wlabel(st.w)}`);
 }
 const wlabel=w=>`${(w*WS).toFixed(0)}–${((w+1)*WS).toFixed(0)} ${T[st.lang].s}`;
-function eventsInWindow(w){const a=w*WS,b=(w+1)*WS;return V.events.filter(e=>e.t1>=a&&e.t0<b)}
+const visEv=()=>V.events.filter(e=>e.conf>=st.minConf);
+function eventsInWindow(w){const a=w*WS,b=(w+1)*WS;return visEv().filter(e=>e.t1>=a&&e.t0<b)}
 // ---------- timeline ----------
 const tl=$('tl'),tctx=tl.getContext('2d');const LM=104;let lanes=[],tlH=0;
 const EVC={spike:'#d1342f',ictal_ml:'#8a1c7c',ictal:'#8a1c7c',focal_slowing:'#c27a00',diffuse_slowing:'#9a6b00',wicket:'#2d7d6f',burst_suppression:'#4b3fa0',gped:'#a02060',lpd:'#a02060',periodic:'#a02060'};
@@ -187,7 +189,7 @@ function drawTL(){
  const step=niceStep(S.duration_s/Math.max(4,XW/90));for(let t=0;t<=S.duration_s;t+=step){tctx.fillText(Math.round(t)+'',tx(t),12);tctx.fillStyle='rgba(128,128,128,.25)';tctx.fillRect(tx(t),16,1,tlH-16);tctx.fillStyle=mut}
  let y=22;tctx.textAlign='right';
  if(hyp){tctx.fillStyle=mut;tctx.fillText('Сон / Uyqu',LM-6,y+11);V.hypnogram.forEach((s,i)=>{const t0=i*30,t1=Math.min((i+1)*30,S.duration_s);if(t0>=S.duration_s)return;tctx.fillStyle=STC[s]||'#999';tctx.fillRect(tx(t0),y,Math.max(1,tx(t1)-tx(t0)),14)});y+=18}
- evCodes.forEach(c=>{tctx.fillStyle=mut;tctx.textAlign='right';tctx.fillText(shortLbl(c),LM-6,y+11);tctx.fillStyle=EVC[c]||'#555';V.events.filter(e=>e.code===c).forEach(e=>{tctx.fillRect(tx(e.t0),y+1,Math.max(2,tx(e.t1)-tx(e.t0)),laneH-3)});y+=laneH});
+ evCodes.forEach(c=>{tctx.fillStyle=mut;tctx.textAlign='right';tctx.fillText(shortLbl(c),LM-6,y+11);tctx.fillStyle=EVC[c]||'#555';visEv().filter(e=>e.code===c).forEach(e=>{tctx.fillRect(tx(e.t0),y+1,Math.max(2,tx(e.t1)-tx(e.t0)),laneH-3)});y+=laneH});
  y+=6;st._stripY=y;
  const L=T[st.lang];const rows=CELLS.map((c,i)=>({c,i}));
  const bandNow=st.band;const sc2=st.metric==='z'?[-3,3,true]:scaleFor0();
@@ -229,7 +231,7 @@ function caption(){
   const ev=eventsInWindow(st.w);h+=ev.length?`<p>${L.evin}</p><p>`+ev.slice(0,8).map(e=>`<span class="badge">${esc(evLbl(e))}${e.channels.length?' · '+esc(e.channels.join(',')):''}${e.where.length?' → '+esc(whereTxt(e)):''}</span>`).join(' ')+(ev.length>8?` +${ev.length-8}`:'')+'</p>':`<p class="note">${L.ev0}</p>`}
  if(V.hypnogram&&V.hypnogram.length&&st.metric==='rel')h+=`<p><span class="badge w">!</span>${L.sleepwarn}</p>`;
  h+=`<p class="note">${L.spec}</p>`;$('cap').innerHTML=h}
-function evTable(){const L=T[st.lang];const evs=[...V.events].sort((a,b)=>a.t0-b.t0);const cur=st.all?new Set():new Set(eventsInWindow(st.w));
+function evTable(){const L=T[st.lang];const evs=visEv().sort((a,b)=>a.t0-b.t0);const cur=st.all?new Set():new Set(eventsInWindow(st.w));
  let h=`<tr>${L.evcols.map(c=>`<th>${c}</th>`).join('')}</tr>`;evs.slice(0,300).forEach((e,i)=>{h+=`<tr class="ev${cur.has(e)?' cur':''}" data-w="${Math.floor(e.t0/WS)}"><td>${e.t0.toFixed(1)}</td><td>${esc(evLbl(e))}</td><td>${esc(whereTxt(e))}</td><td>${e.conf.toFixed(2)}</td></tr>`});
  if(!evs.length)h=`<tr><td class="note">${L.noev}</td></tr>`;if(evs.length>300)h+=`<tr><td colspan=4 class="note">… +${evs.length-300}</td></tr>`;$('evt').innerHTML=h;
  $('evt').querySelectorAll('tr.ev').forEach(r=>r.onclick=()=>setW(+r.dataset.w))}
@@ -243,12 +245,14 @@ function ui(){const L=T[st.lang];document.documentElement.lang=st.lang;$('ttl').
  mkbtn($('gmode'),'k_all',L.all,st.all,()=>{st.all=!st.all;refresh()});
  mkbtn($('gmode'),'k_play',st.timer?L.pause:L.play,!!st.timer,()=>{if(st.timer){clearInterval(st.timer);st.timer=null}else{st.all=false;st.timer=setInterval(()=>{setW(st.w+1>=NW?0:st.w+1)},500)}ui()});
  mkbtn($('gmode'),'k_pin',st.pinA===null?L.pinA:L.clearA,st.pinA!==null,()=>{st.pinA=st.pinA===null?st.w:null;refresh()});
+ $('lconf').textContent=L.conf+':';$('vconf').textContent=st.minConf.toFixed(2)+' · '+L.shown(visEv().length,V.events.length);
  mkbtn($('glang'),'l_ru','RU',st.lang==='ru',()=>{st.lang='ru';ui();refresh()});mkbtn($('glang'),'l_uz','UZ',st.lang==='uz',()=>{st.lang='uz';ui();refresh()});
  ['h_tl','h_map','h_cap','h_as','h_ev','h_imp'].forEach(k=>$(k).textContent=L[k]);
  const imp=st.lang==='uz'?V.record.impression_uz:V.record.impression_ru;$('imp').textContent=(V.hypnogram&&V.hypnogram.length)?L.noimpsleep:(imp||L.noimp);
  $('foot').textContent=`${L.foot} ${V.norms.version}; ${V.norms.fit}. ${V.norms.checked_on}.`}
 function refresh(){ui();drawTL();drawMap();asym();caption();evTable();$('slider').max=NW-1}
 $('slider').addEventListener('input',e=>setW(+e.target.value));
+$('conf').addEventListener('input',e=>{st.minConf=+e.target.value;refresh()});
 window.addEventListener('resize',()=>{drawTL();asym()});
 refresh();
 })();
