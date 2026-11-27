@@ -25,6 +25,8 @@ HOMOLOGOUS_PAIRS: tuple[tuple[str, str], ...] = (
 BANDS = {"alpha": (8.0, 12.0), "theta": (4.0, 8.0)}
 TOTAL_BAND = (1.0, 30.0)
 WINDOW_S, MAX_PTP_UV = 4.0, 200.0
+MAX_PTP_UV_SPARSE = 500.0
+MIN_GOOD_CHANNELS, MIN_GOOD_WINDOWS = 12, 3
 STANDARD_1020 = tuple(sorted({c for r in REGIONS.values() for c in r}))
 _ALIAS = {"T7": "T3", "T8": "T4", "P7": "T5", "P8": "T6"}
 
@@ -59,10 +61,14 @@ def _windows(x: np.ndarray, fs: float) -> np.ndarray:
 
 
 def channel_band_power(signal: np.ndarray, channels: Sequence[str], fs: float,
-                       highpass_hz: float | None = None) -> dict[str, dict[str, float]]:
+                       highpass_hz: float | None = None, robust: bool = True) -> dict[str, dict[str, float]]:
     """Per-channel {band: relative power, "abs_alpha": absolute alpha power} after common-average referencing.
 
-    ``signal``: (channels, samples) in uV; only channels in the standard 10-20 set are used."""
+    ``signal``: (channels, samples) in uV; only usable channels of the standard 10-20 set are used.
+    ``robust`` (default since increment 82, D122): artefact rejection per channel and window - a channel is good in a window when its
+    peak-to-peak is <= 200 uV; a window is usable when at least 12 channels are good; the average reference is taken over
+    the good channels of the window; a channel's power is averaged over its good windows (needs >= 3). Without it
+    (``robust=False``, the increment 73 rule) a window is dropped when any channel exceeds 200 uV."""
     idx = usable_channels(signal, channels)
     if len(idx) < 8:
         raise ValueError("fewer than 8 usable standard 10-20 electrodes")
@@ -71,6 +77,8 @@ def channel_band_power(signal: np.ndarray, channels: Sequence[str], fs: float,
     if highpass_hz:   # sensitivity option (not part of the pre-registered path): removes drift before the artefact rule
         from scipy.signal import butter, sosfiltfilt
         x = sosfiltfilt(butter(2, highpass_hz, btype="high", fs=fs, output="sos"), x, axis=1)
+    if robust:
+        return _robust_band_power(x, names, fs)
     x = x - x.mean(axis=0, keepdims=True)
     w = _windows(x, fs)
     if len(w) == 0:
@@ -89,6 +97,45 @@ def channel_band_power(signal: np.ndarray, channels: Sequence[str], fs: float,
             out[n][band] = float(v / t)
             if band == "alpha":
                 out[n]["abs_alpha"] = float(v)
+    return out
+
+
+
+
+def _robust_band_power(x: np.ndarray, names: list[str], fs: float) -> dict[str, dict[str, float]]:
+    n = int(WINDOW_S * fs)
+    step = n // 2
+    starts = list(range(0, x.shape[1] - n + 1, step))
+    if not starts:
+        raise ValueError("recording shorter than one window")
+    w = np.stack([x[:, s:s + n] for s in starts], axis=0)                 # (win, ch, samples)
+    good = np.ptp(w, axis=2) <= MAX_PTP_UV                                # (win, ch)
+    usable = good.sum(axis=1) >= min(MIN_GOOD_CHANNELS, len(names))
+    if usable.sum() < MIN_GOOD_WINDOWS:
+        raise ValueError("too few usable windows")
+    w, good = w[usable], good[usable]
+    ref = (w * good[:, :, None]).sum(axis=1, keepdims=True) / good.sum(axis=1)[:, None, None]
+    w = w - ref
+    f, p = welch(w, fs=fs, nperseg=n, axis=-1)                            # (win, ch, freq)
+    tot_band = (f >= TOTAL_BAND[0]) & (f < TOTAL_BAND[1])
+    enough = good.sum(axis=0) >= MIN_GOOD_WINDOWS
+    if enough.sum() < min(MIN_GOOD_CHANNELS, len(names)):
+        raise ValueError("too few usable channels")
+    gw = good.astype(float)
+    pm = (p * gw[:, :, None]).sum(axis=0) / np.maximum(gw.sum(axis=0), 1)[:, None]    # (ch, freq), mean over the channel's good windows
+    tot = pm[:, tot_band].sum(axis=1) + 1e-12
+    out: dict[str, dict[str, float]] = {}
+    for i, name in enumerate(names):
+        if not enough[i]:
+            continue
+        out[name] = {}
+    for band, (lo, hi) in BANDS.items():
+        bp = pm[:, (f >= lo) & (f < hi)].sum(axis=1)
+        for i, name in enumerate(names):
+            if enough[i]:
+                out[name][band] = float(bp[i] / tot[i])
+                if band == "alpha":
+                    out[name]["abs_alpha"] = float(bp[i])
     return out
 
 
@@ -146,7 +193,7 @@ def regional_series(signal: np.ndarray, channels: Sequence[str], fs: float, win_
     """Non-overlapping windows over the whole recording (window lengthened so that at most ``max_windows`` remain).
 
     Returns relative band power per channel and window (delta/theta/alpha/beta, share of 1-30 Hz), log10 absolute alpha
-    power, and an artefact flag per window (two or more electrodes with peak-to-peak > 200 uV). Common-average reference
+    power, and an artefact flag per window (fewer than 12 good channels; a channel is good when its peak-to-peak is <= 200 uV, 500 uV for sparse PSG montages; increment 82). Common-average reference
     over the standard 10-20 electrodes when at least 8 are present (otherwise the recorded reference is kept, e.g. PSG with mastoid references), computed per window (memory stays small for 24-hour recordings). When a window is
     longer than ``max_sample_s`` seconds only its first ``max_sample_s`` seconds are analysed (a representative sample).
     Scalp mapping only (no source localisation)."""
@@ -163,25 +210,43 @@ def regional_series(signal: np.ndarray, channels: Sequence[str], fs: float, win_
     if n_win < 1:
         raise ValueError("recording shorter than one window")
     m = int(min(win_s, max_sample_s) * fs)
+    max_ptp = MAX_PTP_UV if car else MAX_PTP_UV_SPARSE          # sleep PSG montages: slow waves reach 200-300 uV (increments 79-80 used 500)
+    need = min(MIN_GOOD_CHANNELS, len(idx))
     rel = {b: [] for b in SERIES_BANDS}
     lab = {b: [] for b in SERIES_BANDS}
-    abs_alpha, artefact = [], []
+    abs_alpha, artefact, bad = [], [], []
     for w in range(n_win):
         x = sig[idx, w * n:w * n + m].astype(float)
         nan_win = not np.isfinite(x).all()
         if nan_win:
             x = np.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0)
+        good = np.ptp(x, axis=1) <= max_ptp                       # increment 82: rejection per channel and window
+        if not good.any():
+            good = np.ones(len(idx), bool)
         if car:
-            x = x - x.mean(axis=0, keepdims=True)
+            x = x - x[good].mean(axis=0, keepdims=True)
         f, p = welch(x, fs=fs, nperseg=int(min(m, 4 * fs)), axis=-1)               # (ch, freq)
         tot = p[:, (f >= TOTAL_BAND[0]) & (f < TOTAL_BAND[1])].sum(axis=1) + 1e-12
+        vals = {}
         for b, (lo, hi) in SERIES_BANDS.items():
             bp = p[:, (f >= lo) & (f < hi)].sum(axis=1)
-            rel[b].append(bp / tot)
-            lab[b].append(np.log10(bp + 1e-12))
-        abs_alpha.append(np.log10(p[:, (f >= 8.0) & (f < 12.0)].sum(axis=1) + 1e-12))
-        artefact.append(bool(nan_win or (np.ptp(x, axis=1) > MAX_PTP_UV).sum() >= 2))
+            vals[b] = (bp / tot, np.log10(bp + 1e-12))
+        for b in SERIES_BANDS:
+            r, l = vals[b]
+            r, l = r.copy(), l.copy()
+            if (~good).any() and good.any():                       # neutral fill for the display: median of the window's good channels
+                r[~good], l[~good] = np.median(r[good]), np.median(l[good])
+            rel[b].append(r)
+            lab[b].append(l)
+        a = vals["alpha"][1].copy()
+        if (~good).any():
+            a[~good] = np.median(a[good])
+        abs_alpha.append(a)
+        artefact.append(bool(nan_win or good.sum() < need))
+        bad.append(~good)
+    bad_by_channel = {names[c]: [w for w in range(n_win) if bad[w][c]] for c in range(len(idx))}
     return {"channels": names, "reference": "car" if car else "recorded", "win_s": win_s, "n_windows": int(n_win), "duration_s": float(total_s),
             "rel": {b: np.array(v).T.round(4).tolist() for b, v in rel.items()},
             "log10_abs": {b: np.array(v).T.round(3).tolist() for b, v in lab.items()},
-            "log10_abs_alpha": np.array(abs_alpha).T.round(3).tolist(), "artefact": artefact}
+            "log10_abs_alpha": np.array(abs_alpha).T.round(3).tolist(), "artefact": artefact,
+            "bad_windows_by_channel": {c: v for c, v in bad_by_channel.items() if v}}

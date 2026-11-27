@@ -31,7 +31,7 @@ def test_asymmetry_sign_and_reference_independence():
     x, ch, fs = _synthetic(left_boost=2.0)                 # O1 (left) has 4x the alpha power
     ai = asymmetry_index(channel_band_power(x, ch, fs), "O1", "O2")
     assert ai < -0.5                                       # left stronger -> negative
-    shifted = x + 100 * np.sin(2 * np.pi * 10 * np.arange(x.shape[1]) / fs)   # common signal on every channel
+    shifted = x + 50 * np.sin(2 * np.pi * 10 * np.arange(x.shape[1]) / fs)   # common signal on every channel
     ai2 = asymmetry_index(channel_band_power(shifted, ch, fs), "O1", "O2")
     assert abs(ai2 - ai) < 0.2                             # common-average reference removes the shared component
 
@@ -71,3 +71,19 @@ def test_regional_series_shapes_and_alpha_peak():
     # long recording: window lengthened to respect max_windows
     s2 = regional_series(np.tile(x, (1, 20)), ch, fs, win_s=10, max_windows=50)
     assert s2["n_windows"] <= 50 and s2["win_s"] > 10
+
+
+def test_robust_rule_survives_one_bad_electrode():
+    import pytest
+
+    x, ch, fs = _synthetic(secs=60)
+    x[ch.index("T4")] += 400 * np.sin(2 * np.pi * 0.5 * np.arange(x.shape[1]) / fs)     # one electrode with huge drift
+    with pytest.raises(ValueError):
+        channel_band_power(x, ch, fs, robust=False)                     # old rule: every window rejected
+    pc = channel_band_power(x, ch, fs, robust=True)
+    assert "T4" not in pc and len(pc) == len(ch) - 1
+    rv = region_values(pc, "alpha")
+    assert max(rv, key=rv.get) == "occipital"
+    clean, ch2, fs2 = _synthetic(secs=60)
+    a, b = channel_band_power(clean, ch2, fs2), channel_band_power(clean, ch2, fs2, robust=True)
+    assert abs(a["O1"]["alpha"] - b["O1"]["alpha"]) < 0.02             # same result when nothing is bad

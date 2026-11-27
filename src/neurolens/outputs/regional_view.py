@@ -41,16 +41,22 @@ def load_norms() -> dict:
     return json.loads((_ROOT / "configs/regional_norms_v1.json").read_text())
 
 
+def _good_windows(series: dict, channel: str) -> list[int]:
+    """Windows that are not flagged as artefact and in which ``channel`` is good (increment 82)."""
+    bad = set(series.get("bad_windows_by_channel", {}).get(channel, []))
+    return [i for i, a in enumerate(series["artefact"]) if not a and i not in bad]
+
+
 def _record_asymmetry(series: dict, norms: Mapping) -> dict:
-    """Record-level AI = ln(mean P_right / mean P_left) over artefact-free windows, with the normative flag."""
+    """Record-level AI = ln(mean P_right / mean P_left) over windows where both electrodes are good, with the normative flag."""
     names = series["channels"]
-    ok = [i for i, a in enumerate(series["artefact"]) if not a]
     out = {}
-    if len(ok) < 3:
-        return out
     car = series.get("reference") == "car"          # the normative corridor was fitted on common-average data only
     for left, right in HOMOLOGOUS_PAIRS:
         if left not in names or right not in names:
+            continue
+        ok = sorted(set(_good_windows(series, left)) & set(_good_windows(series, right)))
+        if len(ok) < 3:
             continue
         pl = np.mean([10 ** series["log10_abs_alpha"][names.index(left)][i] for i in ok])
         pr = np.mean([10 ** series["log10_abs_alpha"][names.index(right)][i] for i in ok])
@@ -121,10 +127,12 @@ def regional_summary(view: Mapping) -> dict:
     """Compact record-level summary for ``result_json['regional']`` (no time series)."""
     s = view["series"]
     names = s["channels"]
-    ok = [i for i, a in enumerate(s["artefact"]) if not a] or list(range(s["n_windows"]))
     bands = {}
     for b, rows in s["rel"].items():
-        chm = {c: float(np.mean([rows[names.index(c)][i] for i in ok])) for c in names}
+        chm = {}
+        for c in names:
+            ok = _good_windows(s, c) or list(range(s["n_windows"]))
+            chm[c] = float(np.mean([rows[names.index(c)][i] for i in ok]))
         bands[b] = {r: round(float(np.mean([chm[c] for c in chans if c in chm])), 4)
                     for r, chans in REGIONS.items() if any(c in chm for c in chans)}
     counts: dict[str, int] = {}
@@ -150,13 +158,12 @@ def plot_regional_static(view: Mapping, out_path: str | Path) -> Path:
 
     s = view["series"]
     names = s["channels"]
-    ok = [i for i, a in enumerate(s["artefact"]) if not a] or list(range(s["n_windows"]))
     coords = {k: tuple(v) for k, v in view["coords"].items()}
     fig = plt.figure(figsize=(11, 8.2))
     gs = fig.add_gridspec(3, 4, height_ratios=[1.0, 1.15, 1.0], hspace=0.45, wspace=0.15)
     for k, (b, ru) in enumerate((("delta", "дельта"), ("theta", "тета"), ("alpha", "альфа"), ("beta", "бета"))):
         ax = fig.add_subplot(gs[0, k])
-        vals = {c: float(np.mean([s["rel"][b][names.index(c)][i] for i in ok])) for c in names}
+        vals = {c: float(np.mean([s["rel"][b][names.index(c)][i] for i in (_good_windows(s, c) or range(s["n_windows"]))])) for c in names}
         plot_topomap(ax, vals, coords, title=f"{ru}, отн. мощность (вся запись)", cmap="viridis")
     # asymmetry
     ax = fig.add_subplot(gs[1, :])

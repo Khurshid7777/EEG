@@ -16,12 +16,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 
 HP = None   # set by --highpass (post-hoc sensitivity run only)
+ROBUST = False   # increment 82: per-channel window rejection
 
 
 def _summarise(sig) -> dict:
     from neurolens.layer3_features import regional as R
 
-    pc = R.channel_band_power(sig.signal, sig.channel_names, sig.sampling_rate_hz, highpass_hz=HP)
+    pc = R.channel_band_power(sig.signal, sig.channel_names, sig.sampling_rate_hz, highpass_hz=HP, robust=ROBUST)
     return {"n_channels": len(pc), "duration_s": float(sig.duration_s),
             "alpha": R.region_values(pc, "alpha"), "theta": R.region_values(pc, "theta"),
             "posterior_alpha": R.posterior_alpha(pc),
@@ -109,9 +110,10 @@ def main() -> int:
     ap.add_argument("args", nargs="+")
     ap.add_argument("--workers", type=int, default=3)
     ap.add_argument("--highpass", type=float, default=None)
+    ap.add_argument("--robust", action="store_true")
     a = ap.parse_args()
-    global HP
-    HP = a.highpass
+    global HP, ROBUST
+    HP, ROBUST = a.highpass, a.robust
     if a.cmd == "assess":
         res = assess(a.args[1:])
         Path(a.args[0]).write_text(json.dumps(res, indent=1) + "\n")

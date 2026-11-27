@@ -46,7 +46,7 @@ def test_view_regions_events_and_asymmetry_flags():
 
 def test_asymmetry_flag_outside_normative_limits():
     x, ch, fs = _signal()
-    x[ch.index("O1")] *= 6                                   # left occipital much stronger -> left>right
+    x[ch.index("O1")] *= 2                                   # left occipital much stronger (still < 200 uV) -> left>right
     v = build_view(x, ch, fs, RESULT)
     assert v["asymmetry_record"]["O1-O2"]["flag"] == "left>right"
     assert load_norms()["version"] == "regional_norms_v1"
