@@ -16,6 +16,7 @@
 
 | Ресурс | Доступ | Ссылка | Что даст |
 |---|---|---|---|
+| SPaRCNet (метки LPD/GPD/LRDA/GRDA и приступов, ИОРИТ) | Restricted Access | https://bdsp.io/content/bdsp-sparcnet/1.1/ | LPD/BIPD у здоровых (инкремент 83): калибровка периодических паттернов; пре-регистрация 60 |
 | I-CARE | Restricted Access | https://bdsp.io/content/bdsp-icare/2.0/ | 413 скрытых пациентов PhysioNet I-CARE; проверка заключения при коме |
 | Burst Suppression | Restricted Access | https://bdsp.io/content/bsupp/1.0/ | проверка детектора вспышки-подавления на размеченных сегментах |
 | Cyclops | Restricted Access | https://bdsp.io/content/cyclops/2.0/ | детектор разрядов (слабый случай 4): размеченные IED |
