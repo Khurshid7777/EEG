@@ -67,6 +67,19 @@ def _record_asymmetry(series: dict, norms: Mapping) -> dict:
     return out
 
 
+def _procedures(p: Mapping | None) -> dict | None:
+    """Intervals and the clinician-facing results of the activation procedures (eyes, HV, photic) for the time axis."""
+    if not p or not p.get("intervals_s"):
+        return None
+    iv = p["intervals_s"]
+    if not any(iv.values()):
+        return None
+    hv = p.get("hv") or {}
+    return {"intervals": iv, "ec_pdr_hz": p.get("ec_pdr_hz"), "reactive": p.get("reactive"), "alpha_attenuation": p.get("alpha_attenuation"),
+            "hv": {k: hv.get(k) for k in ("start_s", "duration_s", "slow_ratio_end", "slowing", "persists")} if hv else None,
+            "photic": [{k: x.get(k) for k in ("hz", "start_s", "duration_s", "snr", "driving")} for x in (p.get("photic") or [])]}
+
+
 def _event_regions(channels: list[str]) -> list[dict]:
     out = []
     for c in (canonical(x) for x in channels):
@@ -105,6 +118,7 @@ def build_view(signal: np.ndarray, channels: list[str], fs: float, result_json: 
         "pairs": [f"{l}-{r}" for l, r in HOMOLOGOUS_PAIRS], "asymmetry_record": _record_asymmetry(series, norms),
         "norms": {"version": norms["version"], "fit": norms["fit"], "checked_on": norms["checked_on"]},
         "montage_check": result_json.get("montage_check"),
+        "procedures": _procedures(result_json.get("procedures")),
         "events": events,
         "hypnogram": sleep.get("hypnogram") if isinstance(sleep, dict) else None,
     }

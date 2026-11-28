@@ -204,3 +204,21 @@ def test_save_outputs_writes_event_exports(tmp_path):
     paths = pipe.save_outputs(out, tmp_path)
     assert paths["events_tsv"].exists() and paths["events_edf"].exists()
     assert paths["events_tsv"].read_text(encoding="utf-8").splitlines()[0].startswith("onset\tduration\ttrial_type")
+
+
+def test_procedures_intervals_reach_the_page():
+    from neurolens.contracts.signal import Marker, UnifiedSignal
+    from neurolens.pipeline.pipeline import Pipeline
+
+    x, ch, fs = _signal(secs=120)
+    marks = [Marker(onset_s=0, text="Eyes closed"), Marker(onset_s=40, text="Eyes open"), Marker(onset_s=70, text="HV start"),
+             Marker(onset_s=100, text="HV end"), Marker(onset_s=105, text="Photic 6 Hz")]
+    out = Pipeline(provider_pref="template", run_ica=False).analyze_signal(
+        UnifiedSignal(signal=x, sampling_rate_hz=fs, channel_names=ch, duration_s=120.0, source="edf", markers=marks))
+    iv = out.result_json["procedures"]["intervals_s"]
+    assert iv["eyes_closed"] and iv["hv"] == [[70.0, 100.0]] and iv["photic"][0][2] == 6.0
+    v = build_view(x, ch, fs, out.result_json)
+    assert v["procedures"]["intervals"]["hv"] == [[70.0, 100.0]]
+    html = render_html(v)
+    assert "hasP" in html and "L0.hvl" in html
+    assert build_view(x, ch, fs, {})["procedures"] is None

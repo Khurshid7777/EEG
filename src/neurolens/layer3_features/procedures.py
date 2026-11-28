@@ -170,7 +170,12 @@ def analyze_procedures(signal) -> dict | None:
                  "unrecognized_examples": sorted(set(unknown))[:8],
                  "eyes_closed_s": round(_total(iv["eyes_closed"]), 1),
                  "eyes_open_s": round(_total(iv["eyes_open"]), 1),
-                 "ec_pdr_hz": None, "alpha_attenuation": None, "reactive": None, "hv": None, "photic": []}
+                 "ec_pdr_hz": None, "alpha_attenuation": None, "reactive": None, "hv": None, "photic": [],
+                 # time axis of the procedures (increment 87: shown on the regional page); seconds from the start
+                 "intervals_s": {"eyes_closed": [[round(a, 1), round(b, 1)] for a, b in iv["eyes_closed"]],
+                                 "eyes_open": [[round(a, 1), round(b, 1)] for a, b in iv["eyes_open"]],
+                                 "hv": [[round(a, 1), round(b, 1)] for a, b in iv["hv"]],
+                                 "photic": [[round(a, 1), round(b, 1), hz] for a, b, hz in iv["photic"]]}}
 
     post = [names.index(c) for c in OCCIPITAL if c in names] or \
            [names.index(c) for c in POSTERIOR_FALLBACK if c in names]
