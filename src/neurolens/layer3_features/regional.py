@@ -250,3 +250,39 @@ def regional_series(signal: np.ndarray, channels: Sequence[str], fs: float, win_
             "log10_abs": {b: np.array(v).T.round(3).tolist() for b, v in lab.items()},
             "log10_abs_alpha": np.array(abs_alpha).T.round(3).tolist(), "artefact": artefact,
             "bad_windows_by_channel": {c: v for c, v in bad_by_channel.items() if v}}
+
+
+# ---------------------------------------------------------------------------
+# electrode-label plausibility (increment 84)
+# ---------------------------------------------------------------------------
+
+POSTERIOR = ("O1", "O2", "P3", "P4", "Pz")
+ANTERIOR = ("Fp1", "Fp2", "F3", "F4", "F7", "F8", "Fz", "T3", "T4")
+
+
+def label_plausibility(per_channel: Mapping[str, Mapping[str, float]]) -> dict:
+    """Rule of increment 84 (docs/preregistration_increment84.md) on per-channel relative alpha.
+
+    ``suspect`` when (a) none of the three channels with the highest relative alpha is occipital/parietal and (b) the mean
+    posterior alpha is lower than the mean anterior (frontal + temporal) alpha. Valid only for an awake, eyes-closed
+    recording; fewer than 8 channels -> ``available`` False."""
+    if len(per_channel) < 8:
+        return {"available": False, "suspect": None, "reason": "fewer than 8 usable electrodes"}
+    alpha = {c: v["alpha"] for c, v in per_channel.items()}
+    top3 = sorted(alpha, key=alpha.get, reverse=True)[:3]
+    post = [alpha[c] for c in POSTERIOR if c in alpha]
+    ant = [alpha[c] for c in ANTERIOR if c in alpha]
+    if not post or not ant:
+        return {"available": False, "suspect": None, "reason": "no posterior or anterior electrodes"}
+    a = not any(c in POSTERIOR for c in top3)
+    b = float(np.mean(post)) < float(np.mean(ant))
+    return {"available": True, "suspect": bool(a and b), "top3": top3, "posterior_alpha": round(float(np.mean(post)), 4),
+            "anterior_alpha": round(float(np.mean(ant)), 4)}
+
+
+def montage_sanity(signal: np.ndarray, channels: Sequence[str], fs: float) -> dict:
+    """Electrode-label plausibility of an awake eyes-closed recording (see :func:`label_plausibility`)."""
+    try:
+        return label_plausibility(channel_band_power(signal, channels, fs, robust=True))
+    except ValueError as exc:
+        return {"available": False, "suspect": None, "reason": str(exc)}
