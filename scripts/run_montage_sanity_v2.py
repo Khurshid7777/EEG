@@ -11,7 +11,7 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from run_montage_sanity import SWAPS, _ci, _perm  # noqa: E402
+from run_montage_sanity import SWAPS, _ci, _perm
 
 
 def _one(item):
@@ -51,6 +51,7 @@ def _one(item):
 
 def _items():
     import run_eegmat_eval as eg
+
     from neurolens.datasets.ds004504 import Ds004504Client
     return [("eegmat", s["subject"]) for s in eg.subjects()] + \
            [("ds004504", r.subject) for r in Ds004504Client().records() if r.group in ("A", "F")]

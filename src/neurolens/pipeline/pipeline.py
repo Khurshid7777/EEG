@@ -557,6 +557,16 @@ class Pipeline:
             result_json["regional"] = regional_summary(view)
         except Exception as exc:  # noqa: BLE001 - e.g. fewer than 8 standard electrodes (neonatal montage)
             result_json["regional"] = {"available": False, "reason": str(exc)}
+        try:  # electrode-label plausibility (increment 86, D125): a warning only, for awake eyes-closed recordings
+            from ..layer3_features.regional import montage_sanity
+
+            if sleep is not None and sleep.get("hypnogram"):
+                result_json["montage_check"] = {"available": False, "suspect": None, "reason": "sleep recording"}
+            else:
+                result_json["montage_check"] = montage_sanity(analysis.signal, list(analysis.channel_names),
+                                                              analysis.sampling_rate_hz, version=2)
+        except Exception as exc:  # noqa: BLE001
+            result_json["montage_check"] = {"available": False, "suspect": None, "reason": str(exc)}
 
         return PipelineOutput(
             signal=analysis,

@@ -90,7 +90,11 @@ def test_robust_rule_survives_one_bad_electrode():
 
 
 def test_label_plausibility_flags_swapped_posterior_and_anterior_labels():
-    from neurolens.layer3_features.regional import label_plausibility, label_plausibility_v2, montage_sanity
+    from neurolens.layer3_features.regional import (
+        label_plausibility,
+        label_plausibility_v2,
+        montage_sanity,
+    )
 
     x, ch, fs = _synthetic(secs=60)
     swap0 = {"O1": "Fp1", "Fp1": "O1", "O2": "Fp2", "Fp2": "O2"}

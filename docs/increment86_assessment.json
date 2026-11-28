@@ -1,0 +1,95 @@
+{
+ "n": 95,
+ "n_usable": 90,
+ "errors": [
+  [
+   "ds004504",
+   "sub-005",
+   "ValueError('too few usable windows')"
+  ],
+  [
+   "ds004504",
+   "sub-032",
+   "ValueError('too few usable windows')"
+  ],
+  [
+   "ds004504",
+   "sub-073",
+   "ValueError('too few usable windows')"
+  ],
+  [
+   "ds004504",
+   "sub-086",
+   "ValueError('too few usable windows')"
+  ]
+ ],
+ "C1_eegmat": {
+  "n": 36,
+  "k": 0,
+  "rate": 0.0,
+  "ci95": [
+   0.0,
+   0.097
+  ],
+  "limit": 0.1,
+  "ok": true
+ },
+ "C1_ds004504_AF": {
+  "n": 54,
+  "k": 2,
+  "rate": 0.037,
+  "ci95": [
+   0.005,
+   0.127
+  ],
+  "limit": 0.15,
+  "ok": true
+ },
+ "detect_S1": {
+  "k": 84,
+  "n": 90,
+  "rate": 0.933,
+  "ci95": [
+   0.861,
+   0.975
+  ]
+ },
+ "detect_S2": {
+  "k": 72,
+  "n": 90,
+  "rate": 0.8,
+  "ci95": [
+   0.702,
+   0.877
+  ]
+ },
+ "detect_S3": {
+  "k": 5,
+  "n": 90,
+  "rate": 0.056,
+  "ci95": [
+   0.018,
+   0.125
+  ]
+ },
+ "detect_S4": {
+  "k": 88,
+  "n": 90,
+  "rate": 0.978,
+  "ci95": [
+   0.922,
+   0.997
+  ]
+ },
+ "detect_S5": {
+  "k": 2,
+  "n": 90,
+  "rate": 0.022,
+  "ci95": [
+   0.003,
+   0.078
+  ]
+ },
+ "C2_ok": true,
+ "connect_to_pipeline": true
+}

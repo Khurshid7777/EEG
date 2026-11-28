@@ -104,6 +104,7 @@ def build_view(signal: np.ndarray, channels: list[str], fs: float, result_json: 
         "series": series, "coords": _coords(), "regions": {k: list(v) for k, v in REGIONS.items()},
         "pairs": [f"{l}-{r}" for l, r in HOMOLOGOUS_PAIRS], "asymmetry_record": _record_asymmetry(series, norms),
         "norms": {"version": norms["version"], "fit": norms["fit"], "checked_on": norms["checked_on"]},
+        "montage_check": result_json.get("montage_check"),
         "events": events,
         "hypnogram": sleep.get("hypnogram") if isinstance(sleep, dict) else None,
     }
@@ -143,7 +144,7 @@ def regional_summary(view: Mapping) -> dict:
     return {"version": view["version"], "level": "scalp regions from the available 10-20 electrodes; not source localisation",
             "reference": s["reference"], "n_electrodes": len(names), "window_s": s["win_s"], "n_windows": s["n_windows"], "artefact_window_fraction": round(float(np.mean(s["artefact"])), 3),
             "relative_power_by_region": bands, "asymmetry_alpha": view["asymmetry_record"], "norms": view["norms"]["version"],
-            "events_by_region": counts, "events_without_channels": sum(1 for e in view["events"] if not e["where"]),
+            "events_by_region": counts, "montage_check": view.get("montage_check"), "events_without_channels": sum(1 for e in view["events"] if not e["where"]),
             "limitations": CAVEAT["ru"]}
 
 

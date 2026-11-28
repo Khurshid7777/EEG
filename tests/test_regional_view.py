@@ -153,3 +153,19 @@ def test_page_has_event_confidence_filter():
     x, ch, fs = _signal(secs=40)
     html = render_html(build_view(x, ch, fs, RESULT))
     assert 'id="conf"' in html and "visEv()" in html and "st.minConf" in html
+
+
+def test_montage_check_in_pipeline_and_page_warning():
+    from neurolens.contracts.signal import UnifiedSignal
+    from neurolens.pipeline.pipeline import Pipeline
+
+    x, ch, fs = _signal(secs=40)
+    pipe = Pipeline(provider_pref="template", run_ica=False)
+    ok = pipe.analyze_signal(UnifiedSignal(signal=x, sampling_rate_hz=fs, channel_names=ch, duration_s=40.0, source="edf"))
+    assert ok.result_json["montage_check"]["suspect"] is False
+    swap = {"O1": "Fp1", "Fp1": "O1", "O2": "Fp2", "Fp2": "O2"}
+    bad = pipe.analyze_signal(UnifiedSignal(signal=x, sampling_rate_hz=fs, channel_names=[swap.get(c, c) for c in ch],
+                                            duration_s=40.0, source="edf"))
+    assert bad.result_json["montage_check"]["suspect"] is True
+    html = render_html(build_view(x, [swap.get(c, c) for c in ch], fs, bad.result_json))
+    assert "mcwarn" in html and '"suspect":true' in html.replace(" ", "")
