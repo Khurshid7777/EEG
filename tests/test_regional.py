@@ -90,15 +90,19 @@ def test_robust_rule_survives_one_bad_electrode():
 
 
 def test_label_plausibility_flags_swapped_posterior_and_anterior_labels():
-    from neurolens.layer3_features.regional import label_plausibility, montage_sanity
+    from neurolens.layer3_features.regional import label_plausibility, label_plausibility_v2, montage_sanity
 
     x, ch, fs = _synthetic(secs=60)
-    ok = montage_sanity(x, ch, fs)
+    swap0 = {"O1": "Fp1", "Fp1": "O1", "O2": "Fp2", "Fp2": "O2"}
+    assert montage_sanity(x, ch, fs, version=2)["suspect"] is False
+    assert montage_sanity(x, [swap0.get(c, c) for c in ch], fs, version=2)["suspect"] is True
+    assert label_plausibility_v2({"O1": {"alpha": 0.5}})["available"] is False
+    ok = montage_sanity(x, ch, fs, version=1)
     assert ok["available"] and ok["suspect"] is False and {"O1", "O2"} <= set(ok["top3"])
     swap = {"O1": "Fp1", "Fp1": "O1", "O2": "Fp2", "Fp2": "O2"}
     ch2 = [swap.get(c, c) for c in ch]                       # the signal stays, the labels are exchanged
-    bad = montage_sanity(x, ch2, fs)
+    bad = montage_sanity(x, ch2, fs, version=1)
     assert bad["suspect"] is True and not (set(bad["top3"]) & {"O1", "O2", "P3", "P4", "Pz"})
     lr = {"O1": "O2", "O2": "O1"}
-    assert montage_sanity(x, [lr.get(c, c) for c in ch], fs)["suspect"] is False        # left/right swap is not detectable
+    assert montage_sanity(x, [lr.get(c, c) for c in ch], fs, version=1)["suspect"] is False        # left/right swap is not detectable
     assert label_plausibility({"O1": {"alpha": 0.5}})["available"] is False

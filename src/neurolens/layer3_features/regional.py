@@ -280,9 +280,27 @@ def label_plausibility(per_channel: Mapping[str, Mapping[str, float]]) -> dict:
             "anterior_alpha": round(float(np.mean(ant)), 4)}
 
 
-def montage_sanity(signal: np.ndarray, channels: Sequence[str], fs: float) -> dict:
-    """Electrode-label plausibility of an awake eyes-closed recording (see :func:`label_plausibility`)."""
+OCCIPITAL = ("O1", "O2")
+FRONTAL = ("Fp1", "Fp2", "F3", "F4", "F7", "F8", "Fz")
+
+
+def label_plausibility_v2(per_channel: Mapping[str, Mapping[str, float]]) -> dict:
+    """Version 2 (increment 86, docs/preregistration_increment86.md): ``suspect`` when the mean relative alpha of the
+    occipital electrodes is lower than that of the frontal electrodes. Valid for an awake, eyes-closed recording only."""
+    if len(per_channel) < 8:
+        return {"available": False, "suspect": None, "reason": "fewer than 8 usable electrodes"}
+    occ = [per_channel[c]["alpha"] for c in OCCIPITAL if c in per_channel]
+    fro = [per_channel[c]["alpha"] for c in FRONTAL if c in per_channel]
+    if not occ or not fro:
+        return {"available": False, "suspect": None, "reason": "no occipital or frontal electrodes"}
+    o, f = float(np.mean(occ)), float(np.mean(fro))
+    return {"available": True, "suspect": bool(o < f), "occipital_alpha": round(o, 4), "frontal_alpha": round(f, 4)}
+
+
+def montage_sanity(signal: np.ndarray, channels: Sequence[str], fs: float, version: int = 2) -> dict:
+    """Electrode-label plausibility of an awake eyes-closed recording (``version`` 2 = increment 86, 1 = increment 84)."""
     try:
-        return label_plausibility(channel_band_power(signal, channels, fs, robust=True))
+        pc = channel_band_power(signal, channels, fs, robust=True)
     except ValueError as exc:
         return {"available": False, "suspect": None, "reason": str(exc)}
+    return label_plausibility_v2(pc) if version == 2 else label_plausibility(pc)
