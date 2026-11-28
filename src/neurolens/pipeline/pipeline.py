@@ -590,6 +590,13 @@ class Pipeline:
         proto = out_dir / "protocol_ru_uz.txt"
         proto.write_text(output.protocol_text, encoding="utf-8")
         paths["protocol"] = proto
+        try:  # events for the reader's own viewer (increment 85); never breaks the run
+            from ..outputs.export_events import write_events_edf, write_events_tsv
+
+            paths["events_tsv"] = write_events_tsv(output.result_json, out_dir / "events.tsv")
+            paths["events_edf"] = write_events_edf(output.result_json, float(output.signal.duration_s or 1.0), out_dir / "events.edf")
+        except Exception as exc:  # noqa: BLE001
+            (out_dir / "events_export_error.txt").write_text(str(exc), encoding="utf-8")
         try:
             # center the curve view on the most salient event (ictal > any), else first 30s
             window = None

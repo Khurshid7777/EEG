@@ -169,3 +169,38 @@ def test_montage_check_in_pipeline_and_page_warning():
     assert bad.result_json["montage_check"]["suspect"] is True
     html = render_html(build_view(x, [swap.get(c, c) for c in ch], fs, bad.result_json))
     assert "mcwarn" in html and '"suspect":true' in html.replace(" ", "")
+
+
+def test_export_events_tsv_and_edf_roundtrip(tmp_path):
+    import pyedflib
+
+    from neurolens.outputs.export_events import event_rows, write_events_edf, write_events_tsv
+
+    res = {"events": [{"code": "spike", "t_start": 12.5, "t_end": 12.6, "confidence": 0.8, "channels": ["T7", "Fz"],
+                       "evidence": {"ied_probability_learned": 0.123}},
+                      {"code": "ictal_ml", "t_start": 3.0, "t_end": 9.0, "confidence": 0.4, "channels": []}]}
+    rows = event_rows(res)
+    assert [r["trial_type"] for r in rows] == ["ictal_ml", "spike"]                 # sorted by onset
+    assert rows[1]["regions"] == "temporal,frontal" and rows[1]["learned_probability"] == "0.123" and rows[0]["channels"] == "n/a"
+    tsv = write_events_tsv(res, tmp_path / "events.tsv").read_text(encoding="utf-8").splitlines()
+    assert tsv[0].split("\t")[:3] == ["onset", "duration", "trial_type"] and len(tsv) == 3
+    edf = write_events_edf(res, 60.0, tmp_path / "events.edf")
+    r = pyedflib.EdfReader(str(edf))
+    try:
+        onsets, _durs, texts = r.readAnnotations()
+        assert sorted(round(float(o), 2) for o in onsets) == [3.0, 12.5]
+        assert any(t.startswith("spike; ch=T7,Fz") for t in texts) and abs(r.getFileDuration() - 60) < 1.5
+    finally:
+        r.close()
+
+
+def test_save_outputs_writes_event_exports(tmp_path):
+    from neurolens.contracts.signal import UnifiedSignal
+    from neurolens.pipeline.pipeline import Pipeline
+
+    x, ch, fs = _signal(secs=40)
+    pipe = Pipeline(provider_pref="template", run_ica=False)
+    out = pipe.analyze_signal(UnifiedSignal(signal=x, sampling_rate_hz=fs, channel_names=ch, duration_s=40.0, source="edf"))
+    paths = pipe.save_outputs(out, tmp_path)
+    assert paths["events_tsv"].exists() and paths["events_edf"].exists()
+    assert paths["events_tsv"].read_text(encoding="utf-8").splitlines()[0].startswith("onset\tduration\ttrial_type")
